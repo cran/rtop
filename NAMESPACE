@@ -1,0 +1,88 @@
+useDynLib(rtop)
+import(sp,
+  gstat)
+export(checkVario,
+  createRtopObject,
+  downloadRtopExampleData,
+  gDist,
+  getRtopParams,
+  netProp,
+  readAreaInfo,
+	readAreas,
+	rtopFitVariogram,
+	rtopKrige,
+  rtopVariogram,
+	rtopVariogramModel,
+  rtopDisc,
+  updateRtopVariogram,
+  useRtopWithIntamap,
+	varMat
+#	varioTest,
+#	varioEx,
+#  objfunc,
+#  goFit,
+#  sceua,
+#  vred
+  )
+  
+ S3method(checkVario, rtopVariogramModel)
+ S3method(checkVario, rtop)
+ S3method(checkVario, rtopVariogram)
+ S3method(checkVario, rtopVariogramCloud) 
+        
+ S3method(gDist, rtop)
+ S3method(gDist, SpatialPolygonsDataFrame)
+ S3method(gDist, SpatialPolygons)
+ S3method(gDist, list)
+         
+ S3method(rtopVariogram, SpatialPointsDataFrame)
+ S3method(rtopVariogram, SpatialPolygonsDataFrame)
+# S3method(rtopVariogram, SpatialLinesDataFrame)
+ S3method(rtopVariogram, rtop)
+
+ S3method(rtopFitVariogram, rtop)
+ S3method(rtopFitVariogram, rtopVariogram)
+ S3method(rtopFitVariogram, rtopVariogramCloud)
+ S3method(rtopFitVariogram, SpatialPointsDataFrame)
+ S3method(rtopFitVariogram, SpatialPolygonsDataFrame)
+# S3method(rtopFitVariogram, SpatialLinesDataFrame)
+
+
+ S3method(rtopVariogram, SpatialPolygonsDataFrame)
+# S3method(rtopVariogram, SpatialLinesDataFrame)
+ S3method(rtopVariogram, rtop)
+
+ S3method(rtopKrige, SpatialPolygonsDataFrame)
+# S3method(rtopKrige, SpatialLinesDataFrame)
+ S3method(rtopKrige, rtop)
+
+ S3method(rtopDisc, rtop)
+ S3method(rtopDisc, SpatialPolygonsDataFrame)
+ S3method(rtopDisc, SpatialPolygons)
+# S3method(rtopDisc, SpatialLinesDataFrame)
+# S3method(rtopDisc, SpatialLines)
+ S3method(rtopDisc, rtopVariogram)
+ S3method(rtopDisc, rtop)
+ 
+ S3method(varMat,rtop)
+ S3method(varMat,matrix)
+ S3method(varMat,list)
+ S3method(varMat,SpatialPolygonsDataFrame)
+ S3method(varMat,SpatialPolygons)
+# S3method(varMat,SpatialLinesDataFrame)
+# S3method(varMat,SpatialLines)
+  
+ S3method(updateRtopVariogram, rtop)
+ S3method(updateRtopVariogram, rtopVariogramModel)
+
+#if("intamap" %in% rownames(utils:::installed.packages()) ) {
+#   import(intamap)
+#   importFrom(intamap,estimateParameters,spatialPredict,methodParameters)
+#   S3method(estimateParameters, rtop)
+#   S3method(spatialPredict, rtop)
+#   S3method(methodParameters, rtop)
+#}
+
+ S3method(summary,rtop)
+ S3method(plot, rtopVariogramCloud)
+ 
