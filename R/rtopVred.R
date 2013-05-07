@@ -5,6 +5,7 @@ vred = function(a1, a2=NULL, vredTyp = "hyp", variogramModel,
 #  print(asdf)
 #  return(0)
   model = variogramModel$model
+  imod = imodel(model)
   param = variogramModel$params
   ci = 0
   if (vredTyp == "ind"){
@@ -16,12 +17,12 @@ vred = function(a1, a2=NULL, vredTyp = "hyp", variogramModel,
     a2 = coordinates(a2)
     ip1 = dim(a1)[1]
     ip2 = dim(a2)[1]
-    vreda = .Fortran("vredind", ci, ip1, ip2, a1, a2, length(param), param, model)
+    vreda = .Fortran("vredind", ci, ip1, ip2, a1, a2, length(param), param, imod)
 #  } else if (vredTyp == "pdf") {
 #    vreda = .Fortran("vredpdf",ci,c1,c2,ip1,ip2,ipb,pdf1,pdf2,pdfb,length(param),param,model)
   } else if (vredTyp == "hyp") {
     vreda = .Fortran("vredhyp", ci, a1, a2, dist, length(param), param,
-          as.integer(resol), model)
+          as.integer(resol), imod)
   }
 ###### Nugget needs to be implemented
   if (!is.null(aover)) {

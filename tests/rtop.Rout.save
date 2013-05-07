@@ -28,18 +28,26 @@ Path to GDAL shared files: C:/Program Files/R/R-3.0.0/library/rgdal/gdal
 GDAL does not use iconv for recoding strings.
 Loaded PROJ.4 runtime: Rel. 4.7.1, 23 September 2009, [PJ_VERSION: 470]
 Path to PROJ.4 shared files: C:/Program Files/R/R-3.0.0/library/rgdal/proj
+
+Attaching package: 'rgdal'
+
+The following object is masked from 'package:sp':
+
+    spTransform
+
+Warning message:
+multiple methods tables found for 'spTransform' 
 > options(error = recover)
 >   # Read directly from shape-files in data directory
->   rpath = system.file("extdata",package="rtop")
->   setwd(rpath)
->   observations = readOGR(".","observations")
+> rpath = system.file("extdata",package="rtop")
+> observations = readOGR(rpath, "observations")
 OGR data source with driver: ESRI Shapefile 
-Source: ".", layer: "observations"
+Source: "E:/RForge/rtop/pkg/rtop.Rcheck/rtop/extdata", layer: "observations"
 with 57 features and 7 fields
 Feature type: wkbPolygon with 2 dimensions
->   predictionLocations = readOGR(".","predictionLocations")
+> predictionLocations = readOGR(rpath, "predictionLocations")
 OGR data source with driver: ESRI Shapefile 
-Source: ".", layer: "predictionLocations"
+Source: "E:/RForge/rtop/pkg/rtop.Rcheck/rtop/extdata", layer: "predictionLocations"
 with 235 features and 5 fields
 Feature type: wkbPolygon with 2 dimensions
 >   #Finding a few prediction locations of them
@@ -360,7 +368,7 @@ Loading optional package: intamap
 >   output = interpolate(observations,predictionLocations,
 +      optList = list(formulaString = obs~1, gDist = TRUE, cloud = FALSE, nmax = 10, rresol = 25, hresol = 3), 
 +         methodName = "rtop")
-R 2013-04-18 10:26:48 interpolating 30 observations, 2 prediction locations
+R 2013-05-07 18:11:24 interpolating 30 observations, 2 prediction locations
 Checking object ... OK
 51 best 0.216 function convergence 200 parameter convergence 6929.283 
 79 best 0.216 function convergence 200 parameter convergence 5358.202 
@@ -470,4 +478,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  10.38    0.12   10.59 
+  19.74    0.31   20.06 

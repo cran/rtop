@@ -4,10 +4,9 @@ library(rtop)
 library(rgdal)
 options(error = recover)
   # Read directly from shape-files in data directory
-  rpath = system.file("extdata",package="rtop")
-  setwd(rpath)
-  observations = readOGR(".","observations")
-  predictionLocations = readOGR(".","predictionLocations")
+rpath = system.file("extdata",package="rtop")
+observations = readOGR(rpath, "observations")
+predictionLocations = readOGR(rpath, "predictionLocations")
   #Finding a few prediction locations of them
   
   observations = observations[1:30,]

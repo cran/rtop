@@ -1,19 +1,17 @@
 Package: rtop
 Type: Package
 Title: Interpolation of data with variable spatial support
-Version: 0.3-37
-Date: 2013-04-19
+Version: 0.3-41
+Date: 2013-05-07
 Author: Jon Olav Skoien
-Maintainer: Jon Olav Skoien <jon.skoien@jrc.ec.europa.eu>
+Maintainer: Jon Olav Skoien <jon.skoien@gmail.com>
 Depends: sp, gstat
 Suggests: igraph, rgdal, intamap
-Description: Geostatistical methods for estimating when the support has
-        an area
+Description: Package for geostatistical interpolation of data with
+        irregular spatial support such as runoff related data or data
+        from administrative units.
 License: GPL (>= 2)
-Repository: CRAN
-Repository/R-Forge/Project: rtop
-Repository/R-Forge/Revision: 24
-Repository/R-Forge/DateTimeStamp: 2013-04-19 15:03:22
-Date/Publication: 2013-05-03 17:33:39
-Packaged: 2013-04-19 18:24:17 UTC; rforge
+Packaged: 2013-05-07 16:29:49 UTC; skoiejo
 NeedsCompilation: yes
+Repository: CRAN
+Date/Publication: 2013-05-07 19:17:13

@@ -257,13 +257,16 @@ varioEx = function(skor,variogramModel) {
   model = variogramModel$model
   params = variogramModel$params
   res = 0.
-  vres = .Fortran("varioex",res,skor,length(params),params,model)
+  imod = imodel(model)
+  vres = .Fortran("varioex",res,skor,length(params),params,imod)
 #  print(paste(res,vres[[1]],params[1],params[2],params[3],params[4],params[5], sep = " " ))
   return(vres[[1]])
 }
 
-
-
+imodel = function(model) {
+#     The numbers should match the numbers of the Fortran-function vario
+  as.integer(switch(model, Exp = 1, Ex1 = 2, Gau = 3, Ga1 = 4, Gho = 5, Sph = 6, Sp1 = 7, Fra = 8) )
+}
 
 nuggEx = function(ared,variogramModel) {
   model = variogramModel$model

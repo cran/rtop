@@ -11,7 +11,6 @@ c     Uses the pdf of distances between the two observations
       implicit double precision (a-h,o-z)
       double precision pdf1(ip1,2), pdf2(ip2,2), pdfb(ipb,2),par(ipar)
       integer ip1, ip2, ipb
-      character*3 model
       
 c      write(*,*) ci,ip1,ip2,ipb,par
       w = 0
@@ -69,7 +68,6 @@ c     Fortran rotuine for finding the aggregated semivariance between two observ
 c     The observations are given by their areas and the distances between them.
       implicit double precision (a-h,o-z)
       double precision par(ipar)
-      character*3 model
       integer resol
       
       ar1 = sqrt(a1)
@@ -151,7 +149,6 @@ c   vreda = .Fortran("vredind",ci,ip1,ip2,a1,a2,length(pars),pars,model)
 
       subroutine vredind(ci,ip1,ip2,a1,a2,ipar,pars,model)
       implicit double precision (a-h,o-z)
-      character*3 model
       double precision a1(ip1,2), a2(ip2,2),pars(ipar),par(20)
 c      write(*,*) model,model,model
 c      write(*,*) par
@@ -188,13 +185,12 @@ c          write(*,*) i,j,x1,x2,xd,par(1),xgamma,model
       subroutine varioex(res,skor,ip,pa,model)
 c     Function for external requests for variogram value
       implicit double precision (a-h,o-z)
-      character*3 model
       dimension pa(ip),par(20)
       do i = 1,ip
         par(i) = pa(i)
       enddo
+c      write(58,*) skor,ip,(par(i),i=1,ip),model,res
       res = vario(skor,par,model)
-c      write(*,*) skor,ip,(par(i),i=1,ip),model,res
       end
 
 
@@ -206,34 +202,34 @@ c      write(*,*) skor,ip,(par(i),i=1,ip),model,res
 
       double precision function vario(skor,par,model)
 c     Function choosing between the different variogram models available
+c     The numbers should match the numbers of the R-function rtop:::imodel
       implicit double precision (a-h,o-z)
-      character*3 model
       dimension par(20)
 c      write(*,*) model,model
 c      write(*,*) skor,(par(i),i=1,5),model
 
-      if (model .eq. "Exp") then
+      if (model .eq. 1) then
         vario = exponential(skor,par)
         return
-      else if (model .eq. "Ex1") then
+      else if (model .eq. 2) then
         vario = exp1(skor,par)
         return
-      else if (model .eq. "Gau") then
+      else if (model .eq. 3) then
         vario = gaussian(skor,par)
         return
-      else if (model .eq. "Ga1") then
+      else if (model .eq. 4) then
         vario = gau1(skor,par)
         return
-      else if (model .eq. "Gho") then
+      else if (model .eq. 5) then
         vario = skor
         return
-      else if (model .eq. "Sph") then
+      else if (model .eq. 6) then
         vario = spherical(skor,par)
         return
-      else if (model .eq. "Sp1") then
+      else if (model .eq. 7) then
         vario = sph1(skor, par)
         return
-      else if (model .eq. "Fra") then
+      else if (model .eq. 8) then
         vario = fractal(skor, par)
         return
       else 
