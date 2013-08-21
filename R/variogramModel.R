@@ -89,6 +89,7 @@ sampleVariogram = NULL, observations = NULL){
 
 
 plot.rtopVariogramCloud = function(x,  ...) {
-variogramCloud$np = variogramCloud$ord
-gstat:::plot.variogramCloud(x, ...)
+x$np = x$ord
+class(x) = "variogramCloud"
+plot(x, ...)
 }

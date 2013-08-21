@@ -46,12 +46,14 @@ findOverlap = function(areas1,areas2, debug.level = 1) {
         if (a2 < a1) {
           pt2 = pts2[ib,]
 #          nover = pointsInSpatialPolygons_local(pt2, SP1, pls_SP1, lb_SP1)
-          nover = sp:::pointsInSpatialPolygons(pt2, SP1)
+#          nover2 = sp:::pointsInSpatialPolygons(pt2, SP1)
+          nover = over(pt2, SP1)
           if (!is.na(nover)) overlap[ia,ib] = min(a1,a2)
           nnover = nnover + 1
         } else {
 #          nover = pointsInSpatialPolygons_local(pt1, SP2, pls_SP2, lb_SP2)
-          nover = sp:::pointsInSpatialPolygons(pt1, SP2)
+#          nover2 = sp:::pointsInSpatialPolygons(pt1, SP2)
+          nover = over(pt1, SP2)
           if (!is.na(nover)) overlap[ia,ib] = min(a1,a2)
           nnover = nnover + 1
         }

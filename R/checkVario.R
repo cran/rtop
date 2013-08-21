@@ -58,7 +58,8 @@ checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist =
     } 
     clvar$np = clvar$ord  
     if (!"identify" %in% names(dots) | !dev.interactive()) dots$identify = FALSE
-    print(gstat:::plot.variogramCloud(clvar, xlab = "distance", unlist(dots)))      
+#    print(gstat:::plot.variogramCloud(clvar, xlab = "distance", unlist(dots)))      
+    print(plot(clvar, xlab = "distance", unlist(dots)))      
   }
   if (!is.null(varFit) & is(sampleVariogram, "rtopVariogram")) {
     gammar = varFit[,c("np", "gamma", "gammar")]
@@ -197,7 +198,7 @@ for (iplot in 1:dim(acomp)[1]) {
 }
 
 
-pvar = apply(as.matrix(adists),1,rtop:::varioEx, variogramModel = variogramModel)+ 
+pvar = apply(as.matrix(adists),1, varioEx, variogramModel = variogramModel)+ 
    ifelse(plotNugg, nuggEx(1,variogramModel)*acor, 0)
 ymin = max(min(vmats[vmats > 0]),min(sampleVariogram$gamma))
 ymax = max(pvar)

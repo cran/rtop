@@ -8,11 +8,12 @@ The function will create diagnostic plots for analysis of the variograms fitted
 to sample variograms of data with support
 }
 \usage{
-\method{checkVario}{rtop}(object, acor = 1, log = "xy", cloud = FALSE, gDist = TRUE, ...) 
+\method{checkVario}{rtop}(object, acor = 1, log = "xy", cloud = FALSE, 
+                          gDist = TRUE, ...) 
 
 \method{checkVario}{rtopVariogramModel}(object, 
-           sampleVariogram = NULL, observations = NULL, areas = NULL, dists = NULL, acomp = NULL,
-           params = list(), compVars = list(), acor = 1, log = "xy", 
+           sampleVariogram = NULL, observations = NULL, areas = NULL, dists = NULL, 
+           acomp = NULL, params = list(), compVars = list(), acor = 1, log = "xy", 
            legx = NULL, legy = NULL, plotNugg = TRUE, ...) 
 }
 
@@ -83,8 +84,10 @@ params = list(cloud = TRUE, gDist = TRUE)
 rtopObj = createRtopObject(observations,predictionLocations, params = params)
  # Fit a variogram (function also creates it)
 rtopObj = rtopFitVariogram(rtopObj)
-checkVario(rtopObj, compVar = list(first = vgm(5e-6, "Sph", 30000,5e-8), second = vgm(2e-6, "Sph", 30000,5e-8)))
-rtopObj = checkVario(rtopObj, acor = 0.000001, acomp = data.frame(acl1 = c(2,2,2,2,3,3,3,4,4), acl2 = c(2,3,4,5,3,4,5,4,5)))
+checkVario(rtopObj, compVar = list(first = vgm(5e-6, "Sph", 30000,5e-8), 
+                                   second = vgm(2e-6, "Sph", 30000,5e-8)))
+rtopObj = checkVario(rtopObj, acor = 0.000001, 
+         acomp = data.frame(acl1 = c(2,2,2,2,3,3,3,4,4), acl2 = c(2,3,4,5,3,4,5,4,5)))
 rtopObj = checkVario(rtopObj, cloud = TRUE, identify = TRUE, acor = 0.000001)
 }
 }

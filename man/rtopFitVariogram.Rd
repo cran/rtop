@@ -14,8 +14,10 @@ with an areal support.
 \method{rtopFitVariogram}{rtop}(object, ...) 
 \method{rtopFitVariogram}{SpatialPolygonsDataFrame}(object, params=list(), ...) 
 \method{rtopFitVariogram}{SpatialPointsDataFrame}(object, params=list(), ...) 
-\method{rtopFitVariogram}{rtopVariogram}(object, observations, dists = NULL, params=list(), mr = FALSE, aOver = NULL, ...) 
-\method{rtopFitVariogram}{rtopVariogramCloud}(object, observations, dists = NULL, aOver = NULL, params=list(), mr = FALSE, ...) 
+\method{rtopFitVariogram}{rtopVariogram}(object, observations, dists = NULL, 
+                            params=list(), mr = FALSE, aOver = NULL, ...) 
+\method{rtopFitVariogram}{rtopVariogramCloud}(object, observations, dists = NULL, 
+                            aOver = NULL, params=list(), mr = FALSE, ...) 
 }
 
 \arguments{

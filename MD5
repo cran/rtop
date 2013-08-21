@@ -1,10 +1,10 @@
-7e16dd8a07842e257b0d29e3299eb155 *DESCRIPTION
-5a316d62240ae885bcd135f1aea9be6c *NAMESPACE
-5118a144239a0bcbc6a14709ce57446d *R/checkVario.R
-2185af78160ce20ca6a4960e51313b67 *R/discAreas.R
+c78a270246374c41de4164b0e84cfe46 *DESCRIPTION
+287fcf42e4751b6869aa7c113650b6d2 *NAMESPACE
+260cc002b3673510f1f9116692eaf232 *R/checkVario.R
+2e24be994b40c3e4246fd6d0da554b6e *R/discAreas.R
 168e22cf3f1647b8f3aeb40c13494cf5 *R/downloadRtopExampleData.r
 5ef3689dc2bdf3fb6d3ebab1dcb1a18f *R/estimateParameters.R
-bb003621ec9da5c5c88ac9126c4af358 *R/findOverlap.R
+5aea72cdf0b9d46fc50e796c41304443 *R/findOverlap.R
 ed6d776a15f6af0e40efd19af6d499ea *R/fitVariogram.R
 f268e1a450ceeb8232128df288ca3bba *R/gDist.r
 bf94b8839f35cd067a3e528e9408ccb8 *R/onLoad.r
@@ -17,7 +17,7 @@ f0280e2dc58f63b4c358c9b4c4256823 *R/rtophelp.R
 9205fd9d6024a77debae938fc36c4659 *R/rtopread.R
 86a72e482649419db786f226b7f31536 *R/sceua.R
 0fd112855636d01d0aebf8ac0c4c6d6e *R/varMat.R
-4c7599ef7566c3e06d4962b3c566b581 *R/variogramModel.R
+151a14383f8f239983086ffc362a4581 *R/variogramModel.R
 c606a0ee8aafa24173ac1f6d067b328f *R/zzz.R
 a8c49e54123cd423e62d255ad18ecafb *demo/00Index
 500953784d3fc58ff0016e0e3cf6909c *demo/rtopCandG.r
@@ -33,7 +33,7 @@ a8c49e54123cd423e62d255ad18ecafb *demo/00Index
 3ad445917840faba937c95ac2782335b *inst/extdata/riverNetwork.prj
 a7dd4b012d90c31e23b7b8d1c16234d3 *inst/extdata/riverNetwork.shp
 8326d4c3796c71df74b621ecf8bbfaef *inst/extdata/riverNetwork.shx
-5375e41388e004118b0be35efb23f698 *man/checkVario.Rd
+45dba813e8b100a43823e1c446ea43b1 *man/checkVario.Rd
 c4123509ab9a03a8bc0829a4e76ab936 *man/createRtopObject.Rd
 55371a9c97ceeb18d9210792e4441e14 *man/downloadRtopExampleData.rd
 11b34a54fea43efd01e21bbce6f9a2c7 *man/gDist.Rd
@@ -44,7 +44,7 @@ c620355dae5a1ba6ec81b32d65bebc04 *man/readAreaInfo.Rd
 ee5933e7b62a29a5346332cc5adc0183 *man/readAreas.Rd
 19f709476470bbb9b70450b35c4d8af1 *man/rtop-package.Rd
 36722784125deb088035f7d909aec614 *man/rtopDisc.Rd
-d7cfc0e65b9a6f00c57395cbcd8d42f9 *man/rtopFitVariogram.Rd
+bb954753a5ee8e7311b9efa9fffde527 *man/rtopFitVariogram.Rd
 c2c0dfe68007a4243e1ba32fb66290d8 *man/rtopKrige.Rd
 d204e3f1a7d358d54efedcf47fafbbdb *man/rtopVariogram.Rd
 c24f6e6cb4a8a200755b62f5dc377fdb *man/useRtopWithIntamap.Rd
@@ -52,4 +52,3 @@ d0a3c4d24f5c6ed42e79fd5c9ce81dcd *man/varMat.Rd
 d3c2cf645eca026708b19d7905097a34 *man/variogramModel.Rd
 49a48a07ddeb144741a136a901282f57 *src/vred.f
 43507002b85136e8e6b208ced305d2f6 *tests/rtop.R
-ed5c8b2093cda58f0da2cde9462c3871 *tests/rtop.Rout.save

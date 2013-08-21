@@ -1,6 +1,6 @@
 useDynLib(rtop)
-import(sp,
-  gstat)
+import(gstat)
+import(sp)
 export(checkVario,
   createRtopObject,
   downloadRtopExampleData,

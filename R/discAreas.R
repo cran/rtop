@@ -101,7 +101,8 @@ rtopDisc.SpatialPolygons = function(object, params = list(), bb = bbox(object), 
           pts = expand.grid(x=x,y=y)
           if (dim(pts)[1] >= 1) {
             coordinates(pts) = ~x+y
-            pts = pts[!is.na(sp:::pointsInSpatialPolygons(pts,lpoly)),]
+#            pts = pts[!is.na(sp:::pointsInSpatialPolygons(pts,lpoly)),]
+            pts = pts[!is.na(over(pts,lpoly)),]
 #            pts = pts[!is.na(pointsInSpatialPolygons_loc(pts,lpoly)),]
             ipts = dim(coordinates(pts))[1]
           }
