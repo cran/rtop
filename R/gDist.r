@@ -50,7 +50,10 @@ gDist.SpatialPolygons = function(object, object2=NULL, ...) {
 
 gDist.list = function(object,object2=NULL,diag = FALSE, debug.level = 0, ...) {
   variogramModel=list(model = "Gho",params = 0)
-  if (length(object[[1]]) ==2) {
+  if (inherits(object[[1]], "SpatialPoints")) {
+    gDist = varMat(object, object2,diag = diag,variogramModel = variogramModel, 
+             debug.level = debug.level, ...)
+  } else {
   # These are the discretized points for hypotetical areas from binned variograms
     gDist = data.frame(c1 = c(rep(0,length(object))),c2 = 0,cb=0)
     lAreas = lapply(object,FUN=function(aa) aa[[1]])
@@ -58,9 +61,6 @@ gDist.list = function(object,object2=NULL,diag = FALSE, debug.level = 0, ...) {
     lAreas = lapply(object,FUN=function(aa) aa[[2]])
     gDist[,2] = mapply(vred,lAreas, MoreArgs = list(vredTyp="ind",variogramModel = variogramModel))
     gDist[,3] = mapply(vred,object, MoreArgs = list(vredTyp="ind",variogramModel = variogramModel))
-  } else {
-    gDist = varMat(object, object2,diag = diag,variogramModel = variogramModel, 
-             debug.level = debug.level, ...)
   }
   return(as.matrix(gDist))
 }

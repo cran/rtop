@@ -3,7 +3,7 @@
 
 sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.01,
     ngs = 5, npg = 5, nps = 5, nspl = 5, mings = 5, iniflg = 1, iprint = 0, iround = 3, 
-    peps = 0.0001, plog = rep(FALSE,length(pars)),...) {
+    peps = 0.0001, plog = rep(FALSE,length(pars)), implicit = NULL, ...) {
 
 # OFUN - objective function
 # pars - starting values
@@ -28,6 +28,7 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
 # iprint = flag for controlling print-out after each shuffling loop
 #     = 0, print information on the best point of the population
 #      = 1, print information on every point of the population
+# implicit = function for implicit boundaries (e.g. sum(par[4]+par[5]) < 1)
 
   npars = length(pars)
   if (length(plog) == 1) 
@@ -52,8 +53,9 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
   if (iprint > 0 && icall %% iprint == 0) cat(icall,round(fa,iround), "\n")
   parset[1,] = pars
   xf[1] = fa
+  stdinit = rep(1,npars)
   for (ii in ifelse(iniflg == 1,2,1):npt) {
-    parset[ii,] = getpnt(idist = 1,lower,upper,rep(1,npars),lower)
+    parset[ii,] = getpnt(idist = 1,lower,upper,stdinit,lower, implicit)
     lpars = ifelse(plog,10^parset[ii,],parset[ii,])
     xf[ii] = OFUN(lpars,...)
     icall = icall + 1
@@ -91,7 +93,7 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
         lcs = sort(lcs)
         s = cx[lcs,]
         sf = cf[lcs]  
-        cceout = cce(OFUN,npars,nps,s,sf,lower,upper,parstd,icall,maxn,iprint,iround,bestf,plog,...)
+        cceout = cce(OFUN,npars,nps,s,sf,lower,upper,parstd,icall,maxn,iprint,iround,bestf,plog,implicit,...)
         s = cceout$s
         sf = cceout$sf
         icall = cceout$icall
@@ -147,7 +149,7 @@ comp = function(npars,npt,ngs,npg,parset,xf){
   return(list(parset = xn,xf = xfn))
 }
 
-cce = function(OFUN,npars,nps,s,sf,lower,upper,parstd,icall,maxn,iprint,iround,bestf,plog,...) {
+cce = function(OFUN,npars,nps,s,sf,lower,upper,parstd,icall,maxn,iprint,iround,bestf,plog, implicit,...) {
   alpha = 1.
   beta = 0.5
   n = dim(s)[1]
@@ -157,7 +159,7 @@ cce = function(OFUN,npars,nps,s,sf,lower,upper,parstd,icall,maxn,iprint,iround,b
   fw = sf[n]
   snew = ce+alpha*(ce-sw)
 #  print(icall)
-  if (chkcst(snew,lower,upper) >0) snew = getpnt(2,lower,upper,parstd,sb)
+  if (chkcst(snew,lower,upper, implicit) >0) snew = getpnt(2,lower,upper,parstd,sb, implicit)
 #  print(snew)
   lpars = ifelse(plog,10^snew,snew)
   fnew = OFUN(lpars,...)
@@ -170,7 +172,7 @@ cce = function(OFUN,npars,nps,s,sf,lower,upper,parstd,icall,maxn,iprint,iround,b
     icall = icall + 1
     if (iprint > 0 && icall %% iprint == 0) cat(icall,round(fnew,iround),round(bestf,iround), "\n")
     if (fnew > fw) {
-      snew = getpnt(2,lower,upper,parstd,sb)
+      snew = getpnt(2,lower,upper,parstd,sb, implicit)
       lpars = ifelse(plog,10^snew,snew)
       fnew = OFUN(lpars,...)
       icall = icall + 1
@@ -182,30 +184,37 @@ cce = function(OFUN,npars,nps,s,sf,lower,upper,parstd,icall,maxn,iprint,iround,b
   return(list(s = s,sf = sf,icall = icall))
 }
 
-chkcst = function(parlocal,lower,upper) {
+chkcst = function(parlocal,lower,upper, implicit) {
  ibound = ifelse(sum(mapply(FUN = function(x,y,z)
-                  max(y-x,x-z,0),parlocal,lower,upper))>0,1,0)
- if (ibound == 0 & length(parlocal) >1) {
+               max(y-x,x-z,0),parlocal,lower,upper))>0,1,0)
+ if (ibound == 0 & length(parlocal) >1 & !is.null(implicit)) {
 # Possibility to include implicit constraints 
+   if (!is.function(implicit)) stop("implicit has to be a function")
+   ibound = implicit(parlocal)
  }
  return(ibound)
 }
 
-getpnt = function(idist,lower,upper,std,pari){
+getpnt = function(idist,lower,upper,std,pari, implicit){
 #  rand = (ifelse(rep(idist,npars) == 1,runif(npars),rnorm(npars)))
 #  print(xi)
 #  print(rand)
-  mapply(FUN = get1p,pari,std,lower,upper,idist)
+  while (TRUE) {
+    parj = mapply(FUN = get1p, pari, std = std, lower = lower, upper = upper, 
+        MoreArgs = list(idist = idist, implicit = implicit))
+    if (chkcst(parj,lower,upper, implicit) == 0) break
+  }
+  return(parj)
 }
 
-get1p = function(pari,std,lower,upper,idist) {
+get1p = function(pari,std,lower,upper,idist, implicit) {
 #  print(paste(xi,std,rand,lower,upper))
   while (TRUE) {
     rand = ifelse(idist == 1,runif(1),rnorm(1))
     parj = pari+std*rand*(upper-lower)
 #    print(x)
 #    print(chkcst(x,lower,upper))
-    if (chkcst(parj,lower,upper) == 0) break
+    if (chkcst(parj,lower,upper, implicit) == 0) break
 #    print(acdf)
   }
   return(parj)

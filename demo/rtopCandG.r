@@ -47,4 +47,4 @@ panel.polygonsplot(x,y, ...)
 sp.points(cobs[,"obs"], cex=1, pch = 16, col = cols[cobs$class])
 })
 
-writeOGR(rnet, dsn, layer, "ESRI Shapefile")
+#writeOGR(rnet, dsn, layer, "ESRI Shapefile")

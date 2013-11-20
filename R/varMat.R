@@ -50,7 +50,7 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
     attr(object$varMatObs, "variogramModel") = variogramModel
     obsComp = TRUE
   }
-  if (!params$cv && !"varMatPredObs" %in% names(object) && !varMatUpdate) {
+  if (!params$cv && (!"varMatPredObs" %in% names(object) | varMatUpdate)) {
 #    ftype = ifelse(inherits(predictionLocations,"SpatialPolygons"),"polygons","lines")
     varMatObs = object$varMatObs
     vDiagObs = diag(varMatObs)
@@ -90,7 +90,8 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
                     diag=TRUE, variogramModel = variogramModel, debug.level = debug.level, newPar = params)
       object$varMatPredObs = varMat(dObs,dPred,
           coor1 = coordinates(observations),coor2 = coordinates(predictionLocations),
-          variogramModel = variogramModel, debug.level = debug.level, newPar = params)
+          variogramModel = variogramModel, sub1 = diag(object$varMatObs), sub2 = object$varMatPred,
+          debug.level = debug.level, newPar = params)
     }
     predComp = TRUE
   }
@@ -98,7 +99,7 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
     if (obsComp) {
       if ("overlapObs" %in% names(object)) {
         overlapObs = object$overlapObs
-      } else object$overlapObs = overlapObs = findOverlap(observations,observations)
+      } else object$overlapObs = overlapObs = findOverlap(observations,observations, params = params)
       fObs = matrix(rep(aObs,nObs),ncol=nObs)
       sObs = t(fObs)
       nuggObs = matrix(mapply(FUN = nuggEx,
@@ -110,7 +111,7 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
     if (predComp) {
       if ("overlapPredObs" %in% names(object)) {
         overlapPredObs = object$overlapPredObs
-      } else object$overlapPredObs = overlapPredObs = findOverlap(observations,predictionLocations)
+      } else object$overlapPredObs = overlapPredObs = findOverlap(observations,predictionLocations, params = params)
       aPred = sapply(slot(predictionLocations, "polygons"), function(i) slot(i, "area"))
       fPredObs = matrix(rep(aObs,nPred),ncol=nPred)
       sPredObs = t(matrix(rep(aPred,nObs),ncol = nObs))
@@ -175,9 +176,9 @@ varMatDefault = function(object1,object2 = NULL,variogramModel,
   }
   if (params$nugget) {
     if (missing(overlapObs)) 
-      overlapObs = findOverlap(object1,object1)
+      overlapObs = findOverlap(object1,object1, params = params)
     if (missing(overlapPredObs))
-      overlapPredObs = findOverlap(object1,object2)
+      overlapPredObs = findOverlap(object1,object2, params = params)
     
     aObs = sapply(slot(object1, "polygons"), function(i) slot(i, "area"))
     aPred = sapply(slot(object2, "polygons"), function(i) slot(i, "area"))
@@ -205,7 +206,8 @@ varMatDefault = function(object1,object2 = NULL,variogramModel,
 }
 
 
-# Lists are here discretized elements
+# object and object2 (as lists) are here discretized areas
+# coor1 and coor2 are coordinates of the areas, used for maximum distance
 varMat.list = function(object, object2=NULL, coor1, coor2, maxdist = Inf, 
               variogramModel, diag=FALSE, sub1, sub2, debug.level = 1, ...) {
   d1 = object

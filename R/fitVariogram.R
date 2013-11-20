@@ -55,9 +55,12 @@ rtopFitVariogram.rtopVariogram = function(object, observations, dists = NULL, pa
   if (params$gDistEst && !is.matrix(dists)) obj$gDistBin = dists = gDist(dists)
   if (params$nugget & is.null(aOver)) aOver = findVarioOverlap(vario) 
 
+  if (params$model == "Ex1") {
+    implicit = function(pars) (2*pars[4] + pars[5]) > 1
+  } else implicit = NULL
   scres = sceua(objfunc,params$parInit[,3],params$parInit[,1],params$parInit[,2],varioIn = object,
        dists = dists, aOver = aOver, gDistEst = params$gDistEst,model = params$model,resol = params$hresol,
-       fit.method = params$fit.method, ...)
+       fit.method = params$fit.method, implicit = implicit, ...)
   bestPar = scres$par
   fit = scres$value
   vf = objfunc(bestPar,varioIn = vario, dists = dists, aOver = aOver,
@@ -92,6 +95,9 @@ rtopFitVariogram.rtopVariogramCloud = function(object, observations, dists = NUL
   if (params$gDistEst && is.list(dists))
     obj$gDistObs = dists = gDist(dists,...)
 
+  if (params$model == "Ex1") {
+    implicit = function(pars) (2*pars[4] + pars[5]) > 1
+  } else implicit = NULL
   scres = sceua(objfunc,params$parInit[,3],params$parInit[,1],params$parInit[,2],varioIn = vario,
          dists = dists, aOver = aOver, gDist = params$gDistEst,model = params$model, fit.method = params$fit.method, ...)
   bestPar = scres$par

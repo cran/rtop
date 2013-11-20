@@ -1,7 +1,6 @@
 # For compiling the Fortran file:
 # R CMD SHLIB vred.f
 
-
 createRtopObject = function(observations, predictionLocations,
    formulaString, params=list(), ainfo, areas, overlapObs, overlapPredObs, 
    ...) {
@@ -66,11 +65,12 @@ createRtopObject = function(observations, predictionLocations,
   if (object$params$nugget) {
     if (!missing(overlapObs) && !is.null(overlapObs)) {
       object$overlapObs = overlapObs
-    } else object$overlapObs = findOverlap(observations, debug.level = object$params$debug.level)
+    } else object$overlapObs = findOverlap(observations, params = object$params, debug.level = object$params$debug.level)
     if (!missing(overlapPredObs) && !is.null(overlapPredObs)) {
       object$overlapPredObs = overlapPredObs
     } else if (!missing(predictionLocations)) 
-        object$overlapPredObs = findOverlap(observations,predictionLocations, debug.level = object$params$debug.level)
+        object$overlapPredObs = findOverlap(observations,predictionLocations, 
+              params = object$params,  debug.level = object$params$debug.level)
   }
   class(object) = "rtop" 
   object
@@ -136,7 +136,7 @@ getRtopDefaultParams = function(parInit,
    model="Ex1",
    nugget = FALSE,
    unc = TRUE,
-   rresol = 100,  # Resolution real areas
+   rresol = 25,  # Resolution real areas
    hresol = 5,    # Resolution in x-direction rectangles
 #   logtrans = FALSE, # Logtransform data
    cloud = FALSE,  # work with cloud variogram
@@ -150,8 +150,8 @@ getRtopDefaultParams = function(parInit,
                  #       7 - gstat fitting (Nj/hj^2)
                  #       8 - opposite of weighted least squares difference according to Cressie (1985) - err2=n*(ymod/yobs-1)^2
                  #       9 - Neutreal WLS-method - err = min(err2,err3)
-   gDistEst = FALSE, # use ghosh distance
-   gDistPred = FALSE,
+   gDistEst = TRUE, # use ghosh distance
+   gDistPred = TRUE,
    maxdist = Inf,
    nmax = 10,
    hstype = "regular", # Sampling type for hypothetical areas
@@ -162,17 +162,8 @@ getRtopDefaultParams = function(parInit,
    wlimMethod = "all",
    cv = FALSE,
    debug.level = 1,
-   observations,
-   formulaString
-   ){
-
-
-
-#if (!missing(observations) & missing(cutoff)) {
-#  x = coordinates(observations)[, 1]
-#  y = coordinates(observations)[, 2]
-#  cutoff = (0.35 * sqrt((max(x) - min(x))^2 + (max(y) - min(y))^2)/100)
-#}
+   partialOverlap = FALSE,
+   olim = 1e-4){
 list(model = model, nugget = nugget, unc = unc, 
      rresol = rresol, hresol=hresol, rstype = rstype, hstype = hstype, 
 #     logtrans = logtrans, 
@@ -181,7 +172,7 @@ list(model = model, nugget = nugget, unc = unc,
      amul = amul, dmul = dmul,
      fit.method = fit.method, gDistEst = gDistEst, gDistPred = gDistPred, 
      maxdist = maxdist, nmax = nmax, wlim = wlim, wlimMethod = wlimMethod, cv = cv,
-     debug.level = debug.level)
+     partialOverlap = partialOverlap, olim = olim,  debug.level = debug.level)
 }
 
 ###########################################
@@ -224,8 +215,6 @@ findParInit = function(formulaString,observations,model) {
   parInit[4,2] = 1.5
   parInit[5,1] = 0.1
   parInit[5,2] = 1.7
-
-  
 
   parInit[,3] = sqrt(parInit[,1]*parInit[,2])
   if (model %in% c("Exp","Sph", "Gau")) {
