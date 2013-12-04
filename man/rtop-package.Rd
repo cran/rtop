@@ -33,8 +33,8 @@ Most other functions in the \code{rtop}-package can take this object as an argum
 and will add the results as one or more new element(s) to this object.
 
 The data in the example below are stored as shape-files
-in the extdata-directory of the rtop-pacakge, use \code{\link{setwd}} to set the
-directory of your own data. The observations consist of mean summer runoff
+in the extdata-directory of the rtop-pacakge, use the directory of your own data instead. 
+The observations consist of mean summer runoff
 from 138 catchments in Upper Austria. The predictionLocations are 863 catchments
 in the same region. observations and predictionLocations are stored as
 \code{\link[sp]{SpatialPolygonsDataFrame}}-objects.
@@ -43,11 +43,11 @@ in the same region. observations and predictionLocations are stored as
 \preformatted{
 library(rgdal)
 rpath = system.file("extdata",package="rtop")
-setwd(rpath)   
-observations = readOGR(".","observations")
+observations = readOGR(rpath,"observations")
+
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
-predictionLocations = readOGR(".","predictionLocations")
+predictionLocations = readOGR(rpath,"predictionLocations")
 params = list(gDist = TRUE, cloud = TRUE)
 rtopObj = createRtopObject(observations,predictionLocations, params = params)
 }

@@ -82,11 +82,10 @@ model is fitted to the variogram which is consistent with the parameter \code{cl
 \dontrun{
 library(rgdal)
 rpath = system.file("extdata",package="rtop")
-setwd(rpath)
-observations = readOGR(".","observations")
+observations = readOGR(rpath,"observations")
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
-predictionLocations = readOGR(".","predictionLocations")
+predictionLocations = readOGR(rpath,"predictionLocations")
 
 # Setting some parameters 
 params = list(gDist = TRUE, cloud = FALSE)

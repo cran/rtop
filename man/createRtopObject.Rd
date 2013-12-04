@@ -53,6 +53,27 @@ work with this object, and add the results as a new element.
 
 \author{ Jon Olav Skoien }
 
+
+\examples{
+ ## Not run: 
+library(rgdal)
+rpath = system.file("extdata",package="rtop")
+observations = readOGR(rpath,"observations")
+# Create a column with the specific runoff:
+observations$obs = observations$QSUMMER_OB/observations$AREASQKM
+predictionLocations = readOGR(rpath,"predictionLocations")
+
+# Setting some parameters 
+params = list(gDist = TRUE, cloud = FALSE)
+# Create a column with the specific runoff:
+observations$obs = observations$QSUMMER_OB/observations$AREASQKM
+# Build an object
+rtopObj = createRtopObject(observations,predictionLocations, params = params)
+
+## End(Not run)
+
+}
+
 \seealso{
 \code{\link{rtop-package}} and \code{\link{getRtopParams}}
 }

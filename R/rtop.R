@@ -219,7 +219,7 @@ findParInit = function(formulaString,observations,model) {
   parInit[,3] = sqrt(parInit[,1]*parInit[,2])
   if (model %in% c("Exp","Sph", "Gau")) {
     parInit = parInit[1:3,]
-  } else if (model == "Sp1"){
+  } else if (model == "Sp1" | model == "Ga1"){
     parInit = parInit[1:4,]
   } else if (model == "Ex1"){
     parInit = parInit

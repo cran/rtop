@@ -75,11 +75,10 @@ of pairs in each group.
 \dontrun{
 library(rgdal)
 rpath = system.file("extdata",package="rtop")
-setwd(rpath)
-observations = readOGR(".","observations")
+observations = readOGR(rpath,"observations")
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
-predictionLocations = readOGR(".","predictionLocations")
+predictionLocations = readOGR(rpath,"predictionLocations")
 params = list(cloud = TRUE, gDist = TRUE)
 rtopObj = createRtopObject(observations,predictionLocations, params = params)
  # Fit a variogram (function also creates it)

@@ -65,8 +65,7 @@ The distances between areas are in this function based on the centre of gravity.
 \dontrun{
 library(rgdal)
 rpath = system.file("extdata",package="rtop")
-setwd(rpath)
-observations = readOGR(".","observations")
+observations = readOGR(rpath,"observations")
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 

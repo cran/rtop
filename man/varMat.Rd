@@ -90,8 +90,7 @@ changed, or if observation and/or prediction locations have been changed.
 \dontrun{
 library(rgdal)
 rpath = system.file("extdata",package="rtop")
-setwd(rpath)   
-observations = readOGR(".","observations")
+observations = readOGR(rpath,"observations")
 gDist = gDist(observations)
 vmod = list(model = "Ex1", params = c(0.00001,0.007,350000,0.9,1000))
 vm = varMat(gDist$gDistObs, variogramModel = vmod)

@@ -91,8 +91,7 @@ Skoien, J. O., R. Merz, and G. Bloschl. 2006. Top-kriging - geostatistics on str
 \dontrun{
 library(rgdal)
 rpath = system.file("extdata",package="rtop")
-setwd(rpath)   
-observations = readOGR(".","observations")
+observations = readOGR(rpath,"observations")
 gDist = gDist(observations)
 }
 

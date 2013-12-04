@@ -25,8 +25,7 @@ the user can specify a separate directory for the data set.
 \dontrun{
   downloadRtopExampleData()
   rpath = system.file("extdata",package="rtop")
-  setwd(rpath)
-  observations = readOGR(".","observations") 
+  observations = readOGR(rpath,"observations") 
 }
 }
 \keyword{plot}

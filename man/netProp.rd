@@ -34,10 +34,10 @@ segment, and that all segments are actually connected.
 \author{ Jon Olav Skoien }
 \examples{
 \dontrun{
+library(rgdal)
 rpath = system.file("extdata",package="rtop")
-setwd(rpath)
-observations = readOGR(".", "obsObero")
-predictionLocations = readOGR(".", "predObero")
+observations = readOGR(rpath,"observations")
+predictionLocations = readOGR(rpath,"predictionLocations")
 observations$obs = observations$QSUMMER/observations$AREASQKM
 
 # Setting some parameters 

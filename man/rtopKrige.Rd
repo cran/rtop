@@ -97,9 +97,8 @@ Hydrology and Earth System Sciences, 10:277-287, 2006.
 \dontrun{
 library(rgdal)
 rpath = system.file("extdata",package="rtop")
-setwd(rpath)
-observations = readOGR(".","observations")
-predictionLocations = readOGR(".","predictionLocations")
+observations = readOGR(rpath,"observations")
+predictionLocations = readOGR(rpath,"predictionLocations")
 
 # Setting some parameters 
 params = list(gDist = TRUE, cloud = FALSE)

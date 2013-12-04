@@ -51,8 +51,7 @@ the help page of \code{\link[gstat]{plot.variogramCloud}}.}
 \examples{
 \dontrun{
 rpath = system.file("extdata",package="rtop")
-setwd(rpath)
-observations = readOGR(".", "obsObero")
+observations = readOGR(rpath,"observations")
 observations$obs = observations$QSUMMER/observations$AREASQKM
 
 # Create the sample variogram

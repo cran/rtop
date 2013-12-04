@@ -52,11 +52,10 @@ visualize the effect of the changes to the variogram}
 \dontrun{
 library(rgdal)
 rpath = system.file("extdata",package="rtop")
-setwd(rpath)
-observations = readOGR(".","observations")
+observations = readOGR(rpath,"observations")
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
-predictionLocations = readOGR(".","predictionLocations")
+predictionLocations = readOGR(rpath,"predictionLocations")
 rtopObj = createRtopObject(observations,predictionLocations)
  # Fit a variogram (function also creates it)
 rtopObj = rtopFitVariogram(rtopObj)
