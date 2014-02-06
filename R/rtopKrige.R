@@ -14,6 +14,7 @@ rtopKrige.rtop = function(object, varMatUpdate = FALSE, ...) {
     formulaString = object$formulaString, ...)
   object$predictions = krigeRes$predictions
   if ("cvInfo" %in% names(krigeRes)) object$cvInfo = krigeRes$cvInfo
+  if ("weight" %in% names(krigeRes)) object$weight = krigeRes$weight
   object
 }  
 
@@ -203,12 +204,11 @@ rtopKrige.default = function(object, predictionLocations = NULL,
   } else {
     predictions = addAttrToGeom(predictionLocations, predictions, match.ID = FALSE)
   }
-  if (wret) {
-    return(weight)
-  } else if (cv) {
-    predictions$observed = observations[[depVar]]
-    return(list(predictions = predictions, cvInfo = cvInfo))
-  } else return(list(predictions = predictions))
+  if (cv) predictions$observed = observations[[depVar]]
+  ret = list(predictions = predictions)
+  if (wret) ret$weight = weight
+  if (cv) ret$cvInfo = cvInfo
+  ret
 }
 
 
