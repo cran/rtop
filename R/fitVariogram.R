@@ -1,7 +1,7 @@
 
-rtopFitVariogram.rtop = function(object,...) {
+rtopFitVariogram.rtop = function(object, params = list(), ...) {
 
-  params = getRtopParams(object$params, ...)
+  params = getRtopParams(object$params, newPar = params, ...)
   if (params$cloud && !"variogramCloud" %in% names(object) ||
      !params$cloud && !"variogram" %in% names(object))
     object = rtopVariogram(object,...)
@@ -47,12 +47,12 @@ rtopFitVariogram.rtop = function(object,...) {
 rtopFitVariogram.rtopVariogram = function(object, observations, dists = NULL, params=list(), mr = FALSE, aOver = NULL, ...){
   vario = object
   obj = list()
-  if (!inherits(params,"rtopParams")) params = getRtopParams(params)
+  if (!inherits(params,"rtopParams")) params = getRtopParams(params, ...)
   obj$params = params
   if (is.null(dists)) {
-    obj$dBin = dists = rtopDisc(object,params)
+    obj$dBin = dists = rtopDisc(object, params = params)
   }
-  if (params$gDistEst && !is.matrix(dists)) obj$gDistBin = dists = gDist(dists)
+  if (params$gDistEst && !is.matrix(dists)) obj$gDistBin = dists = gDist(dists, params = params)
   if (params$nugget & is.null(aOver)) aOver = findVarioOverlap(vario) 
 
   if (params$model == "Ex1") {
@@ -88,44 +88,46 @@ rtopFitVariogram.rtopVariogram = function(object, observations, dists = NULL, pa
 rtopFitVariogram.rtopVariogramCloud = function(object, observations, dists = NULL, aOver = NULL, params=list(), mr = FALSE, ...) {
   vario = object
   obj = list()
-  if (!inherits(params,"rtopParams")) params = getRtopParams(params)
+  if (!inherits(params,"rtopParams")) params = getRtopParams(params, ...)
   obj$params = params
   if (is.null(dists))
     obj$dObs = dists = rtopDisc(observations,params = params,...)
   if (params$gDistEst && is.list(dists))
-    obj$gDistObs = dists = gDist(dists,...)
+    obj$gDistObs = dists = gDist(dists, params = params, ...)
 
   if (params$model == "Ex1") {
     implicit = function(pars) (2*pars[4] + pars[5]) > 1
   } else implicit = NULL
-  scres = sceua(objfunc,params$parInit[,3],params$parInit[,1],params$parInit[,2],varioIn = vario,
-         dists = dists, aOver = aOver, gDist = params$gDistEst,model = params$model, fit.method = params$fit.method, ...)
+  scres = sceua(objfunc, params$parInit[,3], params$parInit[,1], params$parInit[,2], varioIn = vario,
+         dists = dists, aOver = aOver, gDist = params$gDistEst,model = params$model, 
+         fit.method = params$fit.method, debug.level = params$debug.level, ...)
   bestPar = scres$par
   vf = objfunc(bestPar,varioIn = vario, dists = dists, aOver = aOver,
-                     gDistEst = params$gDistEst,last = TRUE,model = params$model,...)
+               gDistEst = params$gDistEst, last = TRUE, model = params$model,
+               debug.level = params$debug.level, ...)
   varFit = vf$varFit
   errSum = vf$errSum
-  variogramModel = list(model = params$model,params = bestPar)
+  variogramModel = list(model = params$model, params = bestPar)
   class(variogramModel) = "rtopVariogramModel"
-  attr(variogramModel,"SSErr") = errSum
+  attr(variogramModel, "SSErr") = errSum
   if (mr) {
     obj$variogramModel = variogramModel
     obj$varFit = varFit
     obj
-  } else list(variogramModel,varFit = varFit)
+  } else list(variogramModel ,varFit = varFit)
 }
 
 
 rtopFitVariogram.SpatialPointsDataFrame = function(object, params=list(),...) {
-  if (!inherits(params,"rtopParams")) params = getRtopParams(params)
+  if (!inherits(params,"rtopParams")) params = getRtopParams(params, ...)
   vario = rtopVariogram(object,params,...)
-  rtopFitVariogram(vario = vario, observations = object,params = params,...)
+  rtopFitVariogram(vario = vario, observations = object, params = params,...)
 }
 
 rtopFitVariogram.SpatialPolygonsDataFrame = function(object, params=list(),...) {
-  if (!inherits(params,"rtopParams")) params = getRtopParams(params)
-  vario = rtopVariogram(object,params,...)
-  rtopFitVariogram(vario = vario, observations = object,params = params,...)
+  if (!inherits(params,"rtopParams")) params = getRtopParams(params, ...)
+  vario = rtopVariogram(object,params = params,...)
+  rtopFitVariogram(vario = vario, observations = object, params = params,...)
 }
 
 

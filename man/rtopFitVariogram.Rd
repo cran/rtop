@@ -11,28 +11,31 @@ rtopFitVariogram will fit a variogram model to the estimated binned variogram or
 with an areal support.
 }
 \usage{
-\method{rtopFitVariogram}{rtop}(object, ...) 
+\method{rtopFitVariogram}{rtop}(object, params = list(), ...) 
 \method{rtopFitVariogram}{SpatialPolygonsDataFrame}(object, params=list(), ...) 
 \method{rtopFitVariogram}{SpatialPointsDataFrame}(object, params=list(), ...) 
 \method{rtopFitVariogram}{rtopVariogram}(object, observations, dists = NULL, 
-                            params=list(), mr = FALSE, aOver = NULL, ...) 
+                    params=list(), mr = FALSE, aOver = NULL, ...) 
 \method{rtopFitVariogram}{rtopVariogramCloud}(object, observations, dists = NULL, 
-                            aOver = NULL, params=list(), mr = FALSE, ...) 
+                    aOver = NULL, params=list(), mr = FALSE, ...) 
 }
 
 \arguments{
 \item{object}{object of class \code{rtopVariogram} or \code{rtopVariogramCloud},
 or an object with class \code{rtop} that includes the sample variograms.
 
-The object can also be of class \code{\link[sp]{SpatialPolygonsDataFrame}}
-or \code{\link[sp]{SpatialPointsDataFrame}}
-with observations. If \code{object} is a \code{\link[sp]{SpatialPointsDataFrame}},
+The object can also be of class \code{\link[sp]{SpatialPolygonsDataFrame}} or \cr
+\code{\link[sp]{SpatialPointsDataFrame}}
+with observations. If \code{object} is a \cr
+\code{\link[sp]{SpatialPointsDataFrame}},
 it must have a column with name \code{area}.
 }
 \item{observations}{the observations, passed as a Spatial*DataFrame object, if
-   object is an \code{rtopVariogram} or \code{rtopVariogramCloud}}
+   object is an \cr
+   \code{rtopVariogram} or \code{rtopVariogramCloud}}
 \item{params}{a set of parameters, used to modify the standard parameters for 
-      the \code{rtop} package, set in \code{\link{getRtopParams}}. }
+      the \code{rtop} package, set in \code{\link{getRtopParams}}. The argument params can also be used
+      for the other methods, through the ...-argument.}
 \item{dists}{either a matrix with geostatistical distances (created by a call
              to the function \code{\link{gDist}} or a list with the
              areas  discretized (from a call to \code{\link{rtopDisc}}.}
@@ -46,7 +49,8 @@ it must have a column with name \code{area}.
 
 \value{ 
 The function creates an object with the fitted variogram Model (\code{variogramModel}) 
-and a \code{\link{data.frame}} (\code{varFit}) with the 
+and a \cr
+\code{\link{data.frame}} (\code{varFit}) with the 
 differences between the sample semivariances and the regularized semivariances.
 If \code{mr} = TRUE, the function also returns other objects (discretized elements
 and geostatistical distances, if created) as a part of the returned object.
@@ -92,7 +96,8 @@ params = list(gDist = TRUE, cloud = FALSE)
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 # Build an object
-rtopObj = createRtopObject(observations,predictionLocations, params = params)
+rtopObj = createRtopObject(observations,predictionLocations, 
+                           params = params)
 # Fit a variogram (function also creates it)
 rtopObj = rtopFitVariogram(rtopObj)
 rtopObj$variogramModel

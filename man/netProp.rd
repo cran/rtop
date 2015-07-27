@@ -1,14 +1,16 @@
 \name{netProp}
 \alias{netProp}
 \title{
-Propagate values along a river network
+Propagate values along a river network.
+This function does not work as intended for several cases, including the example. It is therefore deprecated and will be removed in one of the next versions.
 }
 \description{
 Pass values along a river network when the river network has more segments
 than the prediction polygons.
 }
 \usage{
-netProp(network, from = "FROMJCT", to = "TOJCT", pred = "pred", iprint = 1)
+netProp(network, from = "FROMJCT", to = "TOJCT", pred = "pred", 
+        iprint = 1)
 }
 \arguments{
 \item{network}{ object of class \code{\link[sp:SpatialLines]{SpatialLinesDataFrame}}
@@ -43,7 +45,8 @@ observations$obs = observations$QSUMMER/observations$AREASQKM
 # Setting some parameters 
 params = list(geoDist = TRUE, rresol = 25, cloud = FALSE, model = "Sph")
 # Build an object
-rtopObj = createRtopObject(observations,predictionLocations, formulaString = obs~1,params = params)
+rtopObj = createRtopObject(observations,predictionLocations, 
+              formulaString = obs~1, params = params)
 # Fit a variogram (function also creates it)
 rtopObj = rtopFitVariogram(rtopObj)
 # Check the variogram fit
@@ -52,7 +55,7 @@ rtopObj = checkVario(rtopObj, cloud = TRUE, identify = TRUE)
 rtopObj = rtopKrige(rtopObj)
 # Cross-validation
 rtopObj = rtopKrige(rtopObj,cv=TRUE)
-cor(rtopObj$predictions$observed,rtopObj$predictions$var1.pred)
+cor(rtopObj$predictions$observed, rtopObj$predictions$var1.pred)
 
 rnet = readOGR(".", "rnet")
 pred = rtopObj$predictions

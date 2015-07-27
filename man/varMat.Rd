@@ -13,25 +13,30 @@ locations (observations or prediction locations) or semivariogram matrices
 between all the supports in one or two sets of locations, and also between them.
 }
 \usage{
-\method{varMat}{rtop}(object, varMatUpdate = FALSE, ...) 
+\method{varMat}{rtop}(object, varMatUpdate = FALSE, params = list(), ...) 
 \method{varMat}{SpatialPolygonsDataFrame}(object, object2 = NULL,...) 
 \method{varMat}{SpatialPolygons}(object, object2 = NULL, variogramModel,
      overlapObs, overlapPredObs, ...) 
-\method{varMat}{matrix}(object, variogramModel,  ...) 
+%\method{varMat}{matrix}(object, variogramModel,  ...) 
 \method{varMat}{list}(object, object2 = NULL, coor1, coor2, maxdist = Inf, 
-              variogramModel, diag = FALSE, sub1, sub2, debug.level = 1, ...) 
+              variogramModel, diag = FALSE, sub1, sub2, 
+              debug.level = 1, ...) 
 }
 
 
 \arguments{
 \item{object}{ either: 1) an object of class \code{rtop} (see \link{rtop-package}) 
-         or 2) a \code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}},
+         or 2) a \cr
+         \code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}},
                or \code{\link[sp:SpatialPolygons]{SpatialPolygons}}, 
-         or 3) a \code{\link{matrix}} with geostatistical distances (see
+         or 3) a \cr
+         \code{\link{matrix}} with geostatistical distances (see
                \code{\link{gDist}}
          or 4) a \code{\link{list}} with discretized supports}
 \item{varMatUpdate}{logical; if TRUE, also existing variance matrices will 
             be recomputed, if FALSE, only missing variance matrices will be computed}
+\item{params}{a set of parameters, used to modify the standard parameters for 
+      the \code{rtop} package, set in \code{\link{getRtopParams}}. }
 \item{object2}{if \code{object} is not an object of class \code{rtop}; 
  an object of the same class as \code{object} with a possible second 
  set of locations with support}
@@ -39,7 +44,8 @@ between all the supports in one or two sets of locations, and also between them.
    semivariogram matrix (matrices)}
 \item{...}{typical parameters to modify from the default parameters of the
     rtop-package (or modifications of the previously set parameters for the 
-    \code{rtop}-object), see also \code{\link{getRtopParams}}. Typical 
+    \code{rtop}-object), see also \code{\link{getRtopParams}}. These can also 
+    be passed in a list named params, as for the rtop-method. Typical 
     parameters to modify for this function:
     \itemize{
       \item{rresol = 100}{miminum number of discretization points, in call to 
@@ -80,6 +86,10 @@ of the same variance matrices. Default is FALSE, which will avoid recomputation
 of the variance matrix for the observations if the procedure is cross-validation
 before interpolation. Should be set to TRUE if the variogram Model has been
 changed, or if observation and/or prediction locations have been changed.
+
+If an \code{rtop}-object contains observations and/or predictionLocations of type 
+\code{\link[spacetime]{STSDF}}, the covariance matrix is computed based on the spatial 
+properties of the object.
 }
 
 \author{ Jon Olav Skoien }

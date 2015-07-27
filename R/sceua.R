@@ -21,7 +21,6 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
 #     complex shuffling
 # mings = minimum number of complexes required, if the number of
 #     complexes is allowed to reduce as the optimization proceeds
-# iseed = initial random seed
 # iniflg = flag on whether to include the initial point in population
 #     = 0, not included
 #     = 1, included
@@ -50,7 +49,7 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
 
   lpars = ifelse(plog,10^pars,pars)
   fa = OFUN(lpars,...)
-  if (iprint > 0 && icall %% iprint == 0) cat(icall,round(fa,iround), "\n")
+  if (iprint > 0 && icall %% iprint == 0) cat(icall,signif(fa,iround), "\n")
   parset[1,] = pars
   xf[1] = fa
   stdinit = rep(1,npars)
@@ -111,7 +110,6 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
     worstpar = parset[npt,]
     bestf = xf[1]
     worstf = xf[npt]
-
     parsttout = parstt(npt,npars,parset,bound, peps)
     ipcnvg = parsttout$ipcnvg
     gnrng = parsttout$gnrng
@@ -121,7 +119,7 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
     criter[2:length(criter)] = criter[1:(length(criter)-1)]
     criter[1] = bestf
     if (iprint >= 0) cat(icall,"best",
-        signif(bestf,iround), "function convergence", round(concrit,iround)/pcento,
+        signif(bestf,iround), "function convergence", signif(concrit,iround)/pcento,
         "parameter convergence", gnrng/peps, "\n")
 
     if (concrit < pcento & ipcnvg == 1) break
@@ -134,7 +132,8 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
     }
   }
   bestpar = ifelse(plog,10^bestpar,bestpar)
-  return(list(par = bestpar, value = xf[1]))
+  return(list(par = bestpar, value = xf[1], convergence = list(funConvergence = signif(concrit,iround)/pcento, parConvergence = gnrng/peps),
+      counts = icall, iterations = nloop))
 }
 
 comp = function(npars,npt,ngs,npg,parset,xf){
@@ -159,50 +158,54 @@ cce = function(OFUN,npars,nps,s,sf,lower,upper,parstd,icall,maxn,iprint,iround,b
   fw = sf[n]
   snew = ce+alpha*(ce-sw)
 #  print(icall)
-  if (chkcst(snew,lower,upper, implicit) >0) snew = getpnt(2,lower,upper,parstd,sb, implicit)
+  if (chkcst(snew,lower,upper, implicit) >0) snew = getpnt(2, lower, upper, parstd, sb, implicit)
 #  print(snew)
   lpars = ifelse(plog,10^snew,snew)
   fnew = OFUN(lpars,...)
   icall = icall + 1
-  if (iprint > 0 && icall %% iprint == 0) cat(icall,round(fnew,iround),round(bestf,iround), "\n")
+  if (iprint > 0 && icall %% iprint == 0) cat(icall, signif(fnew, iround), signif(bestf, iround), "\n")
   if (fnew > fw) {
     snew = ce-beta*(ce-sw)
     lpars = ifelse(plog,10^snew,snew)
     fnew = OFUN(lpars,...)
     icall = icall + 1
-    if (iprint > 0 && icall %% iprint == 0) cat(icall,round(fnew,iround),round(bestf,iround), "\n")
+    if (iprint > 0 && icall %% iprint == 0) cat(icall, signif(fnew, iround), signif(bestf, iround), "\n")
     if (fnew > fw) {
       snew = getpnt(2,lower,upper,parstd,sb, implicit)
       lpars = ifelse(plog,10^snew,snew)
       fnew = OFUN(lpars,...)
       icall = icall + 1
-      if (iprint > 0 && icall %% iprint == 0) cat(icall,round(fnew,iround),round(bestf,iround), "\n")
+      if (iprint > 0 && icall %% iprint == 0) cat(icall, signif(fnew, iround), signif(bestf, iround), "\n")
     }
   }
   s[n,] = snew
   sf[n] = fnew
-  return(list(s = s,sf = sf,icall = icall))
+  return(list(s = s, sf = sf, icall = icall))
 }
 
-chkcst = function(parlocal,lower,upper, implicit) {
- ibound = ifelse(sum(mapply(FUN = function(x,y,z)
-               max(y-x,x-z,0),parlocal,lower,upper))>0,1,0)
+chkcst = function(parlocal,lower,upper, implicit) {                                                  
+ ibound = if (sum(mapply(FUN = function(x,y,z)
+               max(y-x,x-z,0),parlocal,lower,upper)) > 0) 1 else 0
  if (ibound == 0 & length(parlocal) >1 & !is.null(implicit)) {
 # Possibility to include implicit constraints 
    if (!is.function(implicit)) stop("implicit has to be a function")
    ibound = implicit(parlocal)
  }
- return(ibound)
+ ibound
 }
+
 
 getpnt = function(idist,lower,upper,std,pari, implicit){
 #  rand = (ifelse(rep(idist,npars) == 1,runif(npars),rnorm(npars)))
 #  print(xi)
 #  print(rand)
+  ic = 0
   while (TRUE) {
     parj = mapply(FUN = get1p, pari, std = std, lower = lower, upper = upper, 
         MoreArgs = list(idist = idist, implicit = implicit))
     if (chkcst(parj,lower,upper, implicit) == 0) break
+    ic = ic + 1
+    if (ic > 100) stop("Cannot find a parameter set respecting the fixed or implicit boundaries after 100 iterations")
   }
   return(parj)
 }
@@ -226,7 +229,7 @@ parstt = function(npt,npars,parset,bound, peps) {
   parmax = apply(parset,MARGIN=2,FUN = function(x) max(x))
   gsum = sum(log((parmax-parmin)/bound))
   gnrng = exp(gsum/npars)
-  ipcnvg = ifelse(gnrng <=peps,1,0)
+  ipcnvg = ifelse(gnrng <=peps, 1, 0)
   return(list(ipcnvg = ipcnvg,gnrng = gnrng,parstd = parstd))
 }
 

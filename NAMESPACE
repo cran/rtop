@@ -1,6 +1,14 @@
 useDynLib(rtop)
+import(graphics)
 import(gstat)
 import(sp)
+import(grDevices)
+import(stats)
+import(methods)
+import(utils)
+#importFrom(graphics, hist, polygon, par, polypath, lines, strheight, 
+#  text, contour, axTicks, axis, rasterImage, image, box, plot.new, 
+#  plot.window, rect, segments, points, locator, identify, title)
 export(checkVario,
   createRtopObject,
   downloadRtopExampleData,
@@ -11,9 +19,12 @@ export(checkVario,
 	readAreas,
 	rtopFitVariogram,
 	rtopKrige,
+  rtopSim,
   rtopVariogram,
 	rtopVariogramModel,
   rtopDisc,
+  rtopCluster,
+  sceua,
   updateRtopVariogram,
   useRtopWithIntamap,
 	varMat
@@ -35,6 +46,7 @@ export(checkVario,
  S3method(gDist, SpatialPolygons)
  S3method(gDist, list)
          
+ S3method(rtopVariogram, STSDF)
  S3method(rtopVariogram, SpatialPointsDataFrame)
  S3method(rtopVariogram, SpatialPolygonsDataFrame)
 # S3method(rtopVariogram, SpatialLinesDataFrame)
@@ -52,9 +64,13 @@ export(checkVario,
 # S3method(rtopVariogram, SpatialLinesDataFrame)
  S3method(rtopVariogram, rtop)
 
+ S3method(rtopKrige, STSDF)
  S3method(rtopKrige, SpatialPolygonsDataFrame)
 # S3method(rtopKrige, SpatialLinesDataFrame)
  S3method(rtopKrige, rtop)
+
+ S3method(rtopSim, rtop)
+ S3method(rtopSim, default)
 
  S3method(rtopDisc, rtop)
  S3method(rtopDisc, SpatialPolygonsDataFrame)
@@ -64,11 +80,12 @@ export(checkVario,
  S3method(rtopDisc, rtopVariogram)
  S3method(rtopDisc, rtop)
  
- S3method(varMat,rtop)
- S3method(varMat,matrix)
- S3method(varMat,list)
- S3method(varMat,SpatialPolygonsDataFrame)
- S3method(varMat,SpatialPolygons)
+ S3method(varMat, rtop)
+# S3method(varMat, matrix)
+ S3method(varMat, list)
+ S3method(varMat, SpatialPolygonsDataFrame)
+ S3method(varMat, SpatialPolygons)
+ S3method(varMat, STS)
 # S3method(varMat,SpatialLinesDataFrame)
 # S3method(varMat,SpatialLines)
   

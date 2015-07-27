@@ -1,19 +1,19 @@
 netProp = function(network, from = "FROMJCT", to = "TOJCT", pred = "pred", iprint = 1) {
-
-  if (require(igraph)) {
+  warning("This function is deprecated and will be removed in a future version of rtop")
+  if (requireNamespace("igraph")) {
 
     rndf = data.frame(FROMJCT = network$FROMJCT, TOJCT = network$TOJCT, 
                OBJECTIT = network$OBJECTID, pred = network@data[,pred])
-    igr = graph.data.frame(rndf)
-    igrs = topological.sort(igr, mode = "out")
-    rndf$to = match(as.character(rndf$TOJCT), V(igr)$name[igrs+1])
+    igr = igraph::graph.data.frame(rndf)
+    igrs = igraph::topological.sort(igr, mode = "out")
+    rndf$to = match(as.character(rndf$TOJCT), igraph::V(igr)$name[igrs+1])
     while (TRUE) {
       lcon = which(rndf$to == min(rndf$to[is.na(rndf$pred)]))
       if (length(lcon) == 0) 
         break()
       if (iprint > 0) print(lcon)
       while (is.na(rndf$pred[lcon[1]])) {
-        ncon = neighbors(igr, lcon[1] - 1) + 1
+        ncon = igraph::neighbors(igr, lcon[1] - 1) + 1
         if (length(ncon) == 0 || ncon > dim(rndf)[1]) {rndf$pred[lcon[1]] = -9999; break}
         lcon = c(ncon, lcon)
         print(lcon)

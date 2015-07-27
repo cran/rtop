@@ -52,7 +52,7 @@ the help page of \code{\link[gstat]{plot.variogramCloud}}.}
 \dontrun{
 rpath = system.file("extdata",package="rtop")
 observations = readOGR(rpath,"observations")
-observations$obs = observations$QSUMMER/observations$AREASQKM
+observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 
 # Create the sample variogram
 rtopVario = rtopVariogram(observations, params = list(cloud = TRUE))

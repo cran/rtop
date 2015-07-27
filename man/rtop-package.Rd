@@ -49,7 +49,8 @@ observations = readOGR(rpath,"observations")
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 predictionLocations = readOGR(rpath,"predictionLocations")
 params = list(gDist = TRUE, cloud = TRUE)
-rtopObj = createRtopObject(observations,predictionLocations, params = params)
+rtopObj = createRtopObject(observations, predictionLocations, 
+          params = params)
 }
 
 There are help-methods available in cases when data are not available as
@@ -57,7 +58,8 @@ shape-files, or when the observations are not part of the shape-files.
 See \code{\link{readAreaInfo}} and \code{\link{readAreas}}.
 
 A call to \code{\link{rtopVariogram}} adds the sample variogram to the object,
-whereas \code{\link{rtopFitVariogram}} fits a variogram model. The last function
+whereas \cr
+\code{\link{rtopFitVariogram}} fits a variogram model. The last function
 will call \code{\link{rtopVariogram}} if \code{rtopObj} does not contain a sample variogram.
 
 \preformatted{
@@ -84,9 +86,11 @@ Cross-validation can be called with the argument \code{cv=TRUE}, either in
 
 \preformatted{
 rtopObj = rtopKrige(rtopObj)
-spplot(rtopObj$predictions,col.regions = bpy.colors(), c("var1.pred","var1.var"))
+spplot(rtopObj$predictions, col.regions = bpy.colors(), 
+       c("var1.pred","var1.var"))
 rtopObj = rtopKrige(rtopObj, cv = TRUE)
-spplot(rtopObj$predictions,col.regions = bpy.colors(), c("var1.pred","var1.var"))
+spplot(rtopObj$predictions, col.regions = bpy.colors(), 
+       c("var1.pred","var1.var"))
 }
 
 

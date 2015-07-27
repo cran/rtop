@@ -8,8 +8,9 @@ data with a spatial support.
 }
 \usage{
 readAreaInfo(fname = "ainfo.txt", id = "id",
-                          iobs = "iobs",obs="obs",unc="unc",filenames="filenames",
-                          sep = "\t", debug.level = 1, moreCols = list(NULL)) 
+                iobs = "iobs", obs = "obs", unc = "unc",
+                filenames= "filenames", sep = "\t", 
+                debug.level = 1, moreCols = list(NULL)) 
 }
 \arguments{
 \item{fname}{ name of file with areal information}

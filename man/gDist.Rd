@@ -9,7 +9,7 @@
 areas
 }
 \usage{
-\method{gDist}{rtop}(object, ...) 
+\method{gDist}{rtop}(object, params = list(), ...) 
 \method{gDist}{SpatialPolygonsDataFrame}(object, object2 = NULL, ...) 
 \method{gDist}{SpatialPolygons}(object, object2 = NULL, ...) 
 \method{gDist}{list}(object, object2 = NULL, diag = FALSE, debug.level = 0, ...) 
@@ -18,10 +18,13 @@ areas
 \arguments{
 \item{object}{object of class \code{\link[sp]{SpatialPolygons}} or 
 \code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}} with boundaries of areas;
-or list
-of discretized areas, typically from a call to \code{\link{rtopDisc}}; or
+or list of discretized areas, typically from a call to \cr
+\code{\link{rtopDisc}}; or
 object of class \code{rtop} with such boundaries and/or discretized
 elements (the individual areas)}
+\item{params}{a set of parameters, used to modify the standard parameters for 
+      the \code{rtop} package, set in \code{\link{getRtopParams}}. The argument params can also be used
+      for the other methods, through the ...-argument.}
 \item{object2}{an object of same type as \code{object}, except for \code{rtop};
 for calculation of geostatistical
 distances also between the elements in the two different objects }

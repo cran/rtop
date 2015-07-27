@@ -8,7 +8,8 @@ to be included in the object described in \code{\link{rtop-package}}}
 }
 \arguments{
 \item{params}{An existing set of parameters for the interpolation process, 
-              of class \code{IntamapParams} or a list of parameters for modification
+              of class \cr
+              \code{intamapParams} or a list of parameters for modification
               of the default parameters}
 \item{newPar}{A \code{list} of parameters for updating \code{params} or for
               modification of the default parameters. 
@@ -53,8 +54,10 @@ to be included in the object described in \code{\link{rtop-package}}}
      \item{fit.method = 8}{ - defines the type of Least Square method for fitting of variogram. 
                   The methods 1-7 correspond to the similar methods in \code{\link{gstat}}.
        \itemize{
-        \item{1}{ - weighted least squares with number of pairs per bin: err = n * (yobs-ymod)^2}
-        \item{2}{ - weighted least squares difference according to Cressie (1985): err2=abs(yobs/ymod-1)}
+        \item{1}{ - weighted least squares with number of pairs per bin: \cr 
+                    err = n * (yobs-ymod)^2}
+        \item{2}{ - weighted least squares difference according to Cressie (1985): \cr
+                    err2 = abs(yobs/ymod-1)}
         \item{6}{ - ordinary least squares difference: err = (yobs-ymod)^2}
         \item{7}{ - similar to default of gstat, where higher weights are given to shorter distances err = n/h^2 * (yobs-mod)^2}
         \item{8}{ - Opposite of weighted least squares difference according to Cressie (1985): err3=abs(ymod/yobs-1)}
@@ -73,11 +76,27 @@ to be included in the object described in \code{\link{rtop-package}}}
                       or simulation; if combined with nmax, both criteria apply }
      \item{hstype = "regular"}{ - sampling type for binned variograms}
      \item{rstype = "rtop"}{ - sampling type for the elements, see also \code{\link{rtopDisc}}}
+     \item{nclus = 1}{- number of CPUs to use if parallel processing is wanted; nclus = 1 means
+                       no parallelization}
+     \item{cnAreas = 100}{- limit whether parallel processing should be applied; the minimum number
+                       of areas in \code{\link{varMat}}, and also controlling when to use parallel 
+                       processing in
+                       \code{\link{rtopDisc}}, when \cr
+                       \code{nAreas*params$rresol/100 > cnAreas} }
+     \item{clusType = NULL}{- the cluster type to be started for parallel processing; uses the default 
+                       type of the system when clusType = NULL}
      \item{wlim = 1.5}{ - an upper limit for the norm of the weights in kriging, see \code{\link{rtopKrige}}}
      \item{wlimMethod = "all"}{which method to use for reducing the norm of the weights if necessary. Either "all", which modifies all weights equally or "neg" which reduces negative weights and large weights more than the smallest weights }
      \item{cv = FALSE}{ - logical; for cross-validation of observations}
      \item{debug.level = 1}{ - used in some functions for giving additional output. See 
                 individual functions for more information.}
+     \item{partialOverlap = FALSE}{whether to work with partially overlapping areas}
+     \item{olim = 1e-4}{smallest overlapping area to be used for partial overlap, relative to the smallest of the areas}
+     \item{nclus = 1}{option to use parallel processing, nclus > 1 defines the number of workers to be started}
+     \item{clusType = NA}{which cluster type to start if nclus > 1; the default is used if nclusType = NA }
+     \item{cnAreas = 200}{The minimum number of observations or observations plus predictions allowing parallelization in
+                    the creation of the covariance matrix}
+     \item{cDlim = 1e6}{The minimum number of discretization points for allowing parallelization in the discretization process}
      \item{observations}{ - used for initial values of parameters if supplied}
      \item{formulaString}{ - used for initial values of parameters if supplied}
 }
@@ -104,6 +123,11 @@ not of class \code{rtopParams}) they are both seen as modifications to the
 default parameter set. If they share some parameters, the parameter values from
 the second list will be applied.
 
+Parallel processing has been included for some of the functions. The default is no 
+parallel procesing, and the package also attempts to decide whether it is sensible to 
+start a set of clusters and distribute jobs to them based on the size of the job. 
+The default limit might not be the best for every system.
+
 
 }
 \references{ 
@@ -121,8 +145,9 @@ Hydrology and Earth System Sciences, 10:277-287, 2006
 # Create a new set of intamapParameters, with default parameters:
 params = getRtopParams()
 # Make modifications to the default list of parameters
-params = getRtopParams(newPar=list(gDist = TRUE,nugget = FALSE))
+params = getRtopParams(newPar = list(gDist = TRUE, nugget = FALSE))
 # Make modifications to an existing list of parameters
-params = getRtopParams(params = params,newPar = list(gDist = TRUE,nugget = FALSE))
+params = getRtopParams(params = params, newPar = list(gDist = TRUE,
+         nugget = FALSE))
 }
 \keyword{spatial}

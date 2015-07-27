@@ -44,8 +44,8 @@ rtopDisc.rtopVariogram = function(object, params = list(), ...) {
 
 
 
-rtopDisc.rtop = function(object,params = list(), ...) {
-  object$params = getRtopParams(object$params,params, ...)
+rtopDisc.rtop = function(object, params = list(), ...) {
+  object$params = getRtopParams(object$params, newPar = params, ...)
   observations = object$observations
   if ("predictionLocations" %in% names(object)){
     predictionLocations = object$predictionLocations
@@ -77,6 +77,7 @@ rtopDisc.SpatialPolygons = function(object, params = list(), bb = bbox(object), 
   params = getRtopParams(params, ...)
   stype = params$rstype
   resol = params$rresol
+  debug.level = params$debug.level
   if (stype == "random" | stype == "regular") {
     lapply(object@polygons,FUN=function(pol) spsample(pol,resol,stype,offset=c(0.5,0.5)))
   } else if (stype == "rtop") {
@@ -85,8 +86,17 @@ rtopDisc.SpatialPolygons = function(object, params = list(), bb = bbox(object), 
     ires0 = 1
     nps = length(object@polygons)
     spp = vector("list",nps)
-    for (ip in 1:nps) {
-      lpoly = SpatialPolygons(list(object@polygons[[ip]]))
+
+    lfuns = function(pols, resol, ires0, bbdia, small) {
+      res = vector("list", length(pols))
+      for (ip in 1:length(pols)) {
+        res[[ip]] = lfun(pols[[ip]], resol, ires0, bbdia, small)
+      }
+      res 
+    }
+    
+    lfun = function(pol, resol, ires0, bbdia, small) {
+      lpoly = SpatialPolygons(list(pol))
       ba = bbox(lpoly)
       ipts = resol-1
       ires = ires0
@@ -101,44 +111,46 @@ rtopDisc.SpatialPolygons = function(object, params = list(), bb = bbox(object), 
           pts = expand.grid(x=x,y=y)
           if (dim(pts)[1] >= 1) {
             coordinates(pts) = ~x+y
-#            pts = pts[!is.na(sp:::pointsInSpatialPolygons(pts,lpoly)),]
             pts = pts[!is.na(over(pts,lpoly)),]
-#            pts = pts[!is.na(pointsInSpatialPolygons_loc(pts,lpoly)),]
             ipts = dim(coordinates(pts))[1]
           }
         }
       }
-      print(paste("Sampling from area number",ip,"containing",ipts,"points"))
-      spp[[ip]] = pts
+      pts    
     }
-    spp
+    
+
+    if (!is.null(params$nclus) && params$nclus > 1 && 
+          length(object@polygons)*params$rresol/100 > params$cnAreas) {
+      if (!suppressMessages(suppressWarnings(requireNamespace("parallel"))))
+        stop("nclus is > 1, but package parallel is not available")    
+      nclus = params$nclus
+      
+      cl = rtopCluster(nclus, type = params$clusType)
+#      cl = rtopCluster(nclus, {require(rtop); bbArea = rtop:::bbArea}, type = params$clusType)
+      
+      spp = parallel::clusterApply(cl, object@polygons, fun = function(x) lfun(x, resol, ires0, bbdia, small))
+
+    } else {
+      if (interactive() & debug.level <= 1) {
+        pb = txtProgressBar(1, nps, style = 3)
+      }
+      print(paste("Sampling points from ", nps, "areas"))
+      for (ip in 1:nps) {
+
+        spp[[ip]] = lfun(object@polygons[[ip]], resol, ires0, bbdia, small)
+        ipts = dim(coordinates(spp[[ip]]))[1]
+        if (debug.level > 1) { 
+          print(paste("Sampling from area number",ip,"containing",ipts,"points"))
+        } else if (interactive()) {
+          setTxtProgressBar(pb, ip)
+        }
+      }
+      if (interactive() & debug.level <=1) close(pb)
+      if (debug.level >= 0) print(paste("Sampled on average",  round(mean(unlist(lapply(spp, length))),2), 
+                  "points from", nps, "areas"))
+    }
+   spp
   } else stop(paste("Unknown sampling type:",stype))
 }
 
-
-#pointsInSpatialPolygons_loc <- function(pts, SpPolygons) {
-#    pls = slot(SpPolygons, "polygons")
-#    lb <- lapply(pls, function(x) as.double(bbox(x)))
-#    cpts <- coordinates(pts)
-#    storage.mode(cpts) <- "double"
-#    mode.checked <- storage.mode(cpts) == "double"
-#    cand0 <- .Call("pointsInBox", lb, cpts[,1], cpts[,2], PACKAGE="sp")
-#    m <- length(pls)
-#    cand <- .Call("tList", cand0, as.integer(m), PACKAGE="sp")
-#    res <- sp:::pointsInPolys2(pls, cand, cpts, mode.checked=mode.checked)
-#    res
-#}
-#
-
-#pointsInSpatialPolygons_local <- function(pts, SpPolygons, pls, lb) {
-##    pls = slot(SpPolygons, "polygons")
-##    lb <- lapply(pls, function(x) as.double(bbox(x)))
-#    cpts <- coordinates(pts)
-#    storage.mode(cpts) <- "double"
-#    mode.checked <- storage.mode(cpts) == "double"
-#    cand0 <- .Call("pointsInBox", lb, cpts[,1], cpts[,2], PACKAGE="sp")
-#    m <- length(pls)
-#    cand <- .Call("tList", cand0, as.integer(m), PACKAGE="sp")
-#    res <- sp:::pointsInPolys2(pls, cand, cpts, mode.checked=mode.checked)
-#    res
-#}

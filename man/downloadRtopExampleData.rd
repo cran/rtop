@@ -7,7 +7,8 @@ Download additional example data
 Download additional example data from Vienna University of Technology
 }
 \usage{
-downloadRtopExampleData(folder = system.file("extdata",package="rtop"))
+downloadRtopExampleData(folder = system.file("extdata",
+                        package="rtop"))
 }
 \arguments{
 \item{folder}{the folder to which the downloaded data set will be copied}

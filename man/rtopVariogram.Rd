@@ -3,22 +3,27 @@
 \alias{rtopVariogram.rtop}
 \alias{rtopVariogram.SpatialPolygonsDataFrame}
 \alias{rtopVariogram.SpatialPointsDataFrame}
+\alias{rtopVariogram.STSDF}
 \title{ create variogram for data with spatial support }
 \description{
 rtopVariogram will create binned variogram or cloud variogram of data
 with an areal support.
 }
 \usage{
-\method{rtopVariogram}{rtop}(object, ...) 
+\method{rtopVariogram}{rtop}(object, params = list(), ...) 
 \method{rtopVariogram}{SpatialPolygonsDataFrame}(object, ...) 
-\method{rtopVariogram}{SpatialPointsDataFrame}(object, formulaString, params=list(), cloud, abins, dbins, ...) 
+\method{rtopVariogram}{SpatialPointsDataFrame}(object, formulaString, params=list(), cloud, 
+                       abins, dbins, ...) 
+\method{rtopVariogram}{STSDF}(object, formulaString, params=list(), cloud, 
+                       abins, dbins, data.table = FALSE, ...) 
 }
-
 \arguments{
-\item{object}{ object of class \code{rtop} (see \link{rtop-package}) or a 
+\item{object}{ object of class \code{rtop} (see \link{rtop-package}) or a \cr
 \code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}}
 or \code{\link[sp:SpatialPoints]{SpatialPointsDataFrame}}
-with information about observations. If \code{object} is a \code{\link[sp:SpatialPoints]{SpatialPointsDataFrame}},
+with information about observations. If \cr
+\code{object} is a \cr
+\code{\link[sp:SpatialPoints]{SpatialPointsDataFrame}},
 it must have a column with name \code{area}.
 }
 \item{formulaString}{formula that defines the dependent variable as a linear model 
@@ -34,6 +39,8 @@ it must have a column with name \code{area}.
       to overrule the cloud parameter in params. }
 \item{abins}{possibility to set areal bins (not yet implemented)}
 \item{dbins}{possibility to set distance bins (not yet implemented)}
+\item{data.table}{an option to use data.table internally for the variogram computation for 
+        \code{\link[spacetime]{STSDF}}-objects}
 \item{...}{parameters to other functions called, e.g. gstat's 
       \code{\link[gstat]{variogram}}-function and to \code{\link{rtopVariogram.SpatialPointsDataFrame}}
       when the method is called with an object of a different class}
@@ -46,6 +53,8 @@ The function creates a variogram, either of type \code{rtopVariogram} or
 function from gstat, but has additional information about the spatial size or
 length of the observations. An rtop-object with the variogram added is 
 returned if the function is called with an rtop-object as argument.
+
+For spatio-temporal objects (\code{\link[spacetime]{STSDF}}), the variogram is the spatially variogram, averaged for all time steps. There is a possibility to use data.table internally in this function, which can improve computation time for some cases.
 }
 
 \note{

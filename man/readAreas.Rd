@@ -3,7 +3,7 @@
 \title{ help file for creating SpatialPolygonsDataFrame with observations and/or predictionLocations
 of data with a spatial support }
 \description{
-readAreas will read area-files, add observations and convert the result to 
+readAreas will read area-files, add observations and convert the result to \cr
 \code{\link[sp]{SpatialPolygonsDataFrame}}
 }
 \usage{
@@ -27,7 +27,8 @@ and/or predictionLocations, depending on the information given in \code{object}.
 
 \details{
 If \code{object} is a file name, \code{\link{readAreaInfo}} will be called.
-If it is a \code{\link[sp:SpatialPoints]{SpatialPointsDataFrame}} with observations and/or 
+If it is a \cr
+\code{\link[sp:SpatialPoints]{SpatialPointsDataFrame}} with observations and/or 
 predictionLocations, the function will read areal data from files according 
 to the ID associated with each observation/predictionLocation. 
 

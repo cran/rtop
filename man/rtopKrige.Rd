@@ -2,19 +2,27 @@
 \alias{rtopKrige}
 \alias{rtopKrige.rtop}
 \alias{rtopKrige.SpatialPolygonsDataFrame}
+\alias{rtopKrige.STSDF}
 \alias{rtopKrige.default}
 \title{Spatial interpolation of data with spatial support}
 \description{
 rtopKrige perform spatial interpolation or cross validation of data with areal support.
 }
 \usage{
-\method{rtopKrige}{rtop}(object, varMatUpdate = FALSE, ...) 
+\method{rtopKrige}{rtop}(object, varMatUpdate = FALSE, params = list(), ...) 
 \method{rtopKrige}{SpatialPolygonsDataFrame}(object, predictionLocations = NULL,
-    varMatObs, varMatPredObs, varMat, params = list(), formulaString, 
-    sel, ...) 
+    varMatObs, varMatPredObs, varMat, params = list(), 
+    formulaString, sel, ...) 
+\method{rtopKrige}{STSDF}(object, predictionLocations = NULL,
+    varMatObs, varMatPredObs, varMat, params = list(), 
+    formulaString, sel, olags = NULL, plags = NULL, 
+    lagExact = TRUE, ...) 
 \method{rtopKrige}{default}(object, predictionLocations = NULL,
-    varMatObs,  varMatPredObs, varMat, params = list(), formulaString, 
-    sel, wret = FALSE, ...) 
+    varMatObs,  varMatPredObs, varMat, params = list(),
+    formulaString, sel, wret = FALSE, ...) 
+
+
+
 }
 
 \arguments{
@@ -41,6 +49,9 @@ rtopKrige perform spatial interpolation or cross validation of data with areal s
      interpolated/crossvalidated}
 \item{wret}{logical; if TRUE, return a matrix of weights instead of the predictions,
 useful for batch processing of time series, see also details}
+\item{olags}{A vector describing the relative lag which should be applied for the observation locations. See also details}
+\item{plags}{A vector describing the relative lag which should be applied for the predicitonLocations. See also details}
+\item{lagExact}{logical; whether differences in lagtime should be computed exactly or approximate}
 \item{...}{from \code{rtopKrige.rtop}, arguments to be passed to 
     \code{rtopKrige.default}. In \code{rtopKrige.default},
     parameters for modification of the object parameters or default parameters.
@@ -51,9 +62,10 @@ useful for batch processing of time series, see also details}
 } 
 
 \value{ 
-If called with \code{\link[sp]{SpatialPolygonsDataFrame}}, the function returns 
-a \code{\link[sp]{SpatialPolygonsDataFrame}} with predictions, either at the 
-locations defined in \code{predictionLocations}, or as leave-one-out
+If called with \code{\link[sp]{SpatialPolygonsDataFrame}}, the function returns a \cr
+\code{\link[sp]{SpatialPolygonsDataFrame}} with predictions, either at the 
+locations defined in \cr
+\code{predictionLocations}, or as leave-one-out
 cross-validation predicitons at the same locations as in object if 
 \code{cv = TRUE}
 
@@ -80,7 +92,29 @@ data where the matrices have been created in other ways, e.g. based on distances
 in physiographical space or distances along a stream.
 
 The function returns the weights rather than the predictions if \code{wret = TRUE}.
-This is useful for batch processing of time series, e.g. if 
+This is useful for batch processing of time series, e.g. once the weights are 
+created, they can be used to compute the interpolated values for each time step.
+
+rtop is able to take some advantage of multiple cpus, which can be invoked with the 
+parameter nclus, setting this larger than one will start a cluster with nclus workers,
+if the \code{\link{parallel}}-package has been installed. 
+
+
+Kriging of time series is possible when \code{observations} and \code{predictionLocations}
+are spatiotemporal objects of type \code{\link[spacetime]{STSDF}}. The interpolation is 
+still spatial, in the sense that the regularisation of the variograms are just done
+using the spatial extent of the observations, not a possible temporal extent, such as
+done by Skoien and Bloschl (2007). However, it is possible to make predictions based on observations 
+from different time steps, through the use of the lag-vectors. These vectors describe a typical "delay"
+for each observation and prediction location. This delay could for runoff related variables be similar
+to travel time to each gauging location. For a certain prediction location, earlier time steps would be picked for neighbours with shorter travel time and later time steps for neighbours with slower travel times.
+
+The lagExact parameter indicates whether to use a weighted average of two time steps, or just the time step which is closest to the difference in lag times. 
+
+The use of lag times should in theory increase the computation time, but might, due to different computation methods, even speed up the computation when the number of neighbours to be used (parameter nmax) is small compared to the number of observations. If computation is slow, it can be useful to test olags = rep(0, dim(observations)[1]) and similar for predictionLocations.
+
+
+
 
 }
 
@@ -90,26 +124,39 @@ This is useful for batch processing of time series, e.g. if
 \references{ 
 Skoien J. O., R. Merz, and G. Bloschl. Top-kriging - geostatistics on stream networks.
 Hydrology and Earth System Sciences, 10:277-287, 2006.
+
+Skoien, J. O. and G. Bloschl. Spatio-Temporal Top-Kriging of Runoff Time Series. Water Resources Research 43:W09419, 2007.
 }
 \author{ Jon Olav Skoien }
 \seealso{\code{\link{rtop-package}}}
 \examples{
 \dontrun{
 library(rgdal)
+# The following command will download  the complete example data set
+# downloadRtopExampleData() 
+# observations$obs = observations$QSUMMER_OB/observations$AREASQKM
+
 rpath = system.file("extdata",package="rtop")
 observations = readOGR(rpath,"observations")
 predictionLocations = readOGR(rpath,"predictionLocations")
 
-# Setting some parameters 
-params = list(gDist = TRUE, cloud = FALSE)
+# Setting some parameters; nclus > 1 will start a cluster with nclus 
+# workers for parallel processing
+params = list(gDist = TRUE, cloud = FALSE, nclus = 1, rresol = 25)
+
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
+
 # Build an object
-rtopObj = createRtopObject(observations,predictionLocations, params = params)
+rtopObj = createRtopObject(observations, predictionLocations, 
+           params = params)
+
 # Fit a variogram (function also creates it)
 rtopObj = rtopFitVariogram(rtopObj)
+
 # Predicting at prediction locations
 rtopObj = rtopKrige(rtopObj)
+
 # Cross-validation
 rtopObj = rtopKrige(rtopObj,cv=TRUE)
 cor(rtopObj$predictions$observed,rtopObj$predictions$var1.pred)

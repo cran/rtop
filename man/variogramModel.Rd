@@ -8,11 +8,12 @@
 This gives an easier interface to the parameters of the variogram model
 }
 \usage{
-rtopVariogramModel(model = "Ex1", sill = NULL, range = NULL, exp = NULL,
-    nugget = NULL, exp0 = NULL,
+rtopVariogramModel(model = "Ex1", sill = NULL, range = NULL, 
+    exp = NULL, nugget = NULL, exp0 = NULL,
     observations = NULL, formulaString = obs~1) 
 \method{updateRtopVariogram}{rtop}(object, ...)
-\method{updateRtopVariogram}{rtopVariogramModel}(object, action = "mult", ..., checkVario = FALSE, 
+\method{updateRtopVariogram}{rtopVariogramModel}(object, action = "mult", ..., 
+              checkVario = FALSE, 
 sampleVariogram = NULL, observations = NULL) 
 
 }
@@ -59,7 +60,8 @@ predictionLocations = readOGR(rpath,"predictionLocations")
 rtopObj = createRtopObject(observations,predictionLocations)
  # Fit a variogram (function also creates it)
 rtopObj = rtopFitVariogram(rtopObj)
-rtopObj = updateRtopVariogram(rtopObj, exp = 1.5, action = "mult", checkVario = TRUE)
+rtopObj = updateRtopVariogram(rtopObj, exp = 1.5, action = "mult", 
+              checkVario = TRUE)
 }
 }
 \keyword{spatial}

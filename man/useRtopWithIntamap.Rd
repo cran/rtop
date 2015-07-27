@@ -1,11 +1,11 @@
 \name{useRtopWithIntamap}
 \alias{useRtopWithIntamap}
 \title{
-Integrates the rtop package with the intamap package
+Integrates the rtop package with the \code{intamap} package
 }
 \description{
-This function checks if the \code{\link[intamap]{intamap-package}} is installed,
-and if it is, makes it possible to use \code{rtop}-objects in the functions of the package.
+This function makes it possible to use \code{rtop}-objects in the functions of the package.
+It is necessary to load the \code{intamap}-package before calling this function. 
 }
 \usage{
 useRtopWithIntamap()
@@ -20,6 +20,7 @@ spatialPredict and methodParameters.
 
 \author{ Jon Olav Skoien }
 \examples{
+library(intamap)
 useRtopWithIntamap()
 }
 \keyword{plot}

@@ -7,7 +7,8 @@ This is a help function for creating an object (see \code{\link{rtop-package}}
 }
 \usage{
 createRtopObject(observations, predictionLocations,
-   formulaString, params=list(), ainfo, areas, overlapObs, overlapPredObs, ...)
+   formulaString, params=list(), ainfo, areas, overlapObs,
+   overlapPredObs, ...)
 }
 
 \arguments{
@@ -68,7 +69,8 @@ params = list(gDist = TRUE, cloud = FALSE)
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 # Build an object
-rtopObj = createRtopObject(observations,predictionLocations, params = params)
+rtopObj = createRtopObject(observations, predictionLocations, 
+                           params = params)
 
 ## End(Not run)
 

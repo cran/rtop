@@ -7,8 +7,8 @@ errorBar <- function(x, y, upper, lower=upper, length=0.1,...){
  arrows(x,y+upper, x, y-lower, angle=90, code=3, length=length, ...)
 }
 
-checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist = TRUE, ...) {
-  params = getRtopParams(object$params, ...)
+checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist = TRUE, params = list(), ...) {
+  params = getRtopParams(object$params, newPar = params, ...)
   dots = list(...)
   askpar = par("ask")
   if (dev.interactive()) par("ask" = TRUE) else par("ask" = FALSE)
@@ -58,7 +58,6 @@ checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist =
     } 
     clvar$np = clvar$ord  
     if (!"identify" %in% names(dots) | !dev.interactive()) dots$identify = FALSE
-#    print(gstat:::plot.variogramCloud(clvar, xlab = "distance", unlist(dots)))      
     print(plot(clvar, xlab = "distance", unlist(dots)))      
   }
   if (!is.null(varFit) & is(sampleVariogram, "rtopVariogram")) {
