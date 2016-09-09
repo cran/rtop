@@ -126,7 +126,7 @@ rtopDisc.SpatialPolygons = function(object, params = list(), bb = bbox(object), 
         stop("nclus is > 1, but package parallel is not available")    
       nclus = params$nclus
       
-      cl = rtopCluster(nclus, type = params$clusType)
+      cl = rtopCluster(nclus, type = params$clusType, outfile = params$outfile)
 #      cl = rtopCluster(nclus, {require(rtop); bbArea = rtop:::bbArea}, type = params$clusType)
       
       spp = parallel::clusterApply(cl, object@polygons, fun = function(x) lfun(x, resol, ires0, bbdia, small))

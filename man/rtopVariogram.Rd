@@ -33,7 +33,7 @@ it must have a column with name \code{area}.
       \code{x} and \code{y}, use the formula \code{z~x+y}. The formulaString defaults
       to \code{"value~1"} if \code{value} is a part of the data set. 
       If not, the first column of the data set is used.}
-\item{params}{a set of parameters, used to modify the standard parameters for 
+\item{params}{a set of parameters, used to modify the default parameters for 
       the \code{rtop} package, set in \code{\link{getRtopParams}}. }
 \item{cloud}{logical; if TRUE, calculate the semivariogram cloud, can be used
       to overrule the cloud parameter in params. }
@@ -68,8 +68,17 @@ defining the number of bins per order of magnitude (1:10, 10:100, and so on).
 The distances between areas are in this function based on the centre of gravity.
 
 }
+
+\references{ 
+Skoien J. O., R. Merz, and G. Bloschl. Top-kriging - geostatistics on stream networks.
+Hydrology and Earth System Sciences, 10:277-287, 2006.
+
+Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2014. Rtop: An R package for interpolation of data with a variable spatial support, with an example from river networks. Computers & Geosciences, 67.
+}
+
+
 \author{ Jon Olav Skoien }
-\seealso{\code{\link{rtop-package}}}
+
 \examples{
 \dontrun{
 library(rgdal)

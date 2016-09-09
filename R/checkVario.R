@@ -7,9 +7,10 @@ errorBar <- function(x, y, upper, lower=upper, length=0.1,...){
  arrows(x,y+upper, x, y-lower, angle=90, code=3, length=length, ...)
 }
 
-checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist = TRUE, params = list(), ...) {
+checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist = TRUE, curveSmooth = FALSE, params = list(), ...) {
   params = getRtopParams(object$params, newPar = params, ...)
   dots = list(...)
+  
   askpar = par("ask")
   if (dev.interactive()) par("ask" = TRUE) else par("ask" = FALSE)
   variogramModel = object$variogramModel
@@ -58,7 +59,9 @@ checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist =
     } 
     clvar$np = clvar$ord  
     if (!"identify" %in% names(dots) | !dev.interactive()) dots$identify = FALSE
-    print(plot(clvar, xlab = "distance", unlist(dots)))      
+    cdots = which(names(dots) %in% names(formals(checkVario.rtopVariogramModel)))
+    if (length(cdots) > 0) dots = dots[-cdots]
+    print(plot(clvar, xlab = "distance",  unlist(dots)))      
   }
   if (!is.null(varFit) & is(sampleVariogram, "rtopVariogram")) {
     gammar = varFit[,c("np", "gamma", "gammar")]
@@ -83,22 +86,27 @@ checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist =
        aggregate(list(gammav = gammar$gamma, gammarv = gammar$gammar), 
        by = list(gammar$group), FUN = var))
     xmax = max(c(ngammar$gamma, ngammar$gammar))
+    xmin = quantile(c(ngammar$gammar, ngammar$gamma), 0.05)
+    nnp = 0 # dummy variable to avoid check warning
+    
     plot(gammar ~ gamma, ngammar, 
-      xlab = "regularized gamma", ylab = "gamma", xlim = c(0,xmax), ylim = c(0,xmax), pch = 16)
+      xlab = "regularized gamma", ylab = "gamma", xlim = c(ifelse(length(grep("x",log)) >0, xmin,0), xmax), 
+      ylim = c(ifelse(length(grep("x",log)) >0, xmin,0),xmax), cex = sqrt(nnp), 
+      pch = 16, log = log)
     errorBar(ngammar$gammar, ngammar$gamma, upper = sqrt(ngammar$gammav))
     abline(0,1)
   }
   if (is.null(variogramModel)) {
     if (is.null(sampleVariogram)) sampleVariogram = rtopVariogram(observations)
-    checkVario(sampleVariogram, observations, params = object$params, log = log, ...)    
+    checkVario(sampleVariogram, observations, params = params, log = log, curveSmooth = curveSmooth, ...)    
   } else {
     if (is.null(sampleVariogram)) {
       object$checkVario = checkVario(object$variogramModel, observations = object$observations, 
-           params = object$params, acor = acor, log = log, ...)
+           params = params, acor = acor, log = log, curveSmooth = curveSmooth, ...)
     } else {
       object$checkVario = checkVario(object$variogramModel, sampleVariogram = sampleVariogram, 
-          observations = object$observations, params = object$params, acor = acor, 
-          log = log, ...) 
+          observations = object$observations, params = params, acor = acor, 
+          log = log, curveSmooth = curveSmooth, ...) 
     }
   }
   par(ask = askpar)
@@ -113,7 +121,7 @@ checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist =
 checkVario.rtopVariogramModel = function(object, 
            sampleVariogram = NULL, observations = NULL, areas = NULL, dists = NULL, acomp = NULL, 
            params = list(), compVars = list(), acor = 1, log = "xy", legx = NULL, legy = NULL, 
-           plotNugg = TRUE, ...) {
+           plotNugg = TRUE, curveSmooth = FALSE,  ...) {
 variogramModel = object
 params = getRtopParams(params, ...)
 askpar = par("ask")
@@ -197,16 +205,19 @@ for (iplot in 1:dim(acomp)[1]) {
 }
 
 
-pvar = apply(as.matrix(adists),1, varioEx, variogramModel = variogramModel)+ 
-   ifelse(plotNugg, nuggEx(1,variogramModel)*acor, 0)
-ymin = max(min(vmats[vmats > 0]),min(sampleVariogram$gamma))
-ymax = max(pvar)
 if (inherits(sampleVariogram, "rtopVariogramCloud")) {
   xmin = min(sampleVariogram$dist)/1.3
 } else {
   xmin = min(sampleVariogram$dist[sampleVariogram$np > 2]/1.3)
 }
 xmax = max(adists)
+
+pdists = 10^seq(log10(xmin), log10(xmax), length.out = 100)
+pvar = apply(as.matrix(pdists),1, varioEx, variogramModel = variogramModel)+ 
+    ifelse(plotNugg, nuggEx(1,variogramModel)*acor, 0)
+ymin = max(min(vmats[vmats > 0]),min(sampleVariogram$gamma))
+ymax = max(pvar)
+
 if (acor != 1) {
   Rver = R.Version()
   if (as.numeric(Rver$major)*100 + as.numeric(Rver$minor) >= 214) {
@@ -218,7 +229,7 @@ if (acor != 1) {
   xTicks = NULL
   xlabs = TRUE
 }
-plot(adists,pvar,ylim = c(ymin, ymax), xlim = c(xmin, xmax), log = log, 
+plot(pdists,pvar,ylim = c(ymin, ymax), xlim = c(xmin, xmax), log = log, 
     type="l", col = "black", lwd = 2, ylab = "gamma", 
     xlab = "distance", xaxt = "n")
 axis(1,at = xTicks, labels = xlabs)
@@ -239,7 +250,15 @@ for (iplot in 1:dim(acomp)[1]) {
     lt = 2
     lcol = cols2[iplot]
   }
-  lines(adists,vmats[iplot,1:ld],lty = lt, lwd = 2, col = lcol)
+  
+  xx = adists
+  yy = vmats[iplot,1:ld]
+  if (curveSmooth) {
+    if (is.numeric(curveSmooth)) df = curveSmooth else df = length(adists) - 3
+    xx = sort(c(xx, seq(min(xx), max(xx), length.out = 1000)))
+    yy = predict(smooth.spline(adists, yy, df = df), xx)$y
+  }
+  lines(xx, yy, lty = lt, lwd = 2, col = lcol)
   legende$text = c(legende$text, paste(aavg[i1]*acor, "vs", aavg[i2]*acor))
   legende$col = c(legende$col, lcol)
   legende$lty = c(legende$lty, lt)
@@ -254,12 +273,14 @@ for (iplot in 1:dim(acomp)[1]) {
 if (length(compVars) > 0) {
   for (ic in 1: length(compVars)) {
     cvar = compVars[ic]
-    clines = variogramLine(cvar[[1]], dist_vector = adists)
+    xx = adists
+    if (curveSmooth) xx = sort(c(xx, seq(min(xx), max(xx), length.out = 1000)))
+    clines = variogramLine(cvar[[1]], dist_vector = xx)
     lines(clines, lty = 3, lwd = 2, col = cols2[ic])
     legende$text = c(legende$text,names(cvar))
     legende$col = c(legende$col, cols2[ic])
     legende$lty = c(legende$lty, 3)
-    legende$pch = c(legende$pch, 26)
+    legende$pch = c(legende$pch, 16)
   }
 }
 if (is.null(legx)) legx = ifelse(length(grep("x", log)) > 0, max(adists)/log(xmax/xmin,5), max(adists)*0.7)

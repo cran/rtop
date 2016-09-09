@@ -22,7 +22,7 @@ or list of discretized areas, typically from a call to \cr
 \code{\link{rtopDisc}}; or
 object of class \code{rtop} with such boundaries and/or discretized
 elements (the individual areas)}
-\item{params}{a set of parameters, used to modify the standard parameters for 
+\item{params}{a set of parameters, used to modify the default parameters for 
       the \code{rtop} package, set in \code{\link{getRtopParams}}. The argument params can also be used
       for the other methods, through the ...-argument.}
 \item{object2}{an object of same type as \code{object}, except for \code{rtop};
@@ -87,6 +87,7 @@ Gottschalk, L. 1993. Correlation and covariance of runoff. Stochastic Hydrology 
 
 Skoien, J. O., R. Merz, and G. Bloschl. 2006. Top-kriging - geostatistics on stream networks. Hydrology and Earth System Sciences, 10, 277-287.
 
+Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2014. Rtop: An R package for interpolation of data with a variable spatial support, with an example from river networks. Computers & Geosciences, 67.
 
 }
 \author{ Jon Olav Skoien }

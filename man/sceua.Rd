@@ -3,12 +3,12 @@
 \title{
 Optimisation with the Shuffle Complex Evolution method}
 \description{
-Function to minimize the value of an objective function for calibration
+Calibration function which searches a parameter set which is minimizing the value of an objective function
 }
 \usage{
 sceua(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.01,
     ngs = 5, npg = 5, nps = 5, nspl = 5, mings = 5, iniflg = 1, iprint = 0, iround = 3, 
-    peps = 0.0001, plog = rep(FALSE,length(pars)), implicit = NULL, ...)
+    peps = 0.0001, plog = rep(FALSE,length(pars)), implicit = NULL, timeout = NULL, ...)
 }
 \arguments{
 \item{OFUN}{ A function to be minimized, with first argument the vector of 
@@ -37,6 +37,7 @@ sceua(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.01,
 \item{peps}{convergence level for parameter set (lower number means smaller difference between parameters of the population required for stop)}
 \item{plog}{whether optimization should be done in log10-domain. Either a single TRUE value for all parameters, or a vector with TRUE/FALSE for the different parameters}
 \item{implicit}{function for implicit boundaries for the parameters (e.g. sum(pars[4]+pars[5]) < 1). See below for details}
+\item{timeout}{if different from NULL: maximum time in seconds for execution before the optimization returns with the parameters so far.}
 \item{...}{arguments for the objective function, must be named}
 }
 
@@ -49,14 +50,15 @@ sceua(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.01,
 \value{
 The function returns a list with the following elements
 \itemize{
-  \item{par}{a vector of the best parameters combination }
-  \item{value}{value of the objective function for this parameter set}
-  \item{convergence}{list of two values \itemize{
-       \item{funConvergence}{function convergence relative to pcento}
-       \item{parConvergence}{parameter convergence relative to peps}
+  \item{par}{ - a vector of the best parameters combination }
+  \item{value}{ - the value of the objective function for this parameter set}
+  \item{convergence}{ - a list of two values \itemize{
+       \item{funConvergence}{ - the function convergence relative to pcento}
+       \item{parConvergence}{ - the parameter convergence relative to peps}
        }}
-  \item{counts}{number of function evaluations}
-  \item{iterations}{number of shuffling loops}
+  \item{counts}{ - the number of function evaluations}
+  \item{iterations}{ - the number of shuffling loops}
+  \item{timeout}{ - logical; TRUE if the optimization was aborted because the timeout time was reached, FALSE otherwise}
 }
 }
 
@@ -104,6 +106,7 @@ Comput. J., 7(4), 308-313.
 Price, W.L., 1987. Global optimization algorithms for a CAD workstation, 
 J. Optim. Theory Appl., 55(1), 133-146.
 
+Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2014. Rtop: An R package for interpolation of data with a variable spatial support, with an example from river networks. Computers & Geosciences, 67.
 
 
 }

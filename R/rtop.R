@@ -47,7 +47,16 @@ createRtopObject = function(observations, predictionLocations,
 #       predictionLocations$length = SpatialLinesLengths(predictionLocations)
     } else if (inherits(predictionLocations, "STS") && !"area" %in% names(predictionLocations@sp)) {
       predictionLocations@sp$area = sapply(slot(predictionLocations@sp, "polygons"), function(i) slot(i, "area"))      
-    } 
+    }  
+    if (!isTRUE(all.equal(is.na(proj4string(observations)), is.na(proj4string(predictionLocations))))) {
+      stop("observations and predictionLocations do not both have proj4string set")
+    }
+    if (!is.na(proj4string(observations)) && 
+#        if (requireNamespace("rgdal") & !is.na(proj4string(observations)) && 
+            CRSargs(CRS(proj4string(observations))) != CRSargs(CRS(proj4string(predictionLocations)))) {
+      stop(paste("observations and predictionLocations have different projections:", 
+           proj4string(observations), proj4string(predictionLocations)))
+    }
     object$predictionLocations = predictionLocations
   }
   if (missing(formulaString)) {
@@ -154,6 +163,7 @@ getRtopDefaultParams = function(parInit,
                  #       9 - Neutreal WLS-method - err = min(err2,err3)
    gDistEst = FALSE, # use ghosh distance
    gDistPred = FALSE,
+   varClean = FALSE,
    maxdist = Inf,
    nmax = 10,
    hstype = "regular", # Sampling type for hypothetical areas
@@ -163,6 +173,8 @@ getRtopDefaultParams = function(parInit,
    nclus = 1,
    cnAreas = 100,
    clusType = NULL,
+   outfile = NULL, 
+   partialOverlap = FALSE,
    wlim = 1.5,
    wlimMethod = "all",
    cv = FALSE,
@@ -184,8 +196,9 @@ list(model = model, nugget = nugget, unc = unc,
      cloud = cloud, 
 #     cutoff = cutoff, 
      amul = amul, dmul = dmul,
-     fit.method = fit.method, gDistEst = gDistEst, gDistPred = gDistPred, 
-     maxdist = maxdist, nmax = nmax, nclus = nclus, cnAreas = cnAreas, clusType = clusType,
+     fit.method = fit.method, gDistEst = gDistEst, gDistPred = gDistPred, varClean = varClean,
+     maxdist = maxdist, nmax = nmax, nclus = nclus, cnAreas = cnAreas, clusType = clusType, 
+     outfile = outfile, partialOverlap = partialOverlap,  
      wlim = wlim, wlimMethod = wlimMethod, cv = cv,
      debug.level = debug.level)
 }

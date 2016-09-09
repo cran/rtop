@@ -1,4 +1,11 @@
 netProp = function(network, from = "FROMJCT", to = "TOJCT", pred = "pred", iprint = 1) {
+  .Deprecated(package="rtop", 
+              msg = "The function netProp is deprecated, see ?\"netProp-deprecated\" for more information",
+              old = as.character(sys.call(sys.parent()))[1L])
+} 
+
+
+netPropOld = function(network, from = "FROMJCT", to = "TOJCT", pred = "pred", iprint = 1) {
   warning("This function is deprecated and will be removed in a future version of rtop")
   if (requireNamespace("igraph")) {
 

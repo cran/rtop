@@ -33,7 +33,7 @@ it must have a column with name \code{area}.
 \item{observations}{the observations, passed as a Spatial*DataFrame object, if
    object is an \cr
    \code{rtopVariogram} or \code{rtopVariogramCloud}}
-\item{params}{a set of parameters, used to modify the standard parameters for 
+\item{params}{a set of parameters, used to modify the default parameters for 
       the \code{rtop} package, set in \code{\link{getRtopParams}}. The argument params can also be used
       for the other methods, through the ...-argument.}
 \item{dists}{either a matrix with geostatistical distances (created by a call
@@ -62,7 +62,7 @@ in addition to other objects created.
 \note{
 There are several options for fitting of the variogramModel, where the parameters
 can be set in \code{params}, which is a list of parameters for modification
-of the standard parameters of the rtop-package given in a call to 
+of the default parameters of the rtop-package given in a call to 
 \code{\link{getRtopParams}}. The first choice is between individual fitting and binned
 fitting. This is based on the type of variogram submitted, individual fitting is done
 if a cloud variogram (of class \code{rtopVariogramCloud}) is passed as argument, 
@@ -74,14 +74,19 @@ model is fitted to the variogram which is consistent with the parameter \code{cl
 
 
 
+
 \references{ 
+Skoien J. O., R. Merz, and G. Bloschl. Top-kriging - geostatistics on stream networks.
+Hydrology and Earth System Sciences, 10:277-287, 2006.
 
-\url{http://www.intamap.org/}
+Skoien, J. O. and G. Bloschl. Spatio-Temporal Top-Kriging of Runoff Time Series. Water Resources Research 43:W09419, 2007.
 
+Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2014. Rtop: An R package for interpolation of data with a variable spatial support, with an example from river networks. Computers & Geosciences, 67.
 }
+
+
 \author{ Jon Olav Skoien }
-\seealso{\code{\link{rtop-package}}
-}
+
 \examples{
 \dontrun{
 library(rgdal)

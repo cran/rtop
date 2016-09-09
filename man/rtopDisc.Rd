@@ -22,7 +22,7 @@ or an object with class \code{rtop} that includes one of the above
 }
 \item{bb}{boundary box, usually modified to be the common boundary box for two 
           spatial object}
-\item{params}{possibility to pass parameters to modify the standard parameters for 
+\item{params}{possibility to pass parameters to modify the default parameters for 
       the \code{rtop} package, set in \code{\link{getRtopParams}}. Typical parameters
       to modify for this function are:
       \itemize{
@@ -65,10 +65,16 @@ large support will be reused when discretizing smaller supports within the
 large one, e.g. subcatchments within larger catchments. 
 }
 
+\references{ 
+Skoien J. O., R. Merz, and G. Bloschl. Top-kriging - geostatistics on stream networks.
+Hydrology and Earth System Sciences, 10:277-287, 2006.
+
+Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2014. Rtop: An R package for interpolation of data with a variable spatial support, with an example from river networks. Computers & Geosciences, 67.
+}
 
 
 \author{ Jon Olav Skoien }
 \seealso{
-\code{\link{rtop-package}} and \code{\link{rtopVariogram}}
+\code{\link{rtopVariogram}}
 }
 \keyword{spatial}

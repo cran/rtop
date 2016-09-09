@@ -4,13 +4,15 @@
 \alias{rtopSim.default}
 \title{Spatial simulation of data with spatial support}
 \description{
-rtopSim will conditionally or unconditionally simulate data with areal support.
+rtopSim will conditionally or unconditionally simulate data with areal support. This function should be seen as experimental, some issues are described below.
 }
 \usage{
 
+
   
 \method{rtopSim}{rtop}(object, varMatUpdate = FALSE, beta = NA, 
-      largeFirst = TRUE, params = list(), ...) 
+      largeFirst = TRUE, replace = FALSE, params = list(), 
+      dump = NULL,  ...) 
 \method{rtopSim}{default}(object = NULL, predictionLocations,
     varMatObs,  varMatPredObs, varMatPred, variogramModel, ...) 
 }
@@ -24,9 +26,14 @@ rtopSim will conditionally or unconditionally simulate data with areal support.
 \item{largeFirst}{Although the simulation method follows a random path around the 
             predictionLocations, simulating the largest area first will assure
             that the true mean of the simulated values will be closer to beta}
+\item{replace}{logical; if observation locations are also present as predictions, should they be replaced?
+               This is particularly when doing conditional simulations for a set of observations 
+               with uncertainty.}
 \item{params}{a set of parameters, used to modify the standard parameters for 
       the \code{rtop} package, set in \code{\link{getRtopParams}}. The argument params can also be used
       for the other methods, through the ...-argument.}
+\item{dump}{file name for saving the updated object, after adding variance matrices. Useful if there
+      are problems with the simulation, particularly if it for some reason crashes.}
 \item{predictionLocations}{\code{\link[sp]{SpatialPolygons}} or \code{\link[sp]{SpatialPolygonsDataFrame}}
      with locations for simulations. }
 \item{varMatObs}{covariance matrix of possible observations, where diagonal must consist 
@@ -65,7 +72,11 @@ However, a variogram model is still necessary to perform simulations.
 The arguments \code{beta} and \code{largeFirst} are only used for unconditional simulations.
 
 
-
+The function is still in an experimental stage, and might change in the future. There are some issues with the current implementation:
+\itemize{
+\item{Numerical issues can in some cases give negative estimation variances, which will result in an invalid distribution for the simulation. This will result in simulated NA values for these locations.}
+\item{The variability of simulated values for small areas (such as small headwater catchments) will be relatively high based on the statistical uncertainty. This could be overestimated compared to the uncertainty which is possible based on rainfall.}
+}
 }
 
 
@@ -74,9 +85,12 @@ The arguments \code{beta} and \code{largeFirst} are only used for unconditional 
 \references{ 
 Skoien J. O., R. Merz, and G. Bloschl. Top-kriging - geostatistics on stream networks.
 Hydrology and Earth System Sciences, 10:277-287, 2006.
+
+Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2014. Rtop: An R package for interpolation of data with a variable spatial support, with an example from river networks. Computers & Geosciences, 67.
+
 }
 \author{ Jon Olav Skoien }
-\seealso{\code{\link{rtop-package}}}
+
 \examples{
 \dontrun{
 library(rgdal)

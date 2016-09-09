@@ -13,7 +13,7 @@ locations (observations or prediction locations) or semivariogram matrices
 between all the supports in one or two sets of locations, and also between them.
 }
 \usage{
-\method{varMat}{rtop}(object, varMatUpdate = FALSE, params = list(), ...) 
+\method{varMat}{rtop}(object, varMatUpdate = FALSE, fullPred = FALSE, params = list(), ...) 
 \method{varMat}{SpatialPolygonsDataFrame}(object, object2 = NULL,...) 
 \method{varMat}{SpatialPolygons}(object, object2 = NULL, variogramModel,
      overlapObs, overlapPredObs, ...) 
@@ -35,7 +35,9 @@ between all the supports in one or two sets of locations, and also between them.
          or 4) a \code{\link{list}} with discretized supports}
 \item{varMatUpdate}{logical; if TRUE, also existing variance matrices will 
             be recomputed, if FALSE, only missing variance matrices will be computed}
-\item{params}{a set of parameters, used to modify the standard parameters for 
+\item{fullPred}{logical; whether to create the full covariance matrix also for the predictions, 
+                mainly used for simulations}
+\item{params}{a set of parameters, used to modify the default parameters for 
       the \code{rtop} package, set in \code{\link{getRtopParams}}. }
 \item{object2}{if \code{object} is not an object of class \code{rtop}; 
  an object of the same class as \code{object} with a possible second 
@@ -92,18 +94,25 @@ If an \code{rtop}-object contains observations and/or predictionLocations of typ
 properties of the object.
 }
 
+\references{ 
+Skoien J. O., R. Merz, and G. Bloschl. Top-kriging - geostatistics on stream networks.
+Hydrology and Earth System Sciences, 10:277-287, 2006.
+
+Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2014. Rtop: An R package for interpolation of data with a variable spatial support, with an example from river networks. Computers & Geosciences, 67.
+}
+
+
 \author{ Jon Olav Skoien }
 \seealso{
-\code{\link{gDist}}, \code{\link{rtop-package}}
+\code{\link{gDist}}
 }
 \examples{
 \dontrun{
 library(rgdal)
 rpath = system.file("extdata",package="rtop")
 observations = readOGR(rpath,"observations")
-gDist = gDist(observations)
 vmod = list(model = "Ex1", params = c(0.00001,0.007,350000,0.9,1000))
-vm = varMat(gDist$gDistObs, variogramModel = vmod)
+vm = varMat(observations, variogramModel = vmod)
 }
 }
 \keyword{spatial}

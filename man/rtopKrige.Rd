@@ -39,7 +39,7 @@ rtopKrige perform spatial interpolation or cross validation of data with areal s
       prediction locations, typically generated from call
       to \code{\link{varMat}}}
 \item{varMat}{list covariance matrices including the two above}
-\item{params}{a set of parameters, used to modify the standard parameters for 
+\item{params}{a set of parameters, used to modify the default parameters for 
       the \code{rtop} package, set in \code{\link{getRtopParams}}. Additionally,
       it is possible overrule some of the parameters in \code{object$params} by passing
       them as separate arguments.}
@@ -126,9 +126,11 @@ Skoien J. O., R. Merz, and G. Bloschl. Top-kriging - geostatistics on stream net
 Hydrology and Earth System Sciences, 10:277-287, 2006.
 
 Skoien, J. O. and G. Bloschl. Spatio-Temporal Top-Kriging of Runoff Time Series. Water Resources Research 43:W09419, 2007.
+
+Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2014. Rtop: An R package for interpolation of data with a variable spatial support, with an example from river networks. Computers & Geosciences, 67.
 }
+
 \author{ Jon Olav Skoien }
-\seealso{\code{\link{rtop-package}}}
 \examples{
 \dontrun{
 library(rgdal)

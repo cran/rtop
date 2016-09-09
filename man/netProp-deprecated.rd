@@ -1,5 +1,5 @@
-\name{netProp}
-\alias{netProp}
+\name{netProp-deprecated}
+\alias{netProp-deprecated}
 \title{
 Propagate values along a river network.
 This function does not work as intended for several cases, including the example. It is therefore deprecated and will be completely removed in one of the next versions.

@@ -2,7 +2,7 @@ set.seed(1501)
 #-----------------------------
 library(rtop)
 library(rgdal)
-options(error = recover)
+if (interactive()) options(error = recover)
   # Read directly from shape-files in data directory
 rpath = system.file("extdata",package="rtop")
 observations = readOGR(rpath, "observations")
@@ -37,7 +37,7 @@ all.equal(varmat$varMatObs, rtopObj2$varMatObs)
 rtopObj4 = rtopKrige(rtopObj2)
 
 #debug(rtop:::rtopDisc.SpatialPolygons)
-  rtopObj5 = rtopKrige(rtopObj, params = list(cnAreas = 5, cDlim = 10, nclus = 2))
+#  rtopObj5 = rtopKrige(rtopObj, params = list(cnAreas = 5, cDlim = 10, nclus = 2))
   
   print(summary(rtopObj2$predictions))
   print(summary(rtopObj3$predictions))
@@ -72,11 +72,24 @@ print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var
   rtopObj7 = varMat(rtopObj6)
 
 
-rtopObj10 = rtopSim(rtopObj, nsim = 5)
+  
+  
+#  observations$obs = log(observations$obs)
+  
+  # Setting some parameters 
+  # Build an object
+  rtopObj = createRtopObject(observations,predictionLocations, params = params)
+  # Fit a variogram (function also creates it)
+  rtopObj = rtopFitVariogram(rtopObj)
+  #rtopObj = checkVario(rtopObj)
+
+rtopObj10 = rtopSim(rtopObj, nsim = 5, logdist = TRUE)
 rtopObj11 = rtopObj
 rtopObj11$predictionLocations = rtopObj11$observations
-rtopObj11$observations = NULL
-rtopObj12 = rtopSim(rtopObj11, nsim = 10, beta = 0.01)
+#rtopObj11$observations = NULL
+rtopObj11$observations$unc = var(rtopObj10$observations$obs)*min(rtopObj10$observations$area)/rtopObj10$observations$area
+rtopObj11$predictionLocations$replaceNumber = 1:dim(rtopObj11$predictionLocations)[1]
+rtopObj12 = rtopSim(rtopObj11, nsim = 10, replace = TRUE)
 
 rtopObj10$simulations@data
 rtopObj12$simulations@data

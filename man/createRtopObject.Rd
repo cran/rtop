@@ -25,7 +25,7 @@ createRtopObject(observations, predictionLocations,
       If not, the first column of the data set is used. Universal kriging 
       is not yet properly implemented in the \code{rtop}-package, this 
       element is mainly used for defining the dependent variable.}
-\item{params}{parameters to modify the standard parameters of the rtop-package, 
+\item{params}{parameters to modify the default parameters of the rtop-package, 
         set internally in this function by a call to \code{\link{getRtopParams}} }
 
 \item{ainfo}{\code{\link[sp]{SpatialPointsDataFrame}} with information about the 
@@ -50,6 +50,13 @@ Most other externally visible functions in the package will be able to
 work with this object, and add the results as a new element.
 }
 
+
+\references{ 
+Skoien J. O., R. Merz, and G. Bloschl. Top-kriging - geostatistics on stream networks.
+Hydrology and Earth System Sciences, 10:277-287, 2006.
+
+Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2014. Rtop: An R package for interpolation of data with a variable spatial support, with an example from river networks. Computers & Geosciences, 67.
+}
 
 
 \author{ Jon Olav Skoien }
@@ -77,6 +84,6 @@ rtopObj = createRtopObject(observations, predictionLocations,
 }
 
 \seealso{
-\code{\link{rtop-package}} and \code{\link{getRtopParams}}
+\code{\link{getRtopParams}}
 }
 \keyword{spatial}

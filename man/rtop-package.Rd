@@ -102,6 +102,8 @@ Stochastic Hydrology and Hydraulics, 7:269-281, 1993.
 
 Skoien J. O., R. Merz, and G. Bloschl. Top-kriging - geostatistics on stream networks.
 Hydrology and Earth System Sciences, 10:277-287, 2006.
+
+Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2014. Rtop: An R package for interpolation of data with a variable spatial support, with an example from river networks. Computers & Geosciences, 67.
 }
 \keyword{spatial}
 

@@ -3,7 +3,7 @@
 
 sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.01,
     ngs = 5, npg = 5, nps = 5, nspl = 5, mings = 5, iniflg = 1, iprint = 0, iround = 3, 
-    peps = 0.0001, plog = rep(FALSE,length(pars)), implicit = NULL, ...) {
+    peps = 0.0001, plog = rep(FALSE,length(pars)), implicit = NULL, timeout = NULL, ...) {
 
 # OFUN - objective function
 # pars - starting values
@@ -29,6 +29,7 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
 #      = 1, print information on every point of the population
 # implicit = function for implicit boundaries (e.g. sum(par[4]+par[5]) < 1)
 
+  if (!is.null(timeout)) tstart = Sys.time()
   npars = length(pars)
   if (length(plog) == 1) 
     plog = rep(plog,npars) 
@@ -100,6 +101,11 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
         cf[lcs] = sf
         cx = cx[order(cf),]
         cf = sort(cf)
+        if (!is.null(timeout)) 
+          if (difftime(Sys.time() - tstart, "secs") > timeout)
+            return(list(par = ifelse(plog,10^bestpar,bestpar), value = xf[1], 
+                        convergence = list(funConvergence = signif(concrit,iround)/pcento, parConvergence = gnrng/peps),
+                        counts = icall, iterations = nloop, timeout = TRUE))
       }
       parset[karr,] = cx
       xf[karr] = cf
@@ -133,7 +139,7 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
   }
   bestpar = ifelse(plog,10^bestpar,bestpar)
   return(list(par = bestpar, value = xf[1], convergence = list(funConvergence = signif(concrit,iround)/pcento, parConvergence = gnrng/peps),
-      counts = icall, iterations = nloop))
+      counts = icall, iterations = nloop, timeout = FALSE))
 }
 
 comp = function(npars,npt,ngs,npg,parset,xf){

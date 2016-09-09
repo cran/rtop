@@ -5,7 +5,7 @@
 called by the user.
 }
 \usage{
-rtopCluster(nclus, ..., action = "start", type) 
+rtopCluster(nclus, ..., action = "start", type, outfile = NULL)
 }
 
 \arguments{
@@ -20,6 +20,7 @@ rtopCluster(nclus, ..., action = "start", type)
 }
 \item{type}{The type of cluster; see \code{\link[parallel]{makeCluster}} for more details. 
             The default of makeCluster is used if type is missing or NA.}
+\item{outfile}{File to direct the output, \code{\link[parallel]{makeCluster}} for more details. }
 }
  
 

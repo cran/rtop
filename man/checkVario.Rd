@@ -9,14 +9,14 @@ to sample variograms of data with support
 }
 \usage{
 \method{checkVario}{rtop}(object, acor = 1, log = "xy", cloud = FALSE, 
-                          gDist = TRUE, params = list(), ...) 
+                          gDist = TRUE, curveSmooth = FALSE, params = list(), ...) 
 
 \method{checkVario}{rtopVariogramModel}(object, 
            sampleVariogram = NULL, observations = NULL, 
-           areas = NULL, dists = NULL, acomp = NULL,
+           areas = NULL, dists = NULL, acomp = NULL,  
            params = list(), compVars = list(), acor = 1, 
            log = "xy", legx = NULL, legy = NULL, 
-           plotNugg = TRUE, ...) 
+           plotNugg = TRUE, curveSmooth = FALSE, ...) 
 }
 
 
@@ -35,17 +35,19 @@ to sample variograms of data with support
 \item{sampleVariogram}{a sample variogram of the data}
 \item{observations}{a set of observations}
 \item{areas}{either an array of areas that should be used as examples, or 
-        the number of areas per order of magnitude (similar to the parameter \code{amul}
-        of the standard parameters, see \code{\link{getRtopParams}}. amul from \code{rtopObj}
-        or from the standard parameter set will be used if not defined here.}
+        the number of areas per order of magnitude (similar to the parameter \code{amul};
+         see \code{\link{getRtopParams}}. amul from \code{rtopObj}
+        or from the default parameter set will be used if not defined here.}
 \item{dists}{either an array of distances that should be used as examples, or
-        the number of distances per order of magnitude(similar to the parameter \code{amul}
-        of the standard parameters, see \code{\link{getRtopParams}}. amul from \code{rtopObj}
-        or from the standard parameter set will be used if not defined here.}
+        the number of distances per order of magnitude(similar to the parameter \code{amul};
+        see \code{\link{getRtopParams}}. amul from \code{rtopObj}
+        or from the default parameter set will be used if not defined here.}
 \item{acomp}{either a matrix with the area bins that should be visualized, or a number 
         giving the number of pairs to show. If a sample variogram is given, the \code{acomp}
         pairs with highest number of pairs will be used}
-\item{params}{list of parameters to modify the standard parameters of rtopObj or 
+\item{curveSmooth}{logical or numerical; describing whether the curves in the last plot should be smoothed or not. If numeric,
+        it gives the degrees of freedom (df) for the splines used for smoothing. See also \code{\link[stats]{smooth.spline}}}
+\item{params}{list of parameters to modify the default parameters of rtopObj or 
         the default parameters found from \code{\link{getRtopParams}}}
 \item{compVars}{a list of variograms of \code{gstat}-type for comparison, see 
         \code{\link[gstat:vgm]{vgm}}. The names of the variograms in the list will
@@ -70,13 +72,19 @@ regularized variogram values. The sizes of the dots are relative to the number
 of pairs in each group.
 }
 
+\references{ 
+Skoien J. O., R. Merz, and G. Bloschl. Top-kriging - geostatistics on stream networks.
+Hydrology and Earth System Sciences, 10:277-287, 2006.
+
+Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2014. Rtop: An R package for interpolation of data with a variable spatial support, with an example from river networks. Computers & Geosciences, 67.
+}
 
 
 \author{ Jon Olav Skoien }
-\seealso{\code{\link{rtop-package}}}
 \examples{
 \dontrun{
 library(rgdal)
+library(gstat)
 rpath = system.file("extdata",package="rtop")
 setwd(rpath)
 observations = readOGR(".","observations")

@@ -40,8 +40,8 @@ to be included in the object described in \code{\link{rtop-package}}}
            given as a matrix with three columns, where the first column is the 
            lower limit, the second column is the upper limit and the third column
            are starting values.}
-     \item{nugget = TRUE}{ - logical; if TRUE nugget effect should be estimated}
-     \item{unc = TRUE}{ - logical; if TRUE the standard deviation of observations are in column \code{unc}}
+     \item{nugget = FALSE}{ - logical; if TRUE, nugget effect should be estimated}
+     \item{unc = TRUE}{ - logical; if TRUE the variance of observations are in column \code{unc}}
      \item{rresol = 100}{ - minimum number of discretization points in each area}  
      \item{hresol = 5}{ - number of discretization points in one direction for elements in binned variograms}
      \item{cloud = FALSE}{ - logical; if TRUE use the cloud variogram for variogram fitting}
@@ -85,6 +85,8 @@ to be included in the object described in \code{\link{rtop-package}}}
                        \code{nAreas*params$rresol/100 > cnAreas} }
      \item{clusType = NULL}{- the cluster type to be started for parallel processing; uses the default 
                        type of the system when clusType = NULL}
+     \item{outfile = NULL}{file where output can be printed during parallel execution}
+     \item{varClean = FALSE}{logical; if TRUE it will remove highly correlated areas from the covariance matrix during simulation }
      \item{wlim = 1.5}{ - an upper limit for the norm of the weights in kriging, see \code{\link{rtopKrige}}}
      \item{wlimMethod = "all"}{which method to use for reducing the norm of the weights if necessary. Either "all", which modifies all weights equally or "neg" which reduces negative weights and large weights more than the smallest weights }
      \item{cv = FALSE}{ - logical; for cross-validation of observations}
@@ -135,6 +137,8 @@ Cressie, N. 1985. Fitting variogram models by weighted least squares. Mathematic
 
 Skoien J. O., R. Merz, and G. Bloschl. Top-kriging - geostatistics on stream networks.
 Hydrology and Earth System Sciences, 10:277-287, 2006
+
+Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2014. Rtop: An R package for interpolation of data with a variable spatial support, with an example from river networks. Computers & Geosciences, 67.
 }
 \author{ Jon Olav Skoien }
 

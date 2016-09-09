@@ -8,7 +8,7 @@ rtopFitVariogram.rtop = function(object, params = list(), ...) {
 
   if (params$nugget) {
     if (!"overlapObs" %in% names(object)) 
-      object$overlapObs = overlapObs = findOverlap(observations,observations)
+      object$overlapObs = overlapObs = findOverlap(observations,observations, partialOverlap = TRUE)
   }  
   if (params$cloud) {
     vario = object$variogramCloud
@@ -219,7 +219,7 @@ objfunc = function(pars, varioIn, gDistEst=FALSE, dists, aOver = NULL, model="Ex
   }
   err = mapply(FUN=goFit,vario[,igamma],gammar,dist=vario[,idist],np = vario[,inp],MoreArgs=list(fit.method))
   errSum = sum(err)/sum(vario[,inp])
-  if (debug.level > 0) print(paste(paste(round(pars,4), collapse = " "), "errSum = ", errSum))
+  if (debug.level > 1) print(paste(paste(round(pars,4), collapse = " "), "errSum = ", errSum))
   if (last) return(list(varFit = data.frame(vario,vario[,igamma], gammar = gammar, err = err),errSum = errSum)) else  return(errSum)
 }
 

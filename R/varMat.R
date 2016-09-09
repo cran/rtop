@@ -1,7 +1,7 @@
 
 # varMat.rtop hardly uses the functions further below, should be shortened
 
-varMat.rtop = function(object, varMatUpdate = FALSE, params = list(), ...) {
+varMat.rtop = function(object, varMatUpdate = FALSE, fullPred = FALSE, params = list(), ...) {
   params = getRtopParams(object$params,  newPar = params, ...)
   observations = object$observations
   if (is(observations, "STSDF")) observations = observations@sp
@@ -35,7 +35,7 @@ varMat.rtop = function(object, varMatUpdate = FALSE, params = list(), ...) {
         object$gDistObs = gDistObs = gDist(dObs, params = params)
       }
       if (!is.null(params$nclus) && params$nclus > 1 && nObs > params$cnAreas && requireNamespace("parallel")) {
-        cl = rtopCluster(params$nclus, type = params$clusType)
+        cl = rtopCluster(params$nclus, type = params$clusType, outfile = params$outfile)
         varMatObs = matrix(unlist(parallel::parLapply(cl, 1:nObs, fun = function(x, gDistObs, variogramModel) 
           mapply(gDistObs[, x],
                  FUN = function(y) varioEx(y, variogramModel)), 
@@ -78,7 +78,7 @@ varMat.rtop = function(object, varMatUpdate = FALSE, params = list(), ...) {
     if (lgDistPred) {
       if ("gDistPred" %in% names(object)) {
         gDistPred = object$gDistPred
-      } else object$gDistPred = gDistPred = gDist(dPred, diag=TRUE, params = params)
+      } else object$gDistPred = gDistPred = gDist(dPred, diag=!fullPred, params = params)
       if ("gDistPredObs" %in% names(object)) {
         gDistPredObs = object$gDistPredObs
       } else object$gDistPredObs = gDistPredObs = gDist(dObs,dPred, params = params)
@@ -89,7 +89,7 @@ varMat.rtop = function(object, varMatUpdate = FALSE, params = list(), ...) {
                           nrow = nPred,ncol = 1)
       
       if (!is.null(params$nclus) && params$nclus > 1 && nObs > params$cnAreas && requireNamespace("parallel")) {
-        cl = rtopCluster(nclus = params$nclus, type = params$clusType)
+        cl = rtopCluster(nclus = params$nclus, type = params$clusType, outfile = params$outfile)
 
         varMatPredObs = matrix(unlist(parallel::parLapply(cl, 1:nPred, fun = function(x, gDistPredObs, variogramModel) 
           mapply(gDistPredObs[, x],
@@ -266,14 +266,19 @@ varMat.list = function(object, object2=NULL, coor1, coor2, maxdist = Inf,
 
   if (!is.null(params$nclus) && params$nclus > 1 && length(d1) + length(d2) > params$cnAreas && requireNamespace("parallel")) {
 #    cl = rtopCluster(params$nclus, {require(sp); vred = rtop:::vred}, type = params$clusType)
-    cl = rtopCluster(params$nclus, type = params$clusType)
+    cl = rtopCluster(params$nclus, type = params$clusType, outfile = params$outfile)
     if (missing(coor1)) coor1 = NULL
     if (missing(coor2)) coor2 = NULL
 
     
-    fun = function(ia, d1, d2, coor1, coor2, equal, maxdist) {    
+    fun = function(ia, d1, d2, coor1, coor2, equal, maxdist, debug.level) {    
+      t1 = proc.time()[[3]]
       ndim = length(d1)
-      mdim = length(d2)
+      if (equal) {
+        mdim = ndim
+      } else {
+        mdim = length(d2)
+      }
       a1 = coordinates(d1[[ia]])
       ip1 = dim(a1)[1]
       first = ifelse(equal,ia,1)
@@ -281,13 +286,18 @@ varMat.list = function(object, object2=NULL, coor1, coor2, maxdist = Inf,
       if (!is.null(coor1) && ! is.null(coor2) && maxdist < Inf) 
           lorder = lorder[spDistsN1(coor2[first:mdim,],coor1[ia,]) < maxdist]
         if (length(lorder) > 0) {
-          ld = d2[lorder]
+          if (equal) {
+            ld = d1[lorder]
+          } else ld = d2[lorder]
           lmat = mapply(vred,a2 = ld,MoreArgs = list(vredTyp="ind",a1 = a1,variogramModel = variogramModel))
         } else lmat = -999  
+      t2 = proc.time()[[3]]
+      if (debug.level > 0) print(paste("varMat - Finished element ", ia, " in ", round(t2-t1,3), "PID:", Sys.getpid()))
       list(lmat, lorder)
     }    
-    vmll = parallel::clusterApply(cl, 1:length(d1), d1 = d1, d2 = d2, coor1 = coor1, coor2 = coor2, 
-                       equal = equal, maxdist = maxdist, fun = fun)
+    if (equal) d2 = NULL
+    vmll = parallel::clusterApplyLB(cl, 1:length(d1), d1 = d1, d2 = d2, coor1 = coor1, coor2 = coor2, 
+                       equal = equal, maxdist = maxdist, fun = fun, debug.level = debug.level)
 
     for (ia in 1:length(vmll)) {
       lmat = vmll[[ia]][[1]]
