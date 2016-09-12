@@ -304,7 +304,7 @@ c      write(*,*) skor,(par(i),i=1,5),model
       xd = skor
       c = par(2)
       epar = (xd/c)
-      spherical = par(1)*(1.5*epar-.5*(epar**3))
+      spherical = par(1)*(3./2.*epar-.5*(epar**3))
       end
       
       
@@ -322,7 +322,7 @@ c      write(*,*) skor,(par(i),i=1,5),model
         xfrac = 0
       endif
       epar = (xd/c)
-      sph1 = par(1)*xfrac*(3/2*epar-.5*(epar**3))
+      sph1 = par(1)*xfrac*(3./2.*epar-.5*(epar**3))
       end
 
 

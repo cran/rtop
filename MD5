@@ -1,4 +1,4 @@
-7cbf5523697940e8863466d5d8fff7f6 *DESCRIPTION
+781208202dc2972538f666718f6c4f56 *DESCRIPTION
 e92eab10fe0b6339c056cc5b9b9778ab *NAMESPACE
 12c25257f092f939c92d6c2f6fbdc4be *R/checkVario.R
 238cdb3df691d8796b7c0750569f1fc5 *R/discAreas.R
@@ -59,5 +59,5 @@ ad9ad0ecc36770703432fdbb25aeb9a6 *man/sceua.Rd
 3e6baf6bd924990ba52aba710d75da54 *man/useRtopWithIntamap.Rd
 627b4b07f9e898e13350e09b7b274d72 *man/varMat.Rd
 6bec45ba641f5d48747b280bc603dff0 *man/variogramModel.Rd
-c65210f0c2f3ac9d2fff3d4876016909 *src/vred.f
+7036fac85220f2743224cead35db7a48 *src/vred.f
 e74f0ada635faabd6b779da7ccdf9333 *tests/rtop.R

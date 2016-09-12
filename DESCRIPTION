@@ -1,8 +1,8 @@
 Package: rtop
 Type: Package
 Title: Interpolation of Data with Variable Spatial Support
-Version: 0.5-9
-Date: 2016-09-09
+Version: 0.5-10
+Date: 2016-09-12
 Author: Jon Olav Skoien
 Maintainer: Jon Olav Skoien <jon.skoien@gmail.com>
 Depends: sp
@@ -12,6 +12,6 @@ Suggests: parallel, igraph, intamap, rgeos, spacetime, data.table,
 Description: Geostatistical interpolation of data with irregular spatial support such as runoff related data or data from administrative units.
 License: GPL (>= 2)
 NeedsCompilation: yes
-Packaged: 2016-09-09 15:43:55 UTC; skoiejo
+Packaged: 2016-09-12 06:22:52 UTC; skoiejo
 Repository: CRAN
-Date/Publication: 2016-09-09 17:57:55
+Date/Publication: 2016-09-12 15:09:01
