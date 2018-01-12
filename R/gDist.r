@@ -3,10 +3,10 @@ gDist.rtop = function(object, params = list(), ...) {
   params = getRtopParams(object$params, newPar = params, ...)
   if (params$debug.level > 1) debug.level = params$debug.level else debug.level = 0
   if (!"dObs" %in% names(object)) object$dObs = rtopDisc(object$observations, params = params, ...)
-  if (!"dPred" %in% names(object)) object$dPred = rtopDisc(object$predictionLocations, params = params, ...)
+  if (!"dPred" %in% names(object) & "predictionLocations" %in% names(object)) object$dPred = rtopDisc(object$predictionLocations, params = params, ...)
   object$gDistObs = gDist(object$dObs, object$dObs, debug.level = debug.level, params = params, ...)
-  object$gDistPredObs = gDist(object$dObs, object$dPred, debug.level = debug.level, params = params, ...)
-  object$gDistPred = gDist(object$dPred, object$dPred, diag=TRUE, debug.level = debug.level, params = params,...)
+  if ("dPred" %in% names(object)) object$gDistPredObs = gDist(object$dObs, object$dPred, debug.level = debug.level, params = params, ...)
+  if ("dPred" %in% names(object)) object$gDistPred = gDist(object$dPred, object$dPred, diag=TRUE, debug.level = debug.level, params = params,...)
   object
 }
 

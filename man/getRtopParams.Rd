@@ -51,8 +51,8 @@ to be included in the object described in \code{\link{rtop-package}}}
      \item{dmul = 3}{ - defines the number of distance bins within one order of magnitude. Numbers between 1 and 3 
                       are possible, as this parameter refers to the \code{axp} parameter of
                       \code{\link[graphics]{axTicks}}.}
-     \item{fit.method = 8}{ - defines the type of Least Square method for fitting of variogram. 
-                  The methods 1-7 correspond to the similar methods in \code{\link{gstat}}.
+     \item{fit.method = 9}{ - defines the type of Least Square method for fitting of variogram. 
+                  The methods 1-7 correspond to the similar methods in \code{\link[gstat]{fit.variogram}} of \code{\link{gstat}}.
        \itemize{
         \item{1}{ - weighted least squares with number of pairs per bin: \cr 
                     err = n * (yobs-ymod)^2}
@@ -89,6 +89,7 @@ to be included in the object described in \code{\link{rtop-package}}}
      \item{varClean = FALSE}{logical; if TRUE it will remove highly correlated areas from the covariance matrix during simulation }
      \item{wlim = 1.5}{ - an upper limit for the norm of the weights in kriging, see \code{\link{rtopKrige}}}
      \item{wlimMethod = "all"}{which method to use for reducing the norm of the weights if necessary. Either "all", which modifies all weights equally or "neg" which reduces negative weights and large weights more than the smallest weights }
+     \item{singularSolve}{ - logical; When TRUE, the kriging function will attempt to solve singular kriging matrices by removing catchments that have the same correlations. This will usually happen when two catchments are almost overlapping, and they are discretized with the same points. See also \code{\link{rtopKrige}}.}
      \item{cv = FALSE}{ - logical; for cross-validation of observations}
      \item{debug.level = 1}{ - used in some functions for giving additional output. See 
                 individual functions for more information.}

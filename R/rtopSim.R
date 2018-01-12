@@ -115,7 +115,7 @@ rtopSim.rtop = function(object, varMatUpdate = FALSE, beta = NA, largeFirst = TR
           wlim0 = wlim0/1.05
 #          if (ip > 450) browser()
           ret <- try(rkrige(obsall, obs, obscors, newcor, vObs, vPredObs[,in2, drop = FALSE], nmax, inew, cv, 
-                     unc0, mdist, maxdist, singMat, varInv, wlim0, debug.level, 
+                     unc0, mdist, maxdist, singMat, varInv, singularSolve = FALSE, wlim0, debug.level, 
                      wlimMethod, simul = TRUE, varClean = FALSE, corlines = corlines, remNeigh = TRUE), silent = TRUE)
           if (is(ret, "try-error")) print(paste("error in simulation of area number", ip))
           if (wlim0 < 1.05 || (!is(ret, "try-error") && ret$pred[2] > 0)) break

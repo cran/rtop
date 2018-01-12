@@ -58,13 +58,14 @@ rtopFitVariogram.rtopVariogram = function(object, observations, dists = NULL, pa
   if (params$model == "Ex1") {
     implicit = function(pars) (2*pars[4] + pars[5]) > 1
   } else implicit = NULL
-  scres = sceua(objfunc,params$parInit[,3],params$parInit[,1],params$parInit[,2],varioIn = object,
-       dists = dists, aOver = aOver, gDistEst = params$gDistEst,model = params$model,resol = params$hresol,
+  scres = sceua(objfunc,params$parInit[,3],  
+                lower = params$parInit[,1], upper = params$parInit[,2], varioIn = object,
+       dists = dists, aOver = aOver, gDistEst = params$gDistEst, model = params$model, resol = params$hresol,
        fit.method = params$fit.method, implicit = implicit, ...)
   bestPar = scres$par
   fit = scres$value
-  vf = objfunc(bestPar,varioIn = vario, dists = dists, aOver = aOver,
-                   gDistEst = params$gDistEst,last = TRUE,model = params$model,resol = params$hresol,...)
+  vf = objfunc(bestPar, varioIn = vario, dists = dists, aOver = aOver,
+                   gDistEst = params$gDistEst, last = TRUE, model = params$model, resol = params$hresol,...)
   varFit = vf$varFit
   errSum = vf$errSum
 
@@ -98,7 +99,8 @@ rtopFitVariogram.rtopVariogramCloud = function(object, observations, dists = NUL
   if (params$model == "Ex1") {
     implicit = function(pars) (2*pars[4] + pars[5]) > 1
   } else implicit = NULL
-  scres = sceua(objfunc, params$parInit[,3], params$parInit[,1], params$parInit[,2], varioIn = vario,
+  scres = sceua(objfunc, params$parInit[,3], 
+          lower = params$parInit[,1], upper = params$parInit[,2], varioIn = vario,
          dists = dists, aOver = aOver, gDist = params$gDistEst,model = params$model, 
          fit.method = params$fit.method, debug.level = params$debug.level, ...)
   bestPar = scres$par

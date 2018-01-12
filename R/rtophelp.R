@@ -46,6 +46,7 @@ dfunc = function(sampleVariogram, observations, dmul) {
     dmax = max(sampleVariogram$dist) 
     dmin = min(sampleVariogram$dist[sampleVariogram$np > 2])
   }
+  if (dmin < dmax/1e8) dmin = dmax/1e8
   Rver = R.Version()
   if (as.numeric(Rver$major)*100 + as.numeric(Rver$minor) >= 214) {
     dists = axTicks(1,c(dmin/5,dmax*10,dmul),usr = c(log10(dmin/5)-1,log10(dmax)+1), 

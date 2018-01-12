@@ -15,7 +15,7 @@ c     Uses the pdf of distances between the two observations
 c      write(*,*) ci,ip1,ip2,ipb,par
       w = 0
       c1 = 0
-      open(unit = 23,file = "log.txt")
+c      open(unit = 23,file = "log.txt")
       do i = 1,ip1
 c        write(*,*) i, (pdf1(i,j),j=1,2)
         xd = pdf1(i,1)
@@ -57,7 +57,7 @@ c     1             3,i,xd,gamma,cb,wb,w,cb/w
 
       ci = cb-(c1+c2)/2.
 c      write(*,*) ci, w, cb, c1, c2
-      close(23)
+c      close(23)
       end
 
 

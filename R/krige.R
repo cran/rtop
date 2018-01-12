@@ -4,21 +4,15 @@ ffun = function(...) {
 
 
 rkrige = function(observations, obs0, obscors, newcor, vObs, c0arr, nmax, inew, cv, 
-                  unc0, mdist, maxdist, singMat, varInv, wlim, debug.level,
-                  wlimMethod, simul = FALSE, BLUE = FALSE, varClean = FALSE, corlines = NULL, remNeigh = FALSE) {
+                  unc0, mdist, maxdist, singMat, varInv, singularSolve = FALSE, wlim, debug.level,
+                  wlimMethod, simul = FALSE, BLUE = FALSE, varClean = FALSE, 
+                  corlines = NULL, remNeigh = FALSE) {
   
   
   
   naobs = which(is.na(obs0)) 
   naobs = unique(c(naobs, corlines))
-  if (varClean & FALSE) {
-    vm = vObs
-    diag(vm) = 1
-    vm[upper.tri(vm)] = 1
-    mins = apply(vm, MARGIN = 1, FUN = function(x) min(x))
-    naobs = c(naobs, which(mins < 1e-9))
-  }
-  
+
   if (length(naobs) > 0) {
     
     if (debug.level > 1) observations = observations[-naobs]
@@ -71,16 +65,34 @@ rkrige = function(observations, obs0, obscors, newcor, vObs, c0arr, nmax, inew, 
       }
     }
     nneigh = length(c0arr)
-    if (BLUE) vInv = try(solve(vMat))
+    if (BLUE) vInv = try(solve(vMat), silent = TRUE)
     vMat = rbind(vMat,1)
     vMat = cbind(vMat,1)
     
     diag(vMat)[1:nneigh] = -unc
     vMat[nneigh+1,nneigh+1] = 0
     
+    removed = NULL
     while (TRUE) {
-      varInv = try(solve(vMat))
-      if (is(varInv,"try-error") || (BLUE && is(vInv, "try-error"))) {
+      varInv = try(solve(vMat), silent = TRUE)
+      if (is(varInv, "try-error") & singularSolve) {
+        dd = which(vMat == 0, arr.ind = TRUE)
+        dd = dd[dd[,2] > dd[,1],, drop = FALSE]
+        if (dim(dd)[1] == 0) break
+        ivs = dd[,1]
+        jvs = dd[,2]
+        removed = data.frame(inew, ivs, jvs, neigh[ivs], neigh[jvs], obs[ivs], obs[jvs], 
+                             unc[ivs], unc[jvs], c0arr[ivs], c0arr[jvs]) 
+        vMat = vMat[-ivs, -jvs]
+        obs[ivs] = (obs[ivs] + obs[jvs])/2
+        obs = obs[-jvs]
+        neigh = neigh[-jvs]
+        c0arr = c0arr[-jvs]
+        nneigh = nneigh - dim(dd)[1]
+        varInv = try(solve(vMat), silent = TRUE)
+        
+      } 
+      if ((is(varInv,"try-error") || (BLUE && is(vInv, "try-error"))) & !remNeigh) {
         emsg = paste("Error in solve.default(vMat) : \n",
                      "system is computationally singular.\n",
                      #                  "Error most likely occured because two or more areas/lines being (almost) identical \n",
@@ -118,7 +130,7 @@ rkrige = function(observations, obs0, obscors, newcor, vObs, c0arr, nmax, inew, 
   lambda = varInv %*% c0arr
   slambda = sum(abs(lambda[1:nneigh]))
   if (BLUE) BLUE = sum(vInv %*% c0arr)/sum(vInv)
-  s0lambda = slambda
+  oslambda = slambda
   while (slambda > wlim) {
     if (wlimMethod == "all") {
       oslambda = slambda
@@ -161,5 +173,5 @@ rkrige = function(observations, obs0, obscors, newcor, vObs, c0arr, nmax, inew, 
   
   list(pred = c(sum(lambda[1:nneigh] * obs), krigingError, slambda ),
        lambda = lambda, c0arr = c0arr, obs = obs, unc = unc, nneigh = nneigh, 
-       neigh = neigh, mu = BLUE)
+       neigh = neigh, mu = BLUE, removed = removed)
 }

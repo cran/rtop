@@ -17,6 +17,7 @@ rtopKrige.rtop = function(object, varMatUpdate = FALSE, params = list(), ...) {
   object$predictions = krigeRes$predictions
   if ("cvInfo" %in% names(krigeRes)) object$cvInfo = krigeRes$cvInfo
   if ("weight" %in% names(krigeRes)) object$weight = krigeRes$weight
+  if ("removed" %in% names(krigeRes)) object$removed = krigeRes$removed
   object
 }  
 
@@ -47,6 +48,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
   maxdist = params$maxdist
   debug.level = params$debug.level
   lambda = params$lambda
+  if ("singularSolve" %in% names(params)) singularSolve = params$singularSolve else singularSolve = FALSE
   if (!is.null(lambda)) BLUE = TRUE else BLUE = FALSE
   if (!missing(varMat)) {
     if (missing(varMatObs)) varMatObs = varMat$varMatObs
@@ -80,7 +82,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
     varMatPredObs = varMatObs
   }
   # 
-  
+  removed = NULL
   predictions = data.frame(var1.pred = rep(0,npred),var1.var = 0,sumWeights = 0)
   if (cv) {
     predictions = cbind(predictions,observed = observations[[depVar]], residual=0, zscore = 0)
@@ -97,7 +99,8 @@ rtopKrige.default = function(object, predictionLocations = NULL,
   }
   
   if (debug.level >= 1) print(paste(ifelse(cv, "cross-validating", "interpolating "), length(sel), "areas"))
-  for (inn in 1:length(sel)) {
+
+    for (inn in 1:length(sel)) {
     inew = sel[inn]
     if (debug.level > 1) print("\n")
     #  for (inew in 1:20) {         
@@ -117,7 +120,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
     newcor = newcors[inew,]
     
     ret = rkrige(observations@data, obs0, obscors, newcor, varMatObs, varMatPredObs[,inew], nmax, inew, cv, 
-                 unc0, mdist, maxdist, singMat, varInv, wlim, debug.level, wlimMethod, BLUE)
+                 unc0, mdist, maxdist, singMat, varInv, singularSolve, wlim, debug.level, wlimMethod, BLUE)
     
     predictions$var1.pred[inew] = ret$pred[1]
     predictions$var1.var[inew] = ret$pred[2]
@@ -158,7 +161,9 @@ rtopKrige.default = function(object, predictionLocations = NULL,
         print(cbind(predictionLocations@data[inew,],predictions[inew,]))
       }
     }
-    
+    if (singularSolve & !is.null(ret$removed)) {
+      if (!is.null(removed)) removed = rbind(removed, ret$removed) else removed = ret$removed
+    }
   }  
   if (interactive() & debug.level == 1 & length(sel) > 1) close(pb)
   if ("data" %in% names(getSlots(class(predictionLocations)))) {
@@ -170,6 +175,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
   if (cv) predictions$observed = observations[[depVar]]
   ret = list(predictions = predictions)
   if (wret) ret$weight = weight
+  if (singularSolve & !is.null(removed)) ret$removed = removed
   if (cv) ret$cvInfo = cvInfo
   ret
 }

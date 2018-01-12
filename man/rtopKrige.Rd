@@ -26,11 +26,12 @@ rtopKrige perform spatial interpolation or cross validation of data with areal s
 }
 
 \arguments{
-\item{object}{object of class \code{rtop} or \code{\link[sp]{SpatialPolygonsDataFrame}}}
+\item{object}{object of class \code{rtop} or \code{\link[sp]{SpatialPolygonsDataFrame}} or \code{\link[spacetime]{STSDF}}}
 \item{varMatUpdate}{logical; if TRUE, also existing variance matrices will 
             be recomputed, if FALSE, only missing variance matrices will be computed,
             see also \code{\link{varMat}}}
-\item{predictionLocations}{\code{\link[sp]{SpatialPolygons}} or \code{\link[sp]{SpatialPolygonsDataFrame}}
+\item{predictionLocations}{\code{\link[sp]{SpatialPolygons}} or \code{\link[sp]{SpatialPolygonsDataFrame}} or 
+            \code{\link[spacetime]{STSDF}} 
      with prediction locations. NULL if cross validation is to be performed.}
 \item{varMatObs}{covariance matrix of observations, where diagonal must consist 
       of internal variance, typically generated from call
@@ -58,7 +59,7 @@ useful for batch processing of time series, see also details}
     Of particular interest are \code{cv}, a logical for doing cross-validation,
     \code{nmax}, and \code{maxdist} for maximum number of neighbours and
     maximum distance to neighbours, respectively, and \code{wlim}, the limit for
-    the absolute values of the weights.}
+    the absolute values of the weights. It can also be useful to set \code{singularSolve} if some of the areas are almost similar, see also details below.}
 } 
 
 \value{ 
@@ -95,10 +96,11 @@ The function returns the weights rather than the predictions if \code{wret = TRU
 This is useful for batch processing of time series, e.g. once the weights are 
 created, they can be used to compute the interpolated values for each time step.
 
-rtop is able to take some advantage of multiple cpus, which can be invoked with the 
-parameter nclus, setting this larger than one will start a cluster with nclus workers,
+rtop is able to take some advantage of multiple CPUs, which can be invoked with the 
+parameter \code{nclus}. When it gets a number larger than one, \code{rtopKrige} will start a cluster with \code{nclus} workers,
 if the \code{\link{parallel}}-package has been installed. 
 
+The parameter \code{singularSolve} can be used when some areas are almost completely overlapping. In this case, the discretization of them might be equal, and the covariances to other areas will also be equal. The kriging matrix will in this case be singular. When \code{singularSolve = TRUE}, \code{rtopKrige} will remove one of the neighbours, and instead work with the mean of the two observations. An overview of removed neighbours can be seen in the resulting object, under the name \code{removed}.
 
 Kriging of time series is possible when \code{observations} and \code{predictionLocations}
 are spatiotemporal objects of type \code{\link[spacetime]{STSDF}}. The interpolation is 

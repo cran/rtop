@@ -29,6 +29,8 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
 #      = 1, print information on every point of the population
 # implicit = function for implicit boundaries (e.g. sum(par[4]+par[5]) < 1)
 
+  oofun = function(pars) OFUN(pars, ...)
+  
   if (!is.null(timeout)) tstart = Sys.time()
   npars = length(pars)
   if (length(plog) == 1) 
@@ -49,7 +51,7 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
   icall = 1
 
   lpars = ifelse(plog,10^pars,pars)
-  fa = OFUN(lpars,...)
+  fa = oofun(lpars)
   if (iprint > 0 && icall %% iprint == 0) cat(icall,signif(fa,iround), "\n")
   parset[1,] = pars
   xf[1] = fa
@@ -57,7 +59,7 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
   for (ii in ifelse(iniflg == 1,2,1):npt) {
     parset[ii,] = getpnt(idist = 1,lower,upper,stdinit,lower, implicit)
     lpars = ifelse(plog,10^parset[ii,],parset[ii,])
-    xf[ii] = OFUN(lpars,...)
+    xf[ii] = oofun(lpars)
     icall = icall + 1
     if (iprint > 0 && icall %% iprint == 0) cat(icall,round(xf[ii],iround), "\n")
   }
@@ -91,13 +93,16 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
           if (kpos > nps) break 
         }
         lcs = sort(lcs)
-        s = cx[lcs,]
+        soc = cx[lcs,]
         sf = cf[lcs]  
-        cceout = cce(OFUN,npars,nps,s,sf,lower,upper,parstd,icall,maxn,iprint,iround,bestf,plog,implicit,...)
-        s = cceout$s
+        cceout = cce(oofun, npars, nps = nps, soc = soc, sf = sf, lower = lower, 
+                     upper = upper, parstd = parstd, icall = icall,
+                     maxn = maxn, iprint = iprint, iround = iround, bestf = bestf, 
+                     plog = plog, implicit = implicit)
+        soc = cceout$soc
         sf = cceout$sf
         icall = cceout$icall
-        cx[lcs,] = s
+        cx[lcs,] = soc
         cf[lcs] = sf
         cx = cx[order(cf),]
         cf = sort(cf)
@@ -125,13 +130,13 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
     criter[2:length(criter)] = criter[1:(length(criter)-1)]
     criter[1] = bestf
     if (iprint >= 0) cat(icall,"best",
-        signif(bestf,iround), "function convergence", signif(concrit,iround)/pcento,
+        signif(bestf,iround), "function convergence", signif(concrit, iround)/pcento,
         "parameter convergence", gnrng/peps, "\n")
 
     if (concrit < pcento & ipcnvg == 1) break
     if (icall > maxn) break
     if (ngs > mings) {
-      compout = comp(npars,npt,ngs,npg,parset,xf)
+      compout = comp(npars, npt, ngs, npg, parset, xf)
       ngs = ngs -1
       parset = compout$parset
       xf = compout$xf
@@ -151,47 +156,48 @@ comp = function(npars,npt,ngs,npg,parset,xf){
     xn[karr2,] = parset[karr1,]
     xfn[karr2] = xf[karr1]
   }
-  return(list(parset = xn,xf = xfn))
+  return(list(parset = xn, xf = xfn))
 }
 
-cce = function(OFUN,npars,nps,s,sf,lower,upper,parstd,icall,maxn,iprint,iround,bestf,plog, implicit,...) {
+cce = function(oofun, npars, nps, soc, sf,lower, upper, parstd, icall, maxn, iprint, 
+               iround, bestf, plog, implicit) {
   alpha = 1.
   beta = 0.5
-  n = dim(s)[1]
-  sb = s[1,]
-  sw = s[n,]
-  ce = colMeans(s)
+  n = dim(soc)[1]
+  sb = soc[1,]
+  sw = soc[n,]
+  ce = colMeans(soc)
   fw = sf[n]
   snew = ce+alpha*(ce-sw)
 #  print(icall)
-  if (chkcst(snew,lower,upper, implicit) >0) snew = getpnt(2, lower, upper, parstd, sb, implicit)
+  if (chkcst(snew, lower, upper, implicit) >0) snew = getpnt(2, lower, upper, parstd, sb, implicit)
 #  print(snew)
-  lpars = ifelse(plog,10^snew,snew)
-  fnew = OFUN(lpars,...)
+  lpars = ifelse(plog, 10^snew, snew)
+  fnew = oofun(lpars)
   icall = icall + 1
   if (iprint > 0 && icall %% iprint == 0) cat(icall, signif(fnew, iround), signif(bestf, iround), "\n")
   if (fnew > fw) {
     snew = ce-beta*(ce-sw)
-    lpars = ifelse(plog,10^snew,snew)
-    fnew = OFUN(lpars,...)
+    lpars = ifelse(plog,10^snew, snew)
+    fnew = oofun(lpars)
     icall = icall + 1
     if (iprint > 0 && icall %% iprint == 0) cat(icall, signif(fnew, iround), signif(bestf, iround), "\n")
     if (fnew > fw) {
-      snew = getpnt(2,lower,upper,parstd,sb, implicit)
-      lpars = ifelse(plog,10^snew,snew)
-      fnew = OFUN(lpars,...)
+      snew = getpnt(2, lower, upper, parstd, sb, implicit)
+      lpars = ifelse(plog,10^snew, snew)
+      fnew = oofun(lpars)
       icall = icall + 1
       if (iprint > 0 && icall %% iprint == 0) cat(icall, signif(fnew, iround), signif(bestf, iround), "\n")
     }
   }
-  s[n,] = snew
+  soc[n,] = snew
   sf[n] = fnew
-  return(list(s = s, sf = sf, icall = icall))
+  return(list(soc = soc, sf = sf, icall = icall))
 }
 
-chkcst = function(parlocal,lower,upper, implicit) {                                                  
+chkcst = function(parlocal, lower, upper, implicit) {                                                  
  ibound = if (sum(mapply(FUN = function(x,y,z)
-               max(y-x,x-z,0),parlocal,lower,upper)) > 0) 1 else 0
+               max(y-x, x-z, 0), parlocal, lower, upper)) > 0) 1 else 0
  if (ibound == 0 & length(parlocal) >1 & !is.null(implicit)) {
 # Possibility to include implicit constraints 
    if (!is.function(implicit)) stop("implicit has to be a function")

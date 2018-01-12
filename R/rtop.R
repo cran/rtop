@@ -90,7 +90,6 @@ createRtopObject = function(observations, predictionLocations,
 
 getRtopParams = function(params = list(), newPar = list(), observations, formulaString, ...){
   
-  
   oldPar = params
   dots = list(...) 
   if (inherits(oldPar,"intamapParams") || inherits(newPar,"intamapParams")) intPar = TRUE else intPar = FALSE
@@ -177,6 +176,7 @@ getRtopDefaultParams = function(parInit,
    partialOverlap = FALSE,
    wlim = 1.5,
    wlimMethod = "all",
+   singularSolve = FALSE, 
    cv = FALSE,
    debug.level = 1,
    observations,
@@ -199,7 +199,7 @@ list(model = model, nugget = nugget, unc = unc,
      fit.method = fit.method, gDistEst = gDistEst, gDistPred = gDistPred, varClean = varClean,
      maxdist = maxdist, nmax = nmax, nclus = nclus, cnAreas = cnAreas, clusType = clusType, 
      outfile = outfile, partialOverlap = partialOverlap,  
-     wlim = wlim, wlimMethod = wlimMethod, cv = cv,
+     wlim = wlim, wlimMethod = wlimMethod, singularSolve = singularSolve, cv = cv,
      debug.level = debug.level)
 }
 

@@ -1,4 +1,4 @@
-useDynLib(rtop)
+useDynLib(rtop, .registration = TRUE)
 import(graphics)
 import(gstat)
 import(sp)
@@ -15,7 +15,6 @@ export(checkVario,
   downloadRtopExampleData,
   gDist,
   getRtopParams,
-  netProp,
   readAreaInfo,
 	readAreas,
 	rtopFitVariogram,
