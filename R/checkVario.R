@@ -7,7 +7,7 @@ errorBar <- function(x, y, upper, lower=upper, length=0.1,...){
  arrows(x,y+upper, x, y-lower, angle=90, code=3, length=length, ...)
 }
 
-checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist = TRUE, curveSmooth = FALSE, params = list(), ...) {
+checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist = TRUE, acomp = NULL, curveSmooth = FALSE, params = list(), ...) {
   params = getRtopParams(object$params, newPar = params, ...)
   dots = list(...)
   
@@ -98,15 +98,16 @@ checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist =
   }
   if (is.null(variogramModel)) {
     if (is.null(sampleVariogram)) sampleVariogram = rtopVariogram(observations)
-    checkVario(sampleVariogram, observations, params = params, log = log, curveSmooth = curveSmooth, ...)    
+    checkVario(sampleVariogram, observations, params = params, log = log, 
+               curveSmooth = curveSmooth, acomp = acomp, ...)    
   } else {
     if (is.null(sampleVariogram)) {
       object$checkVario = checkVario(object$variogramModel, observations = object$observations, 
-           params = params, acor = acor, log = log, curveSmooth = curveSmooth, ...)
+           params = params, acor = acor, log = log, curveSmooth = curveSmooth, acomp = acomp, ...)
     } else {
       object$checkVario = checkVario(object$variogramModel, sampleVariogram = sampleVariogram, 
           observations = object$observations, params = params, acor = acor, 
-          log = log, curveSmooth = curveSmooth, ...) 
+          log = log, curveSmooth = curveSmooth, acomp = acomp, ...) 
     }
   }
   par(ask = askpar)

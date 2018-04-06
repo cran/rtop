@@ -25,6 +25,7 @@ rkrige = function(observations, obs0, obscors, newcor, vObs, c0arr, nmax, inew, 
   nobs = length(obs0)
   nneigh = nobs    
   neigh = c(1:nobs)
+  removed = NULL
   if (!singMat) {
     if (nobs <= nmax && mdist < maxdist) {
       if (cv) {
@@ -72,7 +73,6 @@ rkrige = function(observations, obs0, obscors, newcor, vObs, c0arr, nmax, inew, 
     diag(vMat)[1:nneigh] = -unc
     vMat[nneigh+1,nneigh+1] = 0
     
-    removed = NULL
     while (TRUE) {
       varInv = try(solve(vMat), silent = TRUE)
       if (is(varInv, "try-error") & singularSolve) {

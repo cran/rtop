@@ -224,13 +224,16 @@ getpnt = function(idist,lower,upper,std,pari, implicit){
 
 get1p = function(pari,std,lower,upper,idist, implicit) {
 #  print(paste(xi,std,rand,lower,upper))
+  ic = 0
   while (TRUE) {
     rand = ifelse(idist == 1,runif(1),rnorm(1))
     parj = pari+std*rand*(upper-lower)
 #    print(x)
 #    print(chkcst(x,lower,upper))
     if (chkcst(parj,lower,upper, implicit) == 0) break
-#    print(acdf)
+    ic = ic + 1
+    if (ic > 100) stop("Not possible to find a parameter that respect the fixed or implicit boundaries after 100 iterations")
+    #    print(acdf)
   }
   return(parj)
 }

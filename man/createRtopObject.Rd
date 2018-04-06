@@ -32,10 +32,11 @@ createRtopObject(observations, predictionLocations,
       observations. Only used here if it contains information for separating
       the observations into observations and predictionLocations or
       combining \code{ainfo} with \code{areas} to find \code{observations} and 
-      \code{predictionLocations}(depreceted method). Typically from a call to
-      \code{\link{readAreaInfo}} }
+      \code{predictionLocations}(depreceted method). The last could be from a call to
+      \code{\link{readAreaInfo}}}
 \item{areas}{\code{\link[sp]{SpatialPolygonsDataFrame}} with areal information,
-      typically from a call to \code{\link{readAreas}}, depreceted}
+      typically from a call to \code{\link{readAreas}}. This argument is normally not used 
+      if the observations and predictionLocations are already given above.}
 \item{overlapObs}{matrix with observations that overlap each other}
 \item{overlapPredObs}{matrix with \code{observations} and \code{predictionLocations}
           that overlap each other}

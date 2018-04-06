@@ -52,8 +52,8 @@ createRtopObject = function(observations, predictionLocations,
       stop("observations and predictionLocations do not both have proj4string set")
     }
     if (!is.na(proj4string(observations)) && 
-#        if (requireNamespace("rgdal") & !is.na(proj4string(observations)) && 
-            CRSargs(CRS(proj4string(observations))) != CRSargs(CRS(proj4string(predictionLocations)))) {
+         requireNamespace("rgdal") & !is.na(proj4string(observations)) && 
+            rgdal::CRSargs(CRS(proj4string(observations))) != rgdal::CRSargs(CRS(proj4string(predictionLocations)))) {
       stop(paste("observations and predictionLocations have different projections:", 
            proj4string(observations), proj4string(predictionLocations)))
     }

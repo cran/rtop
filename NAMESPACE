@@ -6,7 +6,7 @@ import(grDevices)
 import(stats)
 import(methods)
 import(utils)
-import(rgdal)
+#import(rgdal)
 #importFrom(graphics, hist, polygon, par, polypath, lines, strheight, 
 #  text, contour, axTicks, axis, rasterImage, image, box, plot.new, 
 #  plot.window, rect, segments, points, locator, identify, title)

@@ -9,7 +9,7 @@ to sample variograms of data with support
 }
 \usage{
 \method{checkVario}{rtop}(object, acor = 1, log = "xy", cloud = FALSE, 
-                          gDist = TRUE, curveSmooth = FALSE, params = list(), ...) 
+           gDist = TRUE, acomp = NULL, curveSmooth = FALSE, params = list(), ...) 
 
 \method{checkVario}{rtopVariogramModel}(object, 
            sampleVariogram = NULL, observations = NULL, 
