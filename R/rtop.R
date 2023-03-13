@@ -3,7 +3,7 @@
 
 
 createRtopObject = function(observations, predictionLocations,
-   formulaString, params=list(), ainfo, areas, overlapObs, overlapPredObs, 
+   formulaString, params=list(), overlapObs, overlapPredObs, 
    ...) {
   dots = list(...)
   if (inherits(observations,"rtop")) {
@@ -15,25 +15,18 @@ createRtopObject = function(observations, predictionLocations,
     return(object)
   }
   object = list()
-  if (missing(observations) && !missing(ainfo) && !missing(areas)) {
-    observations = SpatialPointsDataFrame(areas[ainfo$obsinc,],data=ainfo[ainfo$obsinc,])
-    predictionLocations = SpatialPointsDataFrame(areas[!ainfo$obsinc,],data=ainfo[!ainfo$obsinc,])
-  } else if ((!missing(observations) || !missing(predictionLocations)) && (!missing(ainfo) || !missing(areas))) {
-    stop("ainfo and areas cannot be given as arguments together with observations and/or predictionLocations, please check documentation")
-  } else {
-    if (!inherits(observations,"SpatialPolygonsDataFrame") && "obs" %in% names(dots)) 
-      if (!inherits(observations, "STS")) observations = SpatialPolygonsDataFrame(observations,data = dots$obs)
-    if (!missing(predictionLocations) && !inherits(predictionLocations,"SpatialPolygonsDataFrame") && "pred" %in% names(dots)) 
-      if (!inherits(predictionLocations, "STS"))predictionLocations = SpatialPolygonsDataFrame(predictionLocations,data = dots$pred)
-  }
+ 
   if (missing(observations)) stop("Observations are missing")
-#  if (missing(predictionLocations)) stop("predictionLocations are missing")
   if (!"area" %in% names(observations) && inherits(observations,"SpatialPolygons")) {
      observations$area = sapply(slot(observations, "polygons"), function(i) slot(i, "area"))
   } else if (inherits(observations, "STS") && !"area" %in% names(observations@sp)) {
     observations@sp$area = sapply(slot(observations@sp, "polygons"), function(i) slot(i, "area"))
+  } else if (inherits(observations, "sf") && !"area" %in% names(observations)) {
+    observations$area = set_units(st_area(observations), NULL)
   }
+  
   object$observations = observations
+
   if (!missing(predictionLocations)) {
     if (!"area" %in% names(predictionLocations) && 
           inherits(predictionLocations,"SpatialPolygonsDataFrame")) {
@@ -47,16 +40,32 @@ createRtopObject = function(observations, predictionLocations,
 #       predictionLocations$length = SpatialLinesLengths(predictionLocations)
     } else if (inherits(predictionLocations, "STS") && !"area" %in% names(predictionLocations@sp)) {
       predictionLocations@sp$area = sapply(slot(predictionLocations@sp, "polygons"), function(i) slot(i, "area"))      
-    }  
-    if (!isTRUE(all.equal(is.na(proj4string(observations)), is.na(proj4string(predictionLocations))))) {
-      stop("observations and predictionLocations do not both have proj4string set")
+    }   else if (!"area" %in% names(predictionLocations) && inherits(predictionLocations, "sf")) {
+      predictionLocations$area = set_units(st_area(predictionLocations), NULL)
     }
-    if (!is.na(proj4string(observations)) && 
-         requireNamespace("rgdal") & !is.na(proj4string(observations)) && 
-            rgdal::CRSargs(CRS(proj4string(observations))) != rgdal::CRSargs(CRS(proj4string(predictionLocations)))) {
-      stop(paste("observations and predictionLocations have different projections:", 
-           proj4string(observations), proj4string(predictionLocations)))
+    if ((inherits(observations, "Spatial") | inherits(observations, "STS"))) {
+      p4o = proj4string(observations)
+      p4p = proj4string(predictionLocations)
+      if (!isTRUE(all.equal(is.na(p4o), is.na(p4p)))) {
+        stop("only one of observations and predictionLocations have projection")
+      }
+      if (!is.na(p4o) && p4o != p4p) {
+          if (requireNamespace("rgdal") && rgdal::CRSargs(CRS(p4o)) != rgdal::CRSargs(CRS(p4p))) {
+            stop(paste("observations and predictionLocations have different projections:", p4o, p4p))
+          } else warning(print(paste("observations and predictionLocations apparently have different projections,
+                            not able to check as rgdal is not installed:", p4o, p4p)))
+        }
+        
+    } else if (inherits(observations, "sf") && !is.na(st_crs(observations))) {
+      if (!isTRUE(all.equal(is.na(st_crs(observations)), is.na(st_crs(predictionLocations))))) {
+        stop("only one of observations and predictionLocations have projection")
+      }
+      if (st_crs(observations) != st_crs(predictionLocations)) {
+        stop(paste("observations and predictionLocations have different projections:", 
+                   st_crs(observations), st_crs(predictionLocations)))
+      }
     }
+    
     object$predictionLocations = predictionLocations
   }
   if (missing(formulaString)) {
@@ -228,14 +237,21 @@ findParInitDefault = function(model) {
 
 #########################################
 findParInit = function(formulaString,observations,model) {
+  if (!"area" %in% names(observations)) {
+    if (inherits(observations, "Spatial") | inherits(observations, "STS")) {
+      observations$area = sapply(slot(observations, "polygons"), function(i) slot(i, "area"))
+    } else {
+      predictionLocations$area = set_units(st_area(predictionLocations), NULL)
+    }
+  }
   if (inherits(observations, "STS")) {
     ntime = dim(observations)[2]
     observations = observations[sample(1:ntime, 20),]
     vario = rtopVariogram(observations, formulaString = formulaString)
-    aObs = sapply(slot(observations@sp, "polygons"), function(i) slot(i, "area"))
+    aObs = observations$area
   } else {
     vario = variogram (formulaString, observations)
-    aObs = sapply(slot(observations, "polygons"), function(i) slot(i, "area"))
+    aObs = observations$area
   }
   parInit = data.frame(parl=c(1:5),paru=1,par0 = 1)
   parInit[1,1] = min(vario$gamma)/10

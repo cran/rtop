@@ -57,9 +57,14 @@ rtopKrige.default = function(object, predictionLocations = NULL,
   depVar = as.character(formulaString[[2]])
   observations = object
   obs0 = observations[[depVar]]
-  nobs = dim(coordinates(object))[1]
-  obscors = coordinates(observations)
-  if (cv) newcors = obscors else newcors = coordinates(predictionLocations)
+  nobs = dim(object)[1]
+  if (inherits(observations, "sf")) {
+    obscors = st_coordinates(observations)
+    if (cv) newcors = obscors else newcors = suppressWarnings(st_coordinates(st_centroid(predictionLocations)))
+  } else {
+    obscors = coordinates(observations)
+    if (cv) newcors = obscors else newcors = coordinates(predictionLocations)
+  }
   
   npred = ifelse(cv,nobs,ifelse(!missing(sel),length(sel),dim(newcors)[1]))
   if (missing(sel)) sel = c(1:npred)
@@ -67,7 +72,9 @@ rtopKrige.default = function(object, predictionLocations = NULL,
     unc0 = observations$unc
   } else unc0 = array(0,nobs)
   #  
-  mdist = sqrt(bbArea(bbox(observations)))
+  if (inherits(observations, "Spatial")) {
+    mdist = sqrt(bbArea(bbox(observations)))
+  } else mdist = sqrt(bbArea(st_bbox(observations)))
   if (nobs < nmax && mdist < maxdist && !cv) {
     varMat = rbind(varMatObs,1)
     diag(varMat) = unc0
@@ -109,7 +116,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
     if (cv) {
       if (debug.level > 1) print(paste("Cross-validating location", inew, 
                                        " out of ",npred," observation locations"))
-      if (debug.level > 1) print(observations@data[inew,] )
+      if (debug.level > 1) print(data.frame(observations)[inew,] )
       #      if (cv == inew && inew > 1) browser()
     } else {
       if (debug.level > 1) print(paste("Predicting location ",inew,
@@ -119,8 +126,10 @@ rtopKrige.default = function(object, predictionLocations = NULL,
     }
     newcor = newcors[inew,]
     
-    ret = rkrige(observations@data, obs0, obscors, newcor, varMatObs, varMatPredObs[,inew], nmax, inew, cv, 
-                 unc0, mdist, maxdist, singMat, varInv, singularSolve, wlim, debug.level, wlimMethod, BLUE)
+    ret = rkrige(data.frame(observations), obs0, obscors, newcor, varMatObs, 
+                 varMatPredObs[,inew], nmax, inew, cv, 
+                 unc0, mdist, maxdist, singMat, varInv, singularSolve, 
+                 wlim, debug.level, wlimMethod, BLUE)
     
     predictions$var1.pred[inew] = ret$pred[1]
     predictions$var1.var[inew] = ret$pred[2]
@@ -153,12 +162,12 @@ rtopKrige.default = function(object, predictionLocations = NULL,
       for (jnew in 1:nneigh) cvNew = rbind(cvNew,
                                            data.frame(var1.pred = 0,
                                                       var1.var = unc[neigh[jnew]], sumWeights=lambda[jnew],
-                                                      observed = observations@data[[depVar]][neigh[jnew]], residual = 0, zscore = 0,
+                                                      observed = data.frame(observations)[[depVar]][neigh[jnew]], residual = 0, zscore = 0,
                                                       c0arr=c0arr[jnew],neigh=neigh[jnew]))
       if (inew == 1) cvInfo = cvNew else cvInfo = rbind(cvInfo,cvNew)
       if (debug.level > 1) {
         print("prediction") 
-        print(cbind(predictionLocations@data[inew,],predictions[inew,]))
+        print(c(data.frame(predictionLocations)[inew,],predictions[inew,]))
       }
     }
     if (singularSolve & !is.null(ret$removed)) {
@@ -166,11 +175,15 @@ rtopKrige.default = function(object, predictionLocations = NULL,
     }
   }  
   if (interactive() & debug.level == 1 & length(sel) > 1) close(pb)
-  if ("data" %in% names(getSlots(class(predictionLocations)))) {
-    predictionLocations@data = cbind(predictionLocations@data, predictions)
-    predictions = predictionLocations
+  if (inherits(predictionLocations, "SpatialPolygons")) {
+      if ("data" %in% names(getSlots(class(predictionLocations)))) {
+      predictionLocations@data = cbind(predictionLocations@data, predictions)
+      predictions = predictionLocations
+    } else {
+      predictions = addAttrToGeom(predictionLocations, predictions, match.ID = FALSE)
+    }
   } else {
-    predictions = addAttrToGeom(predictionLocations, predictions, match.ID = FALSE)
+    predictions = cbind(predictionLocations, predictions)
   }
   if (cv) predictions$observed = observations[[depVar]]
   ret = list(predictions = predictions)

@@ -31,12 +31,18 @@ rtopSim.rtop = function(object, varMatUpdate = FALSE, beta = NA, largeFirst = TR
   nobs = length(observations)
   predictionLocations = object$predictionLocations
   predictions = predictionLocations
+  if (inherits(predictions, "Spatial")) {
   if (!is(predictions, "SpatialPolygonsDataFrame")) {
     aPred = sapply(slot(predictions, "polygons"), function(i) slot(i, "area"))
     predictions = SpatialPolygonsDataFrame(predictions, data = data.frame(area = aPred ))
   } else if (!"area" %in% names(predictions)) {
     predictions$area = sapply(slot(predictions, "polygons"), function(i) slot(i, "area"))
   }
+  } else if (inherits(predictions, "sf")) {
+    if (!("area" %in% names(predictions))) predictions$area = set_units(st_area(predictions), NULL)
+  } else if (inherits(predictions, "sfc_POLYGON")) {
+    predictions = st_sf(predictions, area = set_units(st_area(predictions)), NULL)
+  } 
 
   if (replace & !("replaceNumber" %in% names(predictionLocations))) {
     stop("Cannot replace observations if predictionLocations does not have column with replaceNumber")
@@ -50,9 +56,13 @@ rtopSim.rtop = function(object, varMatUpdate = FALSE, beta = NA, largeFirst = TR
   for (isim in 1:params$nsim) {
     predictions$sim = NA
     if (length(dim(observations)) > 0 && dim(observations)[1] > 0) {
-      obsall = observations@data
+      obsall = data.frame(observations)
       obs = obsall[,as.character(object$formulaString[[2]])]
+      if (inherits(observations, "Spatial")) {
       obscors = coordinates(observations)
+      } else {
+        obscors = suppressWarnings(st_coordinates(st_centroid(observations)))
+      }
       #      if (params$unc && "unc" %in% names(observations)) {
       #        unc0 = observations$unc
       #      } else unc0 = array(0,nobs)
@@ -76,14 +86,15 @@ rtopSim.rtop = function(object, varMatUpdate = FALSE, beta = NA, largeFirst = TR
     
     
     vPredObs = varMatPredObs
-    ips = sample(length(predictions), length(predictions))
+    dPred = dim(predictions)[1]
+    ips = sample(dPred, dPred)
     if (largeFirst) {
       il = which(ips == order(predictions$area, decreasing = TRUE)[1])
       tmp = ips[il] 
       ips[il] = ips[1]
       ips[1] = tmp
     }
-    vpo = 1:length(predictions)
+    vpo = 1:dPred
     if (interactive() & debug.level) {
       pb = txtProgressBar(1, length(ips), style = 3)
     }
@@ -98,10 +109,18 @@ rtopSim.rtop = function(object, varMatUpdate = FALSE, beta = NA, largeFirst = TR
       in2 = which(vpo == inew)
       nobs = length(obs)
       if (interactive() & debug.level) setTxtProgressBar(pb, ip)
+      if (inherits(predictionLocations, "Spatial")) {
       newcor = coordinates(predictionLocations[inew,])
+      } else {
+        newcor = suppressWarnings(st_coordinates(st_centroid(predictionLocations[inew,])))
+      }
       if (nobs == 0) {
         if (is.na(beta)) stop("No observations found, beta (expected mean) has to be given")
-        c0 = varioEx(sqrt(bbArea(bbox(predictionLocations[in2,]))), variogramModel)
+        if (inherits(predictionLocations, "Spatial")) {
+          c0 = varioEx(sqrt(bbArea(bbox(predictionLocations[in2,]))), variogramModel)
+        } else {
+          c0 = varioEx(sqrt(bbArea(st_bbox(predictionLocations[in2,]))), variogramModel)
+        }
         inewvar = varMatPred[inew,inew]
         obs = rnorm(1, beta, c0-inewvar)
         vObs = matrix(inewvar, nrow = 1, ncol = 1)

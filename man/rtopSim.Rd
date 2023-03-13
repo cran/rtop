@@ -18,7 +18,8 @@ rtopSim will conditionally or unconditionally simulate data with areal support. 
 }
 
 \arguments{
-\item{object}{object of class \code{rtop} or \code{\link[sp]{SpatialPolygonsDataFrame}} or \code{NULL}}
+\item{object}{object of class \code{rtop} or \code{\link[sp]{SpatialPolygonsDataFrame}} or
+             \code{sf} (\code{\link[sf]{st_sf}}) or \code{NULL}}
 \item{varMatUpdate}{logical; if TRUE, also existing variance matrices will 
             be recomputed, if FALSE, only missing variance matrices will be computed,
             see also \code{\link{varMat}}}
@@ -35,7 +36,7 @@ rtopSim will conditionally or unconditionally simulate data with areal support. 
 \item{dump}{file name for saving the updated object, after adding variance matrices. Useful if there
       are problems with the simulation, particularly if it for some reason crashes.}
 \item{predictionLocations}{\code{\link[sp]{SpatialPolygons}} or \code{\link[sp]{SpatialPolygonsDataFrame}}
-     with locations for simulations. }
+     or \code{sf}-object with locations for simulations. }
 \item{varMatObs}{covariance matrix of possible observations, where diagonal must consist 
       of internal variance, typically generated from call
       to \code{\link{varMat}} }
@@ -46,14 +47,14 @@ rtopSim will conditionally or unconditionally simulate data with areal support. 
       from a call to \code{\link{varMat}}}
 \item{variogramModel}{a variogram model of type \code{\link{rtopVariogramModel}} }
 \item{...}{possible modification of the object parameters or default parameters.}
-} 
+}
 
 \value{ 
-If called with \code{\link[sp]{SpatialPolygons}} as predictionLocations
+If called with \code{\link[sp]{SpatialPolygons}} or \code{sf} as predictionLocations
 and either \cr
-\code{\link[sp]{SpatialPolygonsDataFrame}} or \code{NULL} for
+\code{\link[sp]{SpatialPolygonsDataFrame}}, \code{sf} or \code{NULL} for
 observations, the function returns a\cr
-\code{\link[sp]{SpatialPolygonsDataFrame}} with simulations at the 
+\code{\link[sp]{SpatialPolygonsDataFrame}} or \code{sf} with simulations at the 
 locations defined in \cr
 \code{predictionLocations}
 
@@ -92,25 +93,30 @@ Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2
 \author{ Jon Olav Skoien }
 
 \examples{
-\dontrun{
-library(rgdal)
+\donttest{
 # The following command will download  the complete example data set
 # downloadRtopExampleData() 
 
 rpath = system.file("extdata",package="rtop")
-observations = readOGR(rpath,"observations")
-predictionLocations = readOGR(rpath,"predictionLocations")
+if (require("rgdal") & FALSE) { # Preparing for retirement of rgdal
+  observations = readOGR(rpath,"observations")
+  predictionLocations = readOGR(rpath,"predictionLocations")
+} else {
+  library(sf)
+  observations = st_read(rpath, "observations")
+  predictionLocations = st_read(rpath,"predictionLocations")
+}
 
 # Setting some parameters; nclus > 1 will start a cluster with nclus 
 # workers for parallel processing
-params = list(gDist = TRUE, cloud = FALSE, nclus = 1, rresol = 25)
+params = list(gDist = TRUE, cloud = FALSE, nclus = 1, rresol = 100)
 
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 
 # Build an object
 rtopObj = createRtopObject(observations, predictionLocations, 
-                           params = params)
+                           params = params, formulaString = "obs~1")
 
 # Fit a variogram (function also creates it)
 rtopObj = rtopFitVariogram(rtopObj)
@@ -128,8 +134,8 @@ rtopObj11$observations = NULL
 rtopObj12 = rtopSim(rtopObj11, nsim = 10, beta = 0.01, 
                     varMatUpdate = TRUE)
 
-rtopObj10$simulations@data
-rtopObj12$simulations@data
+summary(data.frame(rtopObj10$simulations))
+summary(data.frame(rtopObj12$simulations))
 
 }
 }

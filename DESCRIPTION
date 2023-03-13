@@ -1,17 +1,22 @@
 Package: rtop
 Type: Package
 Title: Interpolation of Data with Variable Spatial Support
-Version: 0.5-14
-Date: 2018-04-16
-Author: Jon Olav Skoien
+Version: 0.6-2
+Date: 2023-03-03
+Authors@R: c(person("Jon Olav", "Skoien", role = c("aut", "cre"), email = "jon.skoien@gmail.com"),
+            person('Qingyun', 'Duan', role = 'ctb', 
+            comment = 'For the original FORTRAN code of SCE-UA, translated and modified to R in this package.'))
 Maintainer: Jon Olav Skoien <jon.skoien@gmail.com>
-Depends: sp
-Imports: gstat, graphics, stats, methods, utils, grDevices
+Imports: gstat, graphics, stats, methods, utils, grDevices, sf, units,
+        sp
 Suggests: parallel, intamap, rgeos, spacetime, data.table, rgdal,
         reshape2
 Description: Geostatistical interpolation of data with irregular spatial support such as runoff related data or data from administrative units.
 License: GPL (>= 2)
 NeedsCompilation: yes
-Packaged: 2018-04-06 14:16:38 UTC; skoiejo
+Packaged: 2023-03-13 21:25:23 UTC; skoiejo
+Author: Jon Olav Skoien [aut, cre],
+  Qingyun Duan [ctb] (For the original FORTRAN code of SCE-UA, translated
+    and modified to R in this package.)
 Repository: CRAN
-Date/Publication: 2018-04-06 15:05:08 UTC
+Date/Publication: 2023-03-13 22:30:02 UTC

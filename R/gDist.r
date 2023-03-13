@@ -32,10 +32,22 @@ gDist.SpatialPolygons = function(object, object2=NULL, ...) {
 }
 
 
+gDist.sf = function(object, object2=NULL, ...) {
+  dObs = rtopDisc(object, ...)
+  gDistObs = gDist(dObs, ...)
+  if (!is.null(object2)) {
+    dPred = rtopDisc(object2, ...)
+    gDistPredObs = gDist(dObs, dPred, ...)
+    gDistPred = gDist(dPred, dPred, diag=TRUE, ...)
+    list(gDistObs = gDistObs, gDistPred = gDistPred, gDistPredObs = gDistPredObs)
+  } else list(gDistObs = gDistObs)
+}
+
+
 gDist.list = function(object,object2=NULL,diag = FALSE, debug.level = 0, ...) {
   variogramModel=list(model = "Gho",params = 0)
   if (debug.level == 1) print("Creating Ghos distances. This can take some time")
-  if (inherits(object[[1]], "SpatialPoints")) {
+  if (inherits(object[[1]], "SpatialPoints") | inherits(object[[1]], "sf")) {
     gDist = varMat(object, object2,diag = diag,variogramModel = variogramModel, 
              debug.level = debug.level, ...)
   } else {

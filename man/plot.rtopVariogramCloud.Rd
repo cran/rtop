@@ -49,9 +49,14 @@ the help page of \code{\link[gstat]{plot.variogramCloud}}.}
 \link[gstat]{plot.gstatVariogram}
 }
 \examples{
-\dontrun{
+\donttest{
 rpath = system.file("extdata",package="rtop")
-observations = readOGR(rpath,"observations")
+if (require("rgdal")) {
+  observations = readOGR(rpath,"observations")
+} else {
+  library(sf)
+  observations = st_read(rpath, "observations")
+}
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 
 # Create the sample variogram

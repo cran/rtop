@@ -65,6 +65,80 @@ rtopDisc.rtop = function(object, params = list(), ...) {
 
 
 
+rtopDisc.sf = function(object, params = list(), bb = st_bbox(object), ...) {
+  params = getRtopParams(params, ...)
+  stype = params$rstype
+  resol = params$rresol
+  debug.level = params$debug.level
+  if (stype == "random" | stype == "regular") {
+    lapply(object$geometry,FUN=function(pol) st_sample(pol,size = resol, type = stype, offset=c(0.5,0.5)))
+  } else if (stype == "rtop") {
+    bbdia = sqrt(bbArea(bb))
+    small = bbdia/100
+    ires0 = 1
+    nps = dim(object)[1]
+    spp = vector("list",nps)
+    
+    lfun = function(lpoly, resol, ires0, bbdia, small) {
+      if (!is.na(st_crs(lpoly))) lpoly = st_set_crs(lpoly, NA)
+      ba = st_bbox(lpoly)
+      ipts = resol-1
+      ires = ires0
+      while (ipts < resol) {
+        ires = ires*2
+        xd = bbdia/(ires)
+        if (bbArea(ba)/(xd*xd) > (resol-2)) {
+          x = seq(bb[[1]]-small,bb[[3]]+small,xd)
+          y = seq(bb[[2]]-small,bb[[4]]+small,xd)
+          x = x[x > ba[[1]] & x < ba[[3]] ]
+          y = y[y > ba[[2]] & y < ba[[4]] ]
+          pts = expand.grid(x=x,y=y)
+          if (dim(pts)[1] >= 1) {
+            pts = st_as_sf(pts, coords = c("x", "y"))
+            pts = pts[st_intersects(lpoly, pts)[[1]],1]
+            ipts = dim(pts)[1]
+          }
+        }
+      }
+      pts    
+    }
+    
+    
+    if (!is.null(params$nclus) && params$nclus > 1 && 
+        dim(object)[1]*params$rresol/100 > params$cnAreas) {
+      if (!suppressMessages(suppressWarnings(requireNamespace("parallel"))))
+        stop("nclus is > 1, but package parallel is not available")    
+      nclus = params$nclus
+      
+      cl = rtopCluster(nclus, type = params$clusType, outfile = params$outfile)
+      #      cl = rtopCluster(nclus, {require(rtop); bbArea = rtop:::bbArea}, type = params$clusType)
+      
+      parallel::clusterExport(cl, c("resol", "ires0", "bbdia", "small"), envir = environment())
+      spp = parallel::clusterApply(cl, object$geometry, fun = function(x) lfun(x, resol, ires0, bbdia, small))
+    } else {
+      if (interactive() & debug.level <= 1) {
+        pb = txtProgressBar(1, nps, style = 3)
+      }
+      print(paste("Sampling points from ", nps, "areas"))
+      for (ip in 1:nps) {
+        
+        spp[[ip]] = lfun(object$geometry[ip], resol, ires0, bbdia, small)
+        ipts = dim(spp[[ip]])[1]
+        if (debug.level > 1) { 
+          print(paste("Sampling from area number",ip,"containing",ipts,"points"))
+        } else if (interactive()) {
+          setTxtProgressBar(pb, ip)
+        }
+      }
+      if (interactive() & debug.level <=1) close(pb)
+      if (debug.level >= 0) print(paste("Sampled on average",  
+                                        round(mean(unlist(lapply(spp, FUN = function(sppp) dim(sppp)[1]))),2), 
+                                        "points from", nps, "areas"))
+    }
+    spp
+  } else stop(paste("Unknown sampling type:",stype))
+}
+
 
 
 
@@ -87,14 +161,6 @@ rtopDisc.SpatialPolygons = function(object, params = list(), bb = bbox(object), 
     nps = length(object@polygons)
     spp = vector("list",nps)
 
-    lfuns = function(pols, resol, ires0, bbdia, small) {
-      res = vector("list", length(pols))
-      for (ip in 1:length(pols)) {
-        res[[ip]] = lfun(pols[[ip]], resol, ires0, bbdia, small)
-      }
-      res 
-    }
-    
     lfun = function(pol, resol, ires0, bbdia, small) {
       lpoly = SpatialPolygons(list(pol))
       ba = bbox(lpoly)

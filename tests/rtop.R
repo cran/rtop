@@ -1,13 +1,20 @@
 set.seed(1501)
 #-----------------------------
 library(rtop)
-library(rgdal)
 if (interactive()) options(error = recover)
   # Read directly from shape-files in data directory
 rpath = system.file("extdata",package="rtop")
-observations = readOGR(rpath, "observations")
-predictionLocations = readOGR(rpath, "predictionLocations")
-  #Finding a few prediction locations of them
+if (require(rgdal)) {
+  observations = readOGR(rpath, "observations")
+  predictionLocations = readOGR(rpath, "predictionLocations")
+} else {
+  library(sf)
+  observations = st_read(rpath, "observations")
+  predictionLocations = st_read(rpath, "predictionLocations")
+  observations = as(observations, "Spatial")
+  predictionLocations = as(predictionLocations, "Spatial")
+}
+#Finding a few prediction locations of them
   
   observations = observations[1:30,]
   predictionLocations = predictionLocations[1:2,]

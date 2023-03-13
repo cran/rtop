@@ -6,6 +6,8 @@ import(grDevices)
 import(stats)
 import(methods)
 import(utils)
+importFrom(units, set_units)
+import(sf)
 #import(rgdal)
 #importFrom(graphics, hist, polygon, par, polypath, lines, strheight, 
 #  text, contour, axTicks, axis, rasterImage, image, box, plot.new, 
@@ -42,10 +44,12 @@ export(checkVario,
  S3method(checkVario, rtopVariogramCloud) 
         
  S3method(gDist, rtop)
+ S3method(gDist, sf)
  S3method(gDist, SpatialPolygonsDataFrame)
  S3method(gDist, SpatialPolygons)
  S3method(gDist, list)
          
+ S3method(rtopVariogram, sf)
  S3method(rtopVariogram, STSDF)
  S3method(rtopVariogram, SpatialPointsDataFrame)
  S3method(rtopVariogram, SpatialPolygonsDataFrame)
@@ -53,6 +57,7 @@ export(checkVario,
  S3method(rtopVariogram, rtop)
 
  S3method(rtopFitVariogram, rtop)
+ S3method(rtopFitVariogram, sf)
  S3method(rtopFitVariogram, rtopVariogram)
  S3method(rtopFitVariogram, rtopVariogramCloud)
  S3method(rtopFitVariogram, SpatialPointsDataFrame)
@@ -63,11 +68,13 @@ export(checkVario,
  S3method(rtopVariogram, SpatialPolygonsDataFrame)
 # S3method(rtopVariogram, SpatialLinesDataFrame)
  S3method(rtopVariogram, rtop)
+ S3method(rtopVariogram, sf)
 
  S3method(rtopKrige, STSDF)
  S3method(rtopKrige, SpatialPolygonsDataFrame)
 # S3method(rtopKrige, SpatialLinesDataFrame)
  S3method(rtopKrige, rtop)
+# S3method(rtopKrige, sf) Use default directly
 
  S3method(rtopSim, rtop)
  S3method(rtopSim, default)
@@ -78,7 +85,7 @@ export(checkVario,
 # S3method(rtopDisc, SpatialLinesDataFrame)
 # S3method(rtopDisc, SpatialLines)
  S3method(rtopDisc, rtopVariogram)
- S3method(rtopDisc, rtop)
+ S3method(rtopDisc, sf)
  
  S3method(varMat, rtop)
 # S3method(varMat, matrix)

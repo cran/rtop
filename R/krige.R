@@ -107,6 +107,7 @@ rkrige = function(observations, obs0, obscors, newcor, vObs, c0arr, nmax, inew, 
       lambda = varInv %*% c(c0arr, 1)
       slambda = sum(abs(lambda[1:(length(lambda)-1)]))
       nneigh = length(c0arr)
+      
       if (slambda < wlim) break
       
       vm = vMat[1:nneigh, 1:nneigh]
@@ -128,6 +129,7 @@ rkrige = function(observations, obs0, obscors, newcor, vObs, c0arr, nmax, inew, 
   }
   c0arr[nneigh+1] = 1
   lambda = varInv %*% c0arr
+  krigingError = sum(lambda*c0arr) 
   slambda = sum(abs(lambda[1:nneigh]))
   if (BLUE) BLUE = sum(vInv %*% c0arr)/sum(vInv)
   oslambda = slambda
@@ -151,7 +153,7 @@ rkrige = function(observations, obs0, obscors, newcor, vObs, c0arr, nmax, inew, 
     if (debug.level >1) 
       print(paste("optimizing lambdas",oslambda, slambda,sum(lambda[1:nneigh]),lambda[nneigh+1]))
   }
-  krigingError = sum(lambda*c0arr) 
+#  krigingError = sum(lambda*c0arr) 
   
   if (debug.level >1) {
     distm = spDistsN1(obscors,newcor)[neigh]

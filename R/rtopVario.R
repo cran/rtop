@@ -1,3 +1,15 @@
+rtopVariogram.sf = function(object, ... ) {
+  if (missing(object))  stop("rtopVariogram: Observations are missing")
+  df = data.frame(object)
+  obs = df[,-which(names(df) == "geometry")]
+  coordinates(obs) = suppressWarnings(st_coordinates(st_centroid(object)))
+  if (!"area" %in% names(obs)) obs$area = set_units(st_area(object), NULL)
+  rtopVariogram(obs, ...)
+}
+
+
+
+
 rtopVariogram.SpatialPolygonsDataFrame = function(object, ... ) {
   if (missing(object))  stop("rtopVariogram: Observations are missing")
   obs = object@data

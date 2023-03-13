@@ -92,10 +92,14 @@ Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2
 }
 \author{ Jon Olav Skoien }
 \examples{
-\dontrun{
-library(rgdal)
+\donttest{
 rpath = system.file("extdata",package="rtop")
-observations = readOGR(rpath,"observations")
+if (require("rgdal")) {
+  observations = readOGR(rpath,"observations")
+} else {
+  library(sf)
+  observations = st_read(rpath, "observations")
+}
 gDist = gDist(observations)
 }
 

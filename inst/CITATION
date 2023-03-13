@@ -1,16 +1,17 @@
 citHeader("To cite package rtop in publications use:")
 
-citEntry(entry = "Article",
-title = "Rtop: An R package for interpolation of data with a variable spatial support, with an example from river networks",
-author = personList(as.person("J. O. Skoien"), 
-                    as.person("G. Bloschl"), 
-                    as.person("G. Laaha"), 
-                    as.person("E. Pebesma"), 
-                    as.person("J. Parajka"), 
-                    as.person("A. Viglione")),
+bibentry(bibtype = "Article",
+       title = "Rtop: An R package for interpolation of data with a variable spatial support, with an example from river networks",
+       author = c(person("J. O.", "Skoien"), 
+                    person("G. Bloschl"), 
+                    person("G. Laaha"), 
+                    person("E. Pebesma"), 
+                    person("J. Parajka"), 
+                    person("A. Viglione")),
 	journal = "Computers & Geosciences",
 year = 2014,
 textVersion = paste("Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2014.",
                     " Rtop: An R package for interpolation of data with a variable spatial support, with an", 
                     " example from river networks. Computers & Geosciences, 67."
 ))
+

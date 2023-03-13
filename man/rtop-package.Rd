@@ -36,18 +36,23 @@ The data in the example below are stored as shape-files
 in the extdata-directory of the rtop-pacakge, use the directory of your own data instead. 
 The observations consist of mean summer runoff
 from 138 catchments in Upper Austria. The predictionLocations are 863 catchments
-in the same region. observations and predictionLocations are stored as
-\code{\link[sp]{SpatialPolygonsDataFrame}}-objects.
+in the same region. observations and predictionLocations can either be stored as
+\code{\link[sp]{SpatialPolygonsDataFrame}}-objects, or as \code{\link[sf]{sf}}-polygons.
 
 
 \preformatted{
-library(rgdal)
 rpath = system.file("extdata",package="rtop")
-observations = readOGR(rpath,"observations")
+if (require("rgdal")) {
+  observations = readOGR(rpath,"observations")
+  predictionLocations = readOGR(rpath,"predictionLocations")
+} else {
+  library(sf)
+  observations = st_read(rpath, "observations")
+  predictionLocations = st_read(rpath,"predictionLocations")
+}
 
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
-predictionLocations = readOGR(rpath,"predictionLocations")
 params = list(gDist = TRUE, cloud = TRUE)
 rtopObj = createRtopObject(observations, predictionLocations, 
           params = params)

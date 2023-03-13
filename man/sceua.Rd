@@ -7,7 +7,8 @@ Calibration function which searches a parameter set which is minimizing the valu
 }
 \usage{
 sceua(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.01,
-    ngs = 5, npg = 5, nps = 5, nspl = 5, mings = 5, iniflg = 1, iprint = 0, iround = 3, 
+    ngs = 5, npg = 2 * length(pars) + 1, nps = length(pars) + 1, 
+    nspl = 2 * length(pars) + 1, mings = ngs, iniflg = 1, iprint = 0, iround = 3, 
     peps = 0.0001, plog = rep(FALSE,length(pars)), implicit = NULL, timeout = NULL, ...)
 }
 \arguments{
@@ -60,6 +61,13 @@ The function returns a list with the following elements
   \item{iterations}{ - the number of shuffling loops}
   \item{timeout}{ - logical; TRUE if the optimization was aborted because the timeout time was reached, FALSE otherwise}
 }
+There are also two elements returned as attributes:
+\itemize{
+  \item{parset}{ - the entire set of parameters from the last evolution step }
+  \item{xf}{ - the values of the objective function from the last evolution step }
+}
+The last two can be accessed as \code{attr(sceuares, "parset")} and \code{attr(sceuares, "xf")}, if the 
+result is stored as \code{sceuares}.
 }
 
 \details{

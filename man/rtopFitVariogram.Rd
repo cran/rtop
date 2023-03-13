@@ -88,13 +88,21 @@ Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2
 \author{ Jon Olav Skoien }
 
 \examples{
-\dontrun{
-library(rgdal)
+\donttest{
 rpath = system.file("extdata",package="rtop")
-observations = readOGR(rpath,"observations")
+
+rpath = system.file("extdata",package="rtop")
+if (require("rgdal")) {
+  observations = readOGR(rpath,"observations")
+  predictionLocations = readOGR(rpath,"predictionLocations")
+} else {
+  library(sf)
+  observations = st_read(rpath, "observations")
+  predictionLocations = st_read(rpath,"predictionLocations")
+}
+
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
-predictionLocations = readOGR(rpath,"predictionLocations")
 
 # Setting some parameters 
 params = list(gDist = TRUE, cloud = FALSE)

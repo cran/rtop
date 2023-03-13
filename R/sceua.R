@@ -2,7 +2,8 @@
 
 
 sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.01,
-    ngs = 5, npg = 5, nps = 5, nspl = 5, mings = 5, iniflg = 1, iprint = 0, iround = 3, 
+    ngs = 5, npg = 2*length(pars)+1, nps = length(pars)+1, nspl = 2*length(pars)+1, 
+    mings = ngs, iniflg = 1, iprint = 0, iround = 3, 
     peps = 0.0001, plog = rep(FALSE,length(pars)), implicit = NULL, timeout = NULL, ...) {
 
 # OFUN - objective function
@@ -58,16 +59,16 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
   stdinit = rep(1,npars)
   for (ii in ifelse(iniflg == 1,2,1):npt) {
     parset[ii,] = getpnt(idist = 1,lower,upper,stdinit,lower, implicit)
-    lpars = ifelse(plog,10^parset[ii,],parset[ii,])
+    lpars = ifelse(plog,10^parset[ii,, drop = FALSE],parset[ii,, drop = FALSE])
     xf[ii] = oofun(lpars)
     icall = icall + 1
     if (iprint > 0 && icall %% iprint == 0) cat(icall,round(xf[ii],iround), "\n")
   }
 
-  parset = parset[order(xf),]
+  parset = parset[order(xf),, drop = FALSE]
   xf = sort(xf)
-  bestpar = parset[1,]
-  worstpar = parset[npt,]
+  bestpar = parset[1,, drop = FALSE]
+  worstpar = parset[npt,, drop = FALSE]
   bestf = xf[1]
   worstf = xf[npt]
 
@@ -80,20 +81,22 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
     nloop = nloop + 1
     for (igs in 1:ngs) {
       karr = (c(1:npg)-1)*ngs + igs
-      cx = parset[karr,]
+      cx = parset[karr,, drop = FALSE]
       cf = xf[karr]
       for (loop in 1:nspl) {
         kpos = 1
+        lcs = 1
         if (nps == npg) {
           lcs = c(1:nps)
         } else while(TRUE) {
-          lpos = 1+round(npg+.5-sqrt((npg+.5)^2-npg*(npg+1)*runif(1)))
+          lpos = 1+floor(npg+.5-sqrt((npg+.5)^2-npg*(npg+1)*runif(1)))
           lcs[kpos] = lpos
           if (sum(duplicated(lcs))==0) kpos = kpos + 1
           if (kpos > nps) break 
         }
         lcs = sort(lcs)
-        soc = cx[lcs,]
+  
+        soc = cx[lcs,, drop = FALSE]
         sf = cf[lcs]  
         cceout = cce(oofun, npars, nps = nps, soc = soc, sf = sf, lower = lower, 
                      upper = upper, parstd = parstd, icall = icall,
@@ -104,7 +107,7 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
         icall = cceout$icall
         cx[lcs,] = soc
         cf[lcs] = sf
-        cx = cx[order(cf),]
+        cx = cx[order(cf),, drop = FALSE]
         cf = sort(cf)
         if (!is.null(timeout)) 
           if (difftime(Sys.time() - tstart, "secs") > timeout)
@@ -115,10 +118,10 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
       parset[karr,] = cx
       xf[karr] = cf
     }
-    parset = parset[order(xf),]
+    parset = parset[order(xf),, drop = FALSE]
     xf = sort(xf)
-    bestpar = parset[1,]
-    worstpar = parset[npt,]
+    bestpar = parset[1,, drop = FALSE]
+    worstpar = parset[npt,, drop = FALSE]
     bestf = xf[1]
     worstf = xf[npt]
     parsttout = parstt(npt,npars,parset,bound, peps)
@@ -143,8 +146,13 @@ sceua = function(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.0
     }
   }
   bestpar = ifelse(plog,10^bestpar,bestpar)
-  return(list(par = bestpar, value = xf[1], convergence = list(funConvergence = signif(concrit,iround)/pcento, parConvergence = gnrng/peps),
-      counts = icall, iterations = nloop, timeout = FALSE))
+  retList = list(par = bestpar, value = xf[1],
+       convergence = list(funConvergence = signif(concrit,iround)/pcento, parConvergence = gnrng/peps),
+       counts = icall, iterations = nloop, timeout = FALSE)
+  parset = ifelse(plog, 10^parset, parset)
+  attr(retList, "parset") = parset
+  attr(retList, "xf") = xf
+  retList
 }
 
 comp = function(npars,npt,ngs,npg,parset,xf){
@@ -153,7 +161,7 @@ comp = function(npars,npt,ngs,npg,parset,xf){
   for (igs in 1:ngs) {
     karr1 = (c(1:npg)-1)*ngs + igs
     karr2 = (c(1:npg)-1)*(ngs-1) + igs
-    xn[karr2,] = parset[karr1,]
+    xn[karr2,] = parset[karr1,, drop = FALSE]
     xfn[karr2] = xf[karr1]
   }
   return(list(parset = xn, xf = xfn))
@@ -164,8 +172,8 @@ cce = function(oofun, npars, nps, soc, sf,lower, upper, parstd, icall, maxn, ipr
   alpha = 1.
   beta = 0.5
   n = dim(soc)[1]
-  sb = soc[1,]
-  sw = soc[n,]
+  sb = soc[1,, drop = FALSE]
+  sw = soc[n,, drop = FALSE]
   ce = colMeans(soc)
   fw = sf[n]
   snew = ce+alpha*(ce-sw)
@@ -175,7 +183,7 @@ cce = function(oofun, npars, nps, soc, sf,lower, upper, parstd, icall, maxn, ipr
   lpars = ifelse(plog, 10^snew, snew)
   fnew = oofun(lpars)
   icall = icall + 1
-  if (iprint > 0 && icall %% iprint == 0) cat(icall, signif(fnew, iround), signif(bestf, iround), "\n")
+  if (iprint > 0 && icall %% iprint == 0) cat(icall, lpars, signif(fnew, iround), signif(bestf, iround), "\n")
   if (fnew > fw) {
     snew = ce-beta*(ce-sw)
     lpars = ifelse(plog,10^snew, snew)

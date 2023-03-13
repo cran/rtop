@@ -24,7 +24,7 @@ checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist =
   abins = adfunc(NULL, observations, amul)
   observations$acl = findInterval(observations$area, abins)
   observations$n = 1
-  obsvar = aggregate(observations@data[,as.character(formulaString[[2]])], 
+  obsvar = aggregate(data.frame(observations)[,as.character(formulaString[[2]])], 
            by = list(acl = observations$acl), FUN = var)
   obsvar$area = aggregate(observations$area, by = list(acl = observations$acl), FUN = mean)[,2]*acor
   obsvar$n = aggregate(observations$n, by = list(acl = observations$acl), FUN = sum)[,2]

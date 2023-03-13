@@ -1,4 +1,3 @@
-
 rtopFitVariogram.rtop = function(object, params = list(), ...) {
 
   params = getRtopParams(object$params, newPar = params, ...)
@@ -119,14 +118,11 @@ rtopFitVariogram.rtopVariogramCloud = function(object, observations, dists = NUL
   } else list(variogramModel ,varFit = varFit)
 }
 
-
-rtopFitVariogram.SpatialPointsDataFrame = function(object, params=list(),...) {
-  if (!inherits(params,"rtopParams")) params = getRtopParams(params, ...)
-  vario = rtopVariogram(object,params,...)
-  rtopFitVariogram(vario = vario, observations = object, params = params,...)
-}
-
-rtopFitVariogram.SpatialPolygonsDataFrame = function(object, params=list(),...) {
+# There is nothing class dependent in any of these functions, this is handled 
+# in rtopVariogram
+rtopFitVariogram.sf = 
+  rtopFitVariogram.SpatialPointsDataFrame =
+  rtopFitVariogram.SpatialPolygonsDataFrame = function(object, params=list(),...) {
   if (!inherits(params,"rtopParams")) params = getRtopParams(params, ...)
   vario = rtopVariogram(object,params = params,...)
   rtopFitVariogram(vario = vario, observations = object, params = params,...)
