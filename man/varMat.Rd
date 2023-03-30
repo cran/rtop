@@ -20,7 +20,7 @@ between all the supports in one or two sets of locations, and also between them.
 %\method{varMat}{matrix}(object, variogramModel,  ...) 
 \method{varMat}{list}(object, object2 = NULL, coor1, coor2, maxdist = Inf, 
               variogramModel, diag = FALSE, sub1, sub2, 
-              debug.level = 1, ...) 
+              debug.level = ifelse(interactive(), 1, 0), ...) 
 }
 
 

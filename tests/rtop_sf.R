@@ -1,5 +1,6 @@
 library(rtop)
 library(sf)
+set.seed(1)
 options(error = recover)
 rpath = system.file("extdata",package="rtop")
 observations = st_read(rpath,"observations")
@@ -12,14 +13,14 @@ params = list(gDist = TRUE, cloud = FALSE)
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 # Build an object
 rtopObj = createRtopObject(observations, predictionLocations, 
-                           params = params)
+                           params = params, formulaString = "obs ~1")
 
 
-rtopObj = rtopFitVariogram(rtopObj)
+rtopObj = rtopFitVariogram(rtopObj, iprint = -1)
 
 # Predicting at prediction locations
 rtopObj = rtopKrige(rtopObj)
 
 # Cross-validation
 rtopObj = rtopKrige(rtopObj,cv=TRUE)
-cor(rtopObj$predictions$observed,rtopObj$predictions$var1.pred)
+print(cor(rtopObj$predictions$observed,rtopObj$predictions$var1.pred), 4)

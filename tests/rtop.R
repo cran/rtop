@@ -4,16 +4,11 @@ library(rtop)
 if (interactive()) options(error = recover)
   # Read directly from shape-files in data directory
 rpath = system.file("extdata",package="rtop")
-if (require(rgdal)) {
-  observations = readOGR(rpath, "observations")
-  predictionLocations = readOGR(rpath, "predictionLocations")
-} else {
   library(sf)
   observations = st_read(rpath, "observations")
   predictionLocations = st_read(rpath, "predictionLocations")
   observations = as(observations, "Spatial")
   predictionLocations = as(predictionLocations, "Spatial")
-}
 #Finding a few prediction locations of them
   
   observations = observations[1:30,]
@@ -22,17 +17,17 @@ if (require(rgdal)) {
   observations$obs = observations$QSUMMER_OB/observations$AREASQKM
   
   # Setting some parameters 
-  params = list(gDist = TRUE, cloud = FALSE, rresol = 25, hresol = 3)
+  params = list(gDist = TRUE, cloud = FALSE, rresol = 25, hresol = 3, debug.level = -1)
   # Build an object
-  rtopObj = createRtopObject(observations,predictionLocations, params = params)
+  rtopObj = createRtopObject(observations,predictionLocations, params = params, formulaString = "obs ~ 1" )
   # Fit a variogram (function also creates it)
-  rtopObj = rtopFitVariogram(rtopObj)
+  rtopObj = rtopFitVariogram(rtopObj, iprint = -1)
+  print(rtopObj$variogramModel, 3)
   #rtopObj = checkVario(rtopObj)
-  rtopObj$variogramModel                                                                        
   rtopObj2 = rtopKrige(rtopObj, cv = TRUE)
 
 
-  print(attr(rtopObj2$varMatObs,"variogramModel"))
+  print(attr(rtopObj2$varMatObs,"variogramModel"), 3)
   
   rtopObj3 = rtopKrige(rtopObj)
 
@@ -62,10 +57,9 @@ rtopObj4 = rtopKrige(rtopObj2)
   set.seed(1501)
   library(intamap)
   useRtopWithIntamap()
-  library(intamap)
   output = interpolate(observations,predictionLocations,
      optList = list(formulaString = obs~1, gDist = TRUE, cloud = FALSE, nmax = 10, rresol = 25, hresol = 3), 
-        methodName = "rtop")
+        methodName = "rtop", iprint = -1)
   
 
 print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred))
@@ -85,20 +79,20 @@ print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var
   
   # Setting some parameters 
   # Build an object
-  rtopObj = createRtopObject(observations,predictionLocations, params = params)
+  rtopObj = createRtopObject(observations,predictionLocations, params = params, formulaString = "obs~1")
   # Fit a variogram (function also creates it)
-  rtopObj = rtopFitVariogram(rtopObj)
+  rtopObj = rtopFitVariogram(rtopObj, iprint = -1)
   #rtopObj = checkVario(rtopObj)
 
-rtopObj10 = rtopSim(rtopObj, nsim = 5, logdist = TRUE)
+rtopObj10 = rtopSim(rtopObj, nsim = 5, logdist = TRUE, debug.level = -1)
 rtopObj11 = rtopObj
 rtopObj11$predictionLocations = rtopObj11$observations
 #rtopObj11$observations = NULL
 rtopObj11$observations$unc = var(rtopObj10$observations$obs)*min(rtopObj10$observations$area)/rtopObj10$observations$area
 rtopObj11$predictionLocations$replaceNumber = 1:dim(rtopObj11$predictionLocations)[1]
-rtopObj12 = rtopSim(rtopObj11, nsim = 10, replace = TRUE)
+rtopObj12 = rtopSim(rtopObj11, nsim = 10, replace = TRUE, debug.level = -1)
 
-rtopObj10$simulations@data
-rtopObj12$simulations@data
+print(rtopObj10$simulations@data, digits = 3)
+print(rtopObj12$simulations@data, digits = 3)
 
 

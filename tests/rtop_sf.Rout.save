@@ -1,5 +1,5 @@
 
-R Under development (unstable) (2023-03-12 r83975 ucrt) -- "Unsuffered Consequences"
+R version 4.2.3 (2023-03-15 ucrt) -- "Shortstop Beagle"
 Copyright (C) 2023 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
@@ -17,12 +17,13 @@ Type 'q()' to quit R.
 
 > library(rtop)
 > library(sf)
-Linking to GEOS 3.11.1, GDAL 3.6.2, PROJ 9.1.1; sf_use_s2() is TRUE
+Linking to GEOS 3.9.3, GDAL 3.5.2, PROJ 8.2.1; sf_use_s2() is TRUE
+> set.seed(1)
 > options(error = recover)
 > rpath = system.file("extdata",package="rtop")
 > observations = st_read(rpath,"observations")
 Reading layer `observations' from data source 
-  `D:\RCompile\CRANguest\R-devel\lib\rtop\extdata' using driver `ESRI Shapefile'
+  `D:\GitHub\jskoien\rtop.Rcheck\rtop\extdata' using driver `ESRI Shapefile'
 Simple feature collection with 57 features and 7 fields
 Geometry type: POLYGON
 Dimension:     XY
@@ -32,7 +33,7 @@ Projected CRS: Lambert_Conformal_Conic
 > observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 > predictionLocations = st_read(rpath,"predictionLocations")
 Reading layer `predictionLocations' from data source 
-  `D:\RCompile\CRANguest\R-devel\lib\rtop\extdata' using driver `ESRI Shapefile'
+  `D:\GitHub\jskoien\rtop.Rcheck\rtop\extdata' using driver `ESRI Shapefile'
 Simple feature collection with 235 features and 5 fields
 Geometry type: POLYGON
 Dimension:     XY
@@ -44,171 +45,13 @@ Projected CRS: Lambert_Conformal_Conic
 > observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 > # Build an object
 > rtopObj = createRtopObject(observations, predictionLocations, 
-+                            params = params)
++                            params = params, formulaString = "obs ~1")
+> 
+> 
+> rtopObj = rtopFitVariogram(rtopObj, iprint = -1)
 Warning message:
-In createRtopObject(observations, predictionLocations, params = params) :
-  formulaString missing, using obs ~ 1
-> 
-> 
-> rtopObj = rtopFitVariogram(rtopObj)
-125 best 0.129 function convergence 200 parameter convergence 7276.563 
-197 best 0.102 function convergence 200 parameter convergence 5446.312 
-270 best 0.0979 function convergence 200 parameter convergence 4731.645 
-349 best 0.0979 function convergence 200 parameter convergence 2864.37 
-415 best 0.0979 function convergence 200 parameter convergence 2127.512 
-492 best 0.0975 function convergence 27.4 parameter convergence 1979.214 
-569 best 0.0975 function convergence 4.63 parameter convergence 1534.554 
-646 best 0.0975 function convergence 0.387 parameter convergence 872.4422 
-716 best 0.0975 function convergence 0.396 parameter convergence 801.7141 
-789 best 0.0975 function convergence 0.427 parameter convergence 681.6694 
-861 best 0.0975 function convergence 0.0539 parameter convergence 570.1273 
-932 best 0.0975 function convergence 0.0549 parameter convergence 425.7894 
-995 best 0.0975 function convergence 0.0674 parameter convergence 334.3445 
-1064 best 0.0975 function convergence 0.0601 parameter convergence 292.0314 
-1138 best 0.0975 function convergence 0.0374 parameter convergence 237.5023 
-1212 best 0.0975 function convergence 0.023 parameter convergence 201.3026 
-1292 best 0.0975 function convergence 0.0256 parameter convergence 178.831 
-1367 best 0.0975 function convergence 0.0144 parameter convergence 167.7601 
-1447 best 0.0975 function convergence 0.0134 parameter convergence 103.3742 
-1523 best 0.0975 function convergence 0.00647 parameter convergence 96.29129 
-1596 best 0.0975 function convergence 0.00702 parameter convergence 82.42038 
-1665 best 0.0975 function convergence 0.00476 parameter convergence 76.07246 
-1730 best 0.0975 function convergence 0.00414 parameter convergence 59.4043 
-1800 best 0.0974 function convergence 0.00466 parameter convergence 50.83558 
-1862 best 0.0974 function convergence 0.00507 parameter convergence 56.60418 
-1921 best 0.0974 function convergence 0.0059 parameter convergence 45.98279 
-1992 best 0.0974 function convergence 0.00617 parameter convergence 44.31595 
-2050 best 0.0974 function convergence 0.00672 parameter convergence 45.07429 
-2115 best 0.0974 function convergence 0.00674 parameter convergence 36.35014 
-2176 best 0.0974 function convergence 0.0074 parameter convergence 34.11725 
-2231 best 0.0974 function convergence 0.00786 parameter convergence 46.35381 
-2294 best 0.0974 function convergence 0.00808 parameter convergence 52.71296 
-2358 best 0.0974 function convergence 0.008 parameter convergence 45.18181 
-2419 best 0.0974 function convergence 0.00856 parameter convergence 39.32656 
-2478 best 0.0974 function convergence 0.00949 parameter convergence 45.06221 
-2534 best 0.0974 function convergence 0.00921 parameter convergence 57.94166 
-2591 best 0.0974 function convergence 0.00958 parameter convergence 70.67747 
-2650 best 0.0974 function convergence 0.0105 parameter convergence 59.55842 
-2705 best 0.0974 function convergence 0.0107 parameter convergence 81.20484 
-2764 best 0.0974 function convergence 0.00913 parameter convergence 71.14418 
-2825 best 0.0974 function convergence 0.00843 parameter convergence 44.00595 
-2883 best 0.0974 function convergence 0.00771 parameter convergence 50.85556 
-2939 best 0.0974 function convergence 0.00796 parameter convergence 77.07922 
-3001 best 0.0974 function convergence 0.00711 parameter convergence 64.62018 
-3060 best 0.0974 function convergence 0.00748 parameter convergence 69.27434 
-3118 best 0.0974 function convergence 0.00758 parameter convergence 75.19757 
-3176 best 0.0974 function convergence 0.00813 parameter convergence 74.73753 
-3233 best 0.0974 function convergence 0.00697 parameter convergence 82.88671 
-3289 best 0.0974 function convergence 0.00771 parameter convergence 87.63781 
-3346 best 0.0974 function convergence 0.00615 parameter convergence 58.7996 
-3404 best 0.0974 function convergence 0.00601 parameter convergence 67.62116 
-3462 best 0.0974 function convergence 0.00474 parameter convergence 74.96759 
-3524 best 0.0974 function convergence 0.00444 parameter convergence 60.50221 
-3579 best 0.0974 function convergence 0.004 parameter convergence 50.8455 
-3639 best 0.0974 function convergence 0.0055 parameter convergence 64.01485 
-3697 best 0.0974 function convergence 0.00577 parameter convergence 75.03838 
-3761 best 0.0974 function convergence 0.00556 parameter convergence 92.28603 
-3821 best 0.0974 function convergence 0.00555 parameter convergence 78.18654 
-3884 best 0.0974 function convergence 0.00537 parameter convergence 74.88075 
-3942 best 0.0974 function convergence 0.0046 parameter convergence 62.63908 
-4002 best 0.0974 function convergence 0.00462 parameter convergence 57.82057 
-4061 best 0.0974 function convergence 0.00568 parameter convergence 65.51716 
-4117 best 0.0974 function convergence 0.00661 parameter convergence 75.02192 
-4173 best 0.0974 function convergence 0.00689 parameter convergence 106.1728 
-4232 best 0.0974 function convergence 0.00817 parameter convergence 99.50101 
-4296 best 0.0974 function convergence 0.00921 parameter convergence 78.52239 
-4369 best 0.0974 function convergence 0.00945 parameter convergence 84.34146 
-4438 best 0.0974 function convergence 0.00834 parameter convergence 61.97015 
-4506 best 0.0974 function convergence 0.00924 parameter convergence 58.08914 
-4563 best 0.0974 function convergence 0.00977 parameter convergence 69.93185 
-4620 best 0.0974 function convergence 0.0101 parameter convergence 90.43757 
-4681 best 0.0974 function convergence 0.00964 parameter convergence 103.9196 
-4740 best 0.0974 function convergence 0.0102 parameter convergence 106.2063 
-4797 best 0.0974 function convergence 0.00937 parameter convergence 81.42162 
-4853 best 0.0974 function convergence 0.0078 parameter convergence 87.25965 
-4908 best 0.0974 function convergence 0.00804 parameter convergence 80.8228 
-4969 best 0.0974 function convergence 0.0101 parameter convergence 69.61856 
-5033 best 0.0974 function convergence 0.0116 parameter convergence 94.31559 
-5101 best 0.0974 function convergence 0.012 parameter convergence 98.15184 
-5166 best 0.0974 function convergence 0.012 parameter convergence 96.10708 
-5237 best 0.0974 function convergence 0.0113 parameter convergence 70.68961 
-5313 best 0.0974 function convergence 0.0097 parameter convergence 73.76465 
-5373 best 0.0974 function convergence 0.00895 parameter convergence 47.94477 
-5436 best 0.0974 function convergence 0.00897 parameter convergence 53.40689 
-5498 best 0.0974 function convergence 0.00919 parameter convergence 41.46336 
-5565 best 0.0974 function convergence 0.00924 parameter convergence 41.54158 
-5627 best 0.0973 function convergence 0.00993 parameter convergence 48.41694 
-5689 best 0.0973 function convergence 0.0094 parameter convergence 48.82964 
-5750 best 0.0973 function convergence 0.00948 parameter convergence 53.41463 
-5811 best 0.0973 function convergence 0.00948 parameter convergence 40.95172 
-5872 best 0.0973 function convergence 0.0105 parameter convergence 38.66842 
-5927 best 0.0973 function convergence 0.0128 parameter convergence 54.01368 
-5984 best 0.0973 function convergence 0.0132 parameter convergence 67.38452 
-6049 best 0.0973 function convergence 0.0123 parameter convergence 72.98687 
-6111 best 0.0973 function convergence 0.0121 parameter convergence 63.2491 
-6171 best 0.0973 function convergence 0.0111 parameter convergence 62.38594 
-6237 best 0.0973 function convergence 0.0081 parameter convergence 49.07798 
-6300 best 0.0973 function convergence 0.00759 parameter convergence 53.92651 
-6361 best 0.0973 function convergence 0.00819 parameter convergence 41.65885 
-6422 best 0.0973 function convergence 0.00836 parameter convergence 37.32076 
-6481 best 0.0973 function convergence 0.0103 parameter convergence 38.0195 
-6538 best 0.0973 function convergence 0.00976 parameter convergence 48.41904 
-6594 best 0.0973 function convergence 0.0114 parameter convergence 66.49824 
-6652 best 0.0973 function convergence 0.0126 parameter convergence 69.31368 
-6717 best 0.0973 function convergence 0.015 parameter convergence 55.76622 
-6787 best 0.0973 function convergence 0.0122 parameter convergence 49.87468 
-6856 best 0.0973 function convergence 0.0128 parameter convergence 45.49594 
-6919 best 0.0973 function convergence 0.0121 parameter convergence 46.8244 
-6979 best 0.0973 function convergence 0.0122 parameter convergence 42.49205 
-7047 best 0.0973 function convergence 0.0099 parameter convergence 41.71785 
-7105 best 0.0973 function convergence 0.0095 parameter convergence 41.73606 
-7165 best 0.0973 function convergence 0.00979 parameter convergence 33.36629 
-7220 best 0.0973 function convergence 0.00893 parameter convergence 32.72903 
-7278 best 0.0973 function convergence 0.00812 parameter convergence 35.88261 
-7339 best 0.0973 function convergence 0.0101 parameter convergence 51.68876 
-7401 best 0.0973 function convergence 0.0117 parameter convergence 66.8117 
-7468 best 0.0973 function convergence 0.0149 parameter convergence 56.53163 
-7533 best 0.0973 function convergence 0.0134 parameter convergence 61.55177 
-7597 best 0.0973 function convergence 0.0136 parameter convergence 47.11637 
-7660 best 0.0973 function convergence 0.0131 parameter convergence 53.1786 
-7718 best 0.0973 function convergence 0.0185 parameter convergence 55.67388 
-7776 best 0.0973 function convergence 0.015 parameter convergence 72.36491 
-7852 best 0.0973 function convergence 0.0231 parameter convergence 69.67092 
-7921 best 0.0973 function convergence 0.0223 parameter convergence 66.81481 
-7996 best 0.0973 function convergence 0.0218 parameter convergence 45.41794 
-8068 best 0.0973 function convergence 0.0145 parameter convergence 39.82245 
-8131 best 0.0973 function convergence 0.0149 parameter convergence 33.66518 
-8187 best 0.0973 function convergence 0.00939 parameter convergence 37.85914 
-8243 best 0.0972 function convergence 0.0115 parameter convergence 45.82424 
-8300 best 0.0972 function convergence 0.0108 parameter convergence 41.91955 
-8356 best 0.0972 function convergence 0.0126 parameter convergence 46.76812 
-8414 best 0.0972 function convergence 0.012 parameter convergence 47.2407 
-8471 best 0.0972 function convergence 0.0113 parameter convergence 48.61885 
-8532 best 0.0972 function convergence 0.0105 parameter convergence 49.11528 
-8589 best 0.0972 function convergence 0.00998 parameter convergence 54.371 
-8648 best 0.0972 function convergence 0.0117 parameter convergence 53.05893 
-8704 best 0.0972 function convergence 0.0137 parameter convergence 67.07167 
-8765 best 0.0972 function convergence 0.0141 parameter convergence 78.34953 
-8835 best 0.0972 function convergence 0.0131 parameter convergence 69.32772 
-8908 best 0.0972 function convergence 0.0135 parameter convergence 48.46929 
-8979 best 0.0972 function convergence 0.011 parameter convergence 33.02666 
-9049 best 0.0972 function convergence 0.00874 parameter convergence 26.90244 
-9120 best 0.0972 function convergence 0.00876 parameter convergence 27.76028 
-9180 best 0.0972 function convergence 0.00991 parameter convergence 33.58168 
-9242 best 0.0972 function convergence 0.0126 parameter convergence 51.30158 
-9299 best 0.0972 function convergence 0.0132 parameter convergence 48.39339 
-9357 best 0.0972 function convergence 0.0145 parameter convergence 50.65343 
-9415 best 0.0972 function convergence 0.0137 parameter convergence 46.3586 
-9471 best 0.0972 function convergence 0.0138 parameter convergence 35.58014 
-9529 best 0.0972 function convergence 0.0135 parameter convergence 42.4496 
-9585 best 0.0972 function convergence 0.0138 parameter convergence 43.8205 
-9649 best 0.0972 function convergence 0.0148 parameter convergence 47.73999 
-9707 best 0.0972 function convergence 0.0171 parameter convergence 58.88304 
-9764 best 0.0972 function convergence 0.0215 parameter convergence 67.95761 
-9825 best 0.0972 function convergence 0.0193 parameter convergence 53.32642 
-9886 best 0.0972 function convergence 0.0193 parameter convergence 51.50462 
-9943 best 0.0972 function convergence 0.0174 parameter convergence 54.40178 
-10011 best 0.0972 function convergence 0.0153 parameter convergence 49.54883 
+In variogram.default(y, locations, X, trend.beta = beta, grid = grid,  :
+  the following arguments are ignored: -1
 > 
 > # Predicting at prediction locations
 > rtopObj = rtopKrige(rtopObj)
@@ -217,14 +60,12 @@ In createRtopObject(observations, predictionLocations, params = params) :
 [1] "Sampling points from  235 areas"
 [1] "Sampled on average 210.34 points from 235 areas"
 [1] "Creating prediction semivariance matrix. This can take some time."
-[1] "interpolating  235 areas"
 > 
 > # Cross-validation
 > rtopObj = rtopKrige(rtopObj,cv=TRUE)
-[1] "cross-validating 57 areas"
-> cor(rtopObj$predictions$observed,rtopObj$predictions$var1.pred)
-[1] 0.7483304
+> print(cor(rtopObj$predictions$observed,rtopObj$predictions$var1.pred), 4)
+[1] 0.7484
 > 
 > proc.time()
    user  system elapsed 
-  22.17    0.34   22.50 
+  41.92    1.17   44.92 

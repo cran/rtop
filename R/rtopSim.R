@@ -1,26 +1,29 @@
 rtopSim.rtop = function(object, varMatUpdate = FALSE, beta = NA, largeFirst = TRUE, replace = FALSE, 
-                        params = list(), dump = NULL,  ...) {
+                        params = list(), dump = NULL, debug.level, ...) {
   params = getRtopParams(object$params, newPar = params,  ...)
   nmax = params$nmax
   cv = params$cv
   maxdist = params$maxdist
   wlim = params$wlim
   wlimMethod = params$wlimMethod
-  debug.level = params$debug.level
+  dots = list(...)
+  if (missing(debug.level)) debug.level = params$debug.level
   varClean = params$varClean
   variogramModel = object$variogramModel
   if (is.null(variogramModel)) stop("Cannot do simulations without a variogram model")
   if (length(object$observations) > 0 &(is.null(object$varMatObs) | varMatUpdate))
-    object = varMat(object, varMatUpdate, ...)
+    object = varMat(object, varMatUpdate, debug.level = debug.level, ...)
   if (is.null(object$varMatPred) || diff(dim(object$varMatPred)) != 0 | varMatUpdate) {
     if (is.null(object$dPred) & !(params$gDistPred & !is.null(object$gDistPred))) {
       object$dPred = rtopDisc(object$predictionLocations, params = params)
     }
     if (params$gDistPred & is.null(object$gDistPred)) {
       object$gDistPred = gDist(object$dPred, params = params)
-      varMatPred = object$varMatPred = varMat(object$gDistPred, params = params, variogramModel = variogramModel)
+      varMatPred = object$varMatPred = varMat(object$gDistPred, params = params, 
+                                              variogramModel = variogramModel, debug.level = debug.level)
     } else {
-      varMatPred = object$varMatPred = varMat(object$dPred, params = params, variogramModel = variogramModel)
+      varMatPred = object$varMatPred = varMat(object$dPred, params = params, 
+                                              variogramModel = variogramModel, debug.level = debug.level)
     }
   }
   varMatPredObs = object$varMatPredObs

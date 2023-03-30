@@ -12,7 +12,7 @@ rtopSim will conditionally or unconditionally simulate data with areal support. 
   
 \method{rtopSim}{rtop}(object, varMatUpdate = FALSE, beta = NA, 
       largeFirst = TRUE, replace = FALSE, params = list(), 
-      dump = NULL,  ...) 
+      dump = NULL, debug.level, ...) 
 \method{rtopSim}{default}(object = NULL, predictionLocations,
     varMatObs,  varMatPredObs, varMatPred, variogramModel, ...) 
 }
@@ -35,6 +35,7 @@ rtopSim will conditionally or unconditionally simulate data with areal support. 
       for the other methods, through the ...-argument.}
 \item{dump}{file name for saving the updated object, after adding variance matrices. Useful if there
       are problems with the simulation, particularly if it for some reason crashes.}
+\item{debug.level}{debug.level} {logical; controls some output, will override the object parameters}
 \item{predictionLocations}{\code{\link[sp]{SpatialPolygons}} or \code{\link[sp]{SpatialPolygonsDataFrame}}
      or \code{sf}-object with locations for simulations. }
 \item{varMatObs}{covariance matrix of possible observations, where diagonal must consist 
@@ -109,7 +110,7 @@ if (require("rgdal") & FALSE) { # Preparing for retirement of rgdal
 
 # Setting some parameters; nclus > 1 will start a cluster with nclus 
 # workers for parallel processing
-params = list(gDist = TRUE, cloud = FALSE, nclus = 1, rresol = 100)
+params = list(gDist = TRUE, cloud = FALSE, nclus = 1, rresol = 25)
 
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM

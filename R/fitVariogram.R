@@ -29,7 +29,7 @@ rtopFitVariogram.rtop = function(object, params = list(), ...) {
     if (params$nugget) aOver = findVarioOverlap(vario) else aOver = NULL
   }
   varioFit = rtopFitVariogram(object = vario, observations = observations,
-             dists = dists, aOver = aOver, params = params, mr = TRUE, ...)
+             dists = dists, aOver = aOver, params = params, mr = TRUE,  ...)
   object$variogramModel = varioFit$variogramModel
   object$varFit = varioFit$varFit
   varioFit = varioFit[-which(names(varioFit) == "variogramModel")]
@@ -43,7 +43,8 @@ rtopFitVariogram.rtop = function(object, params = list(), ...) {
 # dObs
 # dsBin
 
-rtopFitVariogram.rtopVariogram = function(object, observations, dists = NULL, params=list(), mr = FALSE, aOver = NULL, ...){
+rtopFitVariogram.rtopVariogram = function(object, observations, dists = NULL, params=list(), mr = FALSE, aOver = NULL,
+                                          iprint = 0, ...){
   vario = object
   obj = list()
   if (!inherits(params,"rtopParams")) params = getRtopParams(params, ...)
@@ -53,14 +54,14 @@ rtopFitVariogram.rtopVariogram = function(object, observations, dists = NULL, pa
   }
   if (params$gDistEst && !is.matrix(dists)) obj$gDistBin = dists = gDist(dists, params = params)
   if (params$nugget & is.null(aOver)) aOver = findVarioOverlap(vario) 
-
+  
   if (params$model == "Ex1") {
     implicit = function(pars) (2*pars[4] + pars[5]) > 1
   } else implicit = NULL
   scres = sceua(objfunc,params$parInit[,3],  
                 lower = params$parInit[,1], upper = params$parInit[,2], varioIn = object,
        dists = dists, aOver = aOver, gDistEst = params$gDistEst, model = params$model, resol = params$hresol,
-       fit.method = params$fit.method, implicit = implicit, ...)
+       fit.method = params$fit.method, implicit = implicit, iprint = iprint,  ...)
   bestPar = scres$par
   fit = scres$value
   vf = objfunc(bestPar, varioIn = vario, dists = dists, aOver = aOver,
@@ -85,7 +86,8 @@ rtopFitVariogram.rtopVariogram = function(object, observations, dists = NULL, pa
 # gDists
 # discAreas
 
-rtopFitVariogram.rtopVariogramCloud = function(object, observations, dists = NULL, aOver = NULL, params=list(), mr = FALSE, ...) {
+rtopFitVariogram.rtopVariogramCloud = function(object, observations, dists = NULL, aOver = NULL, params=list(), 
+                                               mr = FALSE, iprint = 0, ...) {
   vario = object
   obj = list()
   if (!inherits(params,"rtopParams")) params = getRtopParams(params, ...)
@@ -101,7 +103,7 @@ rtopFitVariogram.rtopVariogramCloud = function(object, observations, dists = NUL
   scres = sceua(objfunc, params$parInit[,3], 
           lower = params$parInit[,1], upper = params$parInit[,2], varioIn = vario,
          dists = dists, aOver = aOver, gDist = params$gDistEst,model = params$model, 
-         fit.method = params$fit.method, debug.level = params$debug.level, ...)
+         fit.method = params$fit.method, debug.level = params$debug.level, iprint = iprint, ...)
   bestPar = scres$par
   vf = objfunc(bestPar,varioIn = vario, dists = dists, aOver = aOver,
                gDistEst = params$gDistEst, last = TRUE, model = params$model,

@@ -1,22 +1,23 @@
 Package: rtop
 Type: Package
 Title: Interpolation of Data with Variable Spatial Support
-Version: 0.6-2
-Date: 2023-03-03
-Authors@R: c(person("Jon Olav", "Skoien", role = c("aut", "cre"), email = "jon.skoien@gmail.com"),
+Version: 0.6-5
+Date: 2023-03-25
+Authors@R: c(person("Jon Olav", "Skøien", role = c("aut", "cre"), email = "jon.skoien@gmail.com"),
             person('Qingyun', 'Duan', role = 'ctb', 
             comment = 'For the original FORTRAN code of SCE-UA, translated and modified to R in this package.'))
-Maintainer: Jon Olav Skoien <jon.skoien@gmail.com>
+Maintainer: Jon Olav Skøien <jon.skoien@gmail.com>
 Imports: gstat, graphics, stats, methods, utils, grDevices, sf, units,
         sp
 Suggests: parallel, intamap, rgeos, spacetime, data.table, rgdal,
         reshape2
-Description: Geostatistical interpolation of data with irregular spatial support such as runoff related data or data from administrative units.
+Description: Data with irregular spatial support, such as runoff related data or data from administrative units, can with 'rtop' be interpolated to locations without observations with the top-kriging method. A description of the package is given by Skøien et al (2014) <doi:10.1016/j.cageo.2014.02.009>.
 License: GPL (>= 2)
 NeedsCompilation: yes
-Packaged: 2023-03-13 21:25:23 UTC; skoiejo
-Author: Jon Olav Skoien [aut, cre],
+Encoding: UTF-8
+Packaged: 2023-03-29 20:17:03 UTC; skoiejo
+Author: Jon Olav Skøien [aut, cre],
   Qingyun Duan [ctb] (For the original FORTRAN code of SCE-UA, translated
     and modified to R in this package.)
 Repository: CRAN
-Date/Publication: 2023-03-13 22:30:02 UTC
+Date/Publication: 2023-03-30 09:20:05 UTC

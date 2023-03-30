@@ -26,13 +26,9 @@ sceua(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.01,
 \item{nps}{number of points in a sub-complex}
 \item{nspl}{number of evolution steps allowed for each complex before complex shuffling}
 \item{mings}{minimum number of complexes required, if the number of complexes is allowed to reduce as the optimization proceeds}
-\item{iniflg}{flag on whether to include the initial point in population
- = 0, not included
- = 1, included
+\item{iniflg}{flag on whether to include the initial point in population. iniflg = 0, not included. iniflg= 1, included
 }
-\item{iprint}{flag for controlling print-out after each shuffling loop
-     = 0, print information on the best point of the population
-      = 1, print information on every point of the population
+\item{iprint}{flag for controlling print-out after each shuffling loop. iprint < 0: no output. iprint = 1: print information on the best point of the population. iprint > 0: print information on every point of the population
 }
 \item{iround}{number of significant digits in print-out}
 \item{peps}{convergence level for parameter set (lower number means smaller difference between parameters of the population required for stop)}

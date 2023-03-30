@@ -69,7 +69,7 @@ will call \code{\link{rtopVariogram}} if \code{rtopObj} does not contain a sampl
 
 \preformatted{
 rtopObj = rtopVariogram(rtopObj)
-rtopObj = rtopFitVariogram(rtopObj)
+rtopObj = rtopFitVariogram(rtopObj, maxn = 2000)
 }
 
 
@@ -91,11 +91,28 @@ Cross-validation can be called with the argument \code{cv=TRUE}, either in
 
 \preformatted{
 rtopObj = rtopKrige(rtopObj)
-spplot(rtopObj$predictions, col.regions = bpy.colors(), 
-       c("var1.pred","var1.var"))
+if (is(rtopObj$predictions, "Spatial")) {
+  spplot(rtopObj$predictions, col.regions = bpy.colors(), c("var1.pred"))
+} else {
+# the plotting order to get small polygons on top is not automatic with sf, 
+# but here is a method that works without modifying the predictions
+  library(dplyr)
+# Arrange according to areas attribute in descending order
+  rtopObj$predictions |> arrange(desc(AREASQKM)) |>
+  # Make ggplot and set fill color to var1.pred
+  ggplot(aes(fill = var1.pred)) + geom_sf() 
+}
 rtopObj = rtopKrige(rtopObj, cv = TRUE)
-spplot(rtopObj$predictions, col.regions = bpy.colors(), 
-       c("var1.pred","var1.var"))
+
+if (is(rtopObj$predictions, "Spatial")) {
+  spplot(rtopObj$predictions, col.regions = bpy.colors(), c("var1.pred","var1.var"))
+} else {
+# Here is an alternative method for plotting small polygons on top of the larger ones, 
+# modifying the predictions 
+  rtopObj$predictions = rtopObj$predictions[order(rtopObj$predictions$AREASQ, decreasing = TRUE), ]
+# It is also possible to change the order of the polygons 
+  ggplot(rtopObj$predictions) + aes(fill = var1.pred) + geom_sf() + scale_fill_distiller(palette = "YlOrRd")
+}
 }
 
 

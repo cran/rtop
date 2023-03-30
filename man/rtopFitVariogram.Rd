@@ -15,9 +15,9 @@ with an areal support.
 \method{rtopFitVariogram}{SpatialPolygonsDataFrame}(object, params=list(), ...) 
 \method{rtopFitVariogram}{SpatialPointsDataFrame}(object, params=list(), ...) 
 \method{rtopFitVariogram}{rtopVariogram}(object, observations, dists = NULL, 
-                    params=list(), mr = FALSE, aOver = NULL, ...) 
+                    params=list(), mr = FALSE, aOver = NULL, iprint = 0, ...) 
 \method{rtopFitVariogram}{rtopVariogramCloud}(object, observations, dists = NULL, 
-                    aOver = NULL, params=list(), mr = FALSE, ...) 
+                    aOver = NULL, params=list(), mr = FALSE, iprint = 0, ...) 
 }
 
 \arguments{
@@ -44,6 +44,7 @@ it must have a column with name \code{area}.
           called with an rtop-object as argument.}
 \item{aOver}{a matrix with the overlapping areas of the observations, used for computation of the nugget effect. 
           It will normally be recomputed by the function if it is NULL and necessary}
+\item{iprint}{print flag that is passed to \code{\link{sceua}} }
 \item{...}{Other parameters to functions called from \code{rtopFitVarigoram}}
 } 
 

@@ -187,7 +187,7 @@ getRtopDefaultParams = function(parInit,
    wlimMethod = "all",
    singularSolve = FALSE, 
    cv = FALSE,
-   debug.level = 1,
+   debug.level = if (interactive()) 1 else 0,
    observations,
    formulaString
    ){

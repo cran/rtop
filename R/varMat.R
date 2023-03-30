@@ -11,7 +11,8 @@ varMat.rtop = function(object, varMatUpdate = FALSE, fullPred = FALSE, params = 
   variogramModel = object$variogramModel
   lgDistPred = params$gDistPred
   maxDist = params$maxDist
-  debug.level = params$debug.level
+  dots = list(...)
+  if ("debug.level" %in% names(dots)) debug.level = dots$debug.level else debug.level = params$debug.level
   if (inherits(observations, "Spatial")) {
     aObs = sapply(slot(observations, "polygons"), function(i) slot(i, "area"))
   } else if (inherits(observations, "sf")) {
@@ -253,7 +254,7 @@ varMatDefault = function(object1,object2 = NULL,variogramModel,
 # object and object2 (as lists) are here discretized areas
 # coor1 and coor2 are coordinates of the areas, used for maximum distance
 varMat.list = function(object, object2=NULL, coor1, coor2, maxdist = Inf, 
-              variogramModel, diag=FALSE, sub1, sub2, debug.level = 1, ...) {
+              variogramModel, diag=FALSE, sub1, sub2, debug.level = ifelse(interactive(), 1, 0), ...) {
   params = getRtopParams(...)
   d1 = object
   d2 = object2
