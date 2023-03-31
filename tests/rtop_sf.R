@@ -1,3 +1,4 @@
+## IGNORE_RDIFF_BEGIN
 library(rtop)
 library(sf)
 set.seed(1)
@@ -7,6 +8,7 @@ observations = st_read(rpath,"observations")
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 predictionLocations = st_read(rpath,"predictionLocations")
+## IGNORE_RDIFF_END
 
 params = list(gDist = TRUE, cloud = FALSE)
 # Create a column with the specific runoff:

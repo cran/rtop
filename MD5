@@ -1,4 +1,4 @@
-182eced3579be0ba271fe7bac9a5b918 *DESCRIPTION
+b675149974de02048578d2033f32c072 *DESCRIPTION
 3f15c62bb2ca8dfe67d6e371847dd732 *NAMESPACE
 36688b7cdafd59e70a05f6281ac26ee0 *R/checkVario.R
 32757e48c6f98c710babeb28dd7fa2d7 *R/discAreas.R
@@ -58,7 +58,7 @@ c6573c1e466361600a47d590b54d73ea *man/rtopVariogram.Rd
 6bec45ba641f5d48747b280bc603dff0 *man/variogramModel.Rd
 7c7a4decf04ef1e568fa0cb940635643 *src/registerDynamicSymbol.c
 5f74d7f2998b66e6237b655d4979887c *src/vred.f
-4c38d0c75aa63cc0c92de4df0230b312 *tests/rtop.R
-07db24406ec6bb9166daf5ae1a2e0df9 *tests/rtop.rout.save
-65a18e05316dd3aee1e90ec89e24021d *tests/rtop_sf.R
-aea5016ed24f4649eccdd9c8a3aa40d2 *tests/rtop_sf.Rout.save
+a43e826ccdb0a28c6da9e7475c9dbedb *tests/rtop.R
+36b33f7a4a418f26a9201682c2218992 *tests/rtop.rout.save
+0874771a1f7df8ae35d502f7bc100533 *tests/rtop_sf.R
+e0d886a7165f1566f0cc5a351d52cacc *tests/rtop_sf.Rout.save

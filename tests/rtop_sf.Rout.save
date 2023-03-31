@@ -15,6 +15,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+> ## IGNORE_RDIFF_BEGIN
 > library(rtop)
 > library(sf)
 Linking to GEOS 3.9.3, GDAL 3.5.2, PROJ 8.2.1; sf_use_s2() is TRUE
@@ -39,6 +40,7 @@ Geometry type: POLYGON
 Dimension:     XY
 Bounding box:  xmin: 393416.8 ymin: 454919.1 xmax: 519903.3 ymax: 543984.4
 Projected CRS: Lambert_Conformal_Conic
+> ## IGNORE_RDIFF_END
 > 
 > params = list(gDist = TRUE, cloud = FALSE)
 > # Create a column with the specific runoff:

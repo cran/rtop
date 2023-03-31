@@ -17,6 +17,7 @@ Type 'q()' to quit R.
 
 > set.seed(1501)
 > #-----------------------------
+> ## IGNORE_RDIFF_BEGIN
 > library(rtop)
 > if (interactive()) options(error = recover)
 >   # Read directly from shape-files in data directory
@@ -39,6 +40,7 @@ Geometry type: POLYGON
 Dimension:     XY
 Bounding box:  xmin: 393416.8 ymin: 454919.1 xmax: 519903.3 ymax: 543984.4
 Projected CRS: Lambert_Conformal_Conic
+>   ## IGNORE_RDIFF_END
 >   observations = as(observations, "Spatial")
 >   predictionLocations = as(predictionLocations, "Spatial")
 > #Finding a few prediction locations of them
@@ -138,6 +140,7 @@ Loading required package: sp
 >   useRtopWithIntamap()
 Loading optional package: intamap 
 
+   ## IGNORE_RDIFF_BEGIN
 >   output = interpolate(observations,predictionLocations,
 +      optList = list(formulaString = obs~1, gDist = TRUE, cloud = FALSE, nmax = 10, rresol = 25, hresol = 3), 
 +         methodName = "rtop", iprint = -1)
@@ -151,6 +154,7 @@ Checking object ... OK
 [1] "Sampled on average 77 points from 2 areas"
 [1] "Creating prediction semivariance matrix. This can take some time."
 There were 11 warnings (use warnings() to see them)
+   ## IGNORE_RDIFF_BEGIN
 >   
 > 
 > print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred))

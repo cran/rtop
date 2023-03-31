@@ -1,5 +1,6 @@
 set.seed(1501)
 #-----------------------------
+## IGNORE_RDIFF_BEGIN
 library(rtop)
 if (interactive()) options(error = recover)
   # Read directly from shape-files in data directory
@@ -7,6 +8,7 @@ rpath = system.file("extdata",package="rtop")
   library(sf)
   observations = st_read(rpath, "observations")
   predictionLocations = st_read(rpath, "predictionLocations")
+  ## IGNORE_RDIFF_END
   observations = as(observations, "Spatial")
   predictionLocations = as(predictionLocations, "Spatial")
 #Finding a few prediction locations of them
@@ -57,9 +59,11 @@ rtopObj4 = rtopKrige(rtopObj2)
   set.seed(1501)
   library(intamap)
   useRtopWithIntamap()
+  ## IGNORE_RDIFF_BEGIN
   output = interpolate(observations,predictionLocations,
      optList = list(formulaString = obs~1, gDist = TRUE, cloud = FALSE, nmax = 10, rresol = 25, hresol = 3), 
         methodName = "rtop", iprint = -1)
+  ## IGNORE_RDIFF_END
   
 
 print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred))
