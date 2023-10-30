@@ -85,14 +85,9 @@ Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2
 \donttest{
 library(gstat)
 rpath = system.file("extdata",package="rtop")
-if (require("rgdal")) {
-  observations = readOGR(rpath,"observations")
-  predictionLocations = readOGR(rpath,"predictionLocations")
-} else {
-  library(sf)
-  observations = st_read(rpath, "observations")
-  predictionLocations = st_read(rpath,"predictionLocations")
-}
+library(sf)
+observations = st_read(rpath, "observations")
+predictionLocations = st_read(rpath,"predictionLocations")
 
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM

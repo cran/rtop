@@ -33,7 +33,8 @@ Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2
 \dontrun{
   downloadRtopExampleData()
   rpath = system.file("extdata",package="rtop")
-  observations = readOGR(rpath,"observations") 
+  library(sf)
+  observations = st_read(rpath,"observations") 
 }
 }
 \keyword{plot}

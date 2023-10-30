@@ -11,7 +11,7 @@ rtopFitVariogram will fit a variogram model to the estimated binned variogram or
 with an areal support.
 }
 \usage{
-\method{rtopFitVariogram}{rtop}(object, params = list(), ...) 
+\method{rtopFitVariogram}{rtop}(object, params = list(), iprint = 0, ...) 
 \method{rtopFitVariogram}{SpatialPolygonsDataFrame}(object, params=list(), ...) 
 \method{rtopFitVariogram}{SpatialPointsDataFrame}(object, params=list(), ...) 
 \method{rtopFitVariogram}{rtopVariogram}(object, observations, dists = NULL, 
@@ -45,11 +45,14 @@ it must have a column with name \code{area}.
 \item{aOver}{a matrix with the overlapping areas of the observations, used for computation of the nugget effect. 
           It will normally be recomputed by the function if it is NULL and necessary}
 \item{iprint}{print flag that is passed to \code{\link{sceua}} }
-\item{...}{Other parameters to functions called from \code{rtopFitVarigoram}}
+\item{...}{Other parameters to functions called from \code{rtopFitVarigoram}. For the
+            three first methods of the function, \code{...} can also include
+            parameters to the last two methods. }
 } 
 
 \value{ 
-The function creates an object with the fitted variogram Model (\code{variogramModel}) 
+The function creates an object with the fitted 
+variogram Model (\code{variogramModel}) 
 and a \cr
 \code{\link{data.frame}} (\code{varFit}) with the 
 differences between the sample semivariances and the regularized semivariances.
@@ -91,16 +94,9 @@ Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2
 \examples{
 \donttest{
 rpath = system.file("extdata",package="rtop")
-
-rpath = system.file("extdata",package="rtop")
-if (require("rgdal")) {
-  observations = readOGR(rpath,"observations")
-  predictionLocations = readOGR(rpath,"predictionLocations")
-} else {
-  library(sf)
-  observations = st_read(rpath, "observations")
-  predictionLocations = st_read(rpath,"predictionLocations")
-}
+library(sf)
+observations = st_read(rpath, "observations")
+predictionLocations = st_read(rpath,"predictionLocations")
 
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM

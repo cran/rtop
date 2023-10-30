@@ -12,7 +12,7 @@ rtopCluster(nclus, ..., action = "start", type, outfile = NULL)
 \item{nclus}{The number of workers in the cluster}
 \item{...}{Arguments for \code{\link[parallel]{clusterEvalQ}}; commands to be evaluated for each worker, such as library-calls}
 \item{action}{Defines the action of the function. There are three options:
-\itemize{
+\describe{
  \item{"start"}{Starts a new cluster if necessary, reuses an existing if it has already been started}
  \item{"restart"}{Stops the cluster and starts it again. To be used in case there are difficulties with the cluster, 
      or if the user wants to change the type of the cluster}

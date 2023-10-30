@@ -46,10 +46,10 @@ sceua(OFUN, pars, lower, upper, maxn = 10000, kstop = 5, pcento = 0.01,
 
 \value{
 The function returns a list with the following elements
-\itemize{
+\describe{
   \item{par}{ - a vector of the best parameters combination }
   \item{value}{ - the value of the objective function for this parameter set}
-  \item{convergence}{ - a list of two values \itemize{
+  \item{convergence}{ - a list of two values \describe{
        \item{funConvergence}{ - the function convergence relative to pcento}
        \item{parConvergence}{ - the parameter convergence relative to peps}
        }}
@@ -58,7 +58,7 @@ The function returns a list with the following elements
   \item{timeout}{ - logical; TRUE if the optimization was aborted because the timeout time was reached, FALSE otherwise}
 }
 There are also two elements returned as attributes:
-\itemize{
+\describe{
   \item{parset}{ - the entire set of parameters from the last evolution step }
   \item{xf}{ - the values of the objective function from the last evolution step }
 }

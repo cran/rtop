@@ -81,9 +81,9 @@ Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2
 
 \examples{
 \dontrun{
-library(rgdal)
+library(sf)
 rpath = system.file("extdata",package="rtop")
-observations = readOGR(rpath,"observations")
+observations = st_read(rpath,"observations")
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 

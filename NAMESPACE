@@ -8,7 +8,6 @@ import(methods)
 import(utils)
 importFrom(units, set_units)
 import(sf)
-#import(rgdal)
 #importFrom(graphics, hist, polygon, par, polypath, lines, strheight, 
 #  text, contour, axTicks, axis, rasterImage, image, box, plot.new, 
 #  plot.window, rect, segments, points, locator, identify, title)
@@ -74,6 +73,7 @@ export(checkVario,
  S3method(rtopKrige, SpatialPolygonsDataFrame)
 # S3method(rtopKrige, SpatialLinesDataFrame)
  S3method(rtopKrige, rtop)
+ S3method(rtopKrige, default)
 # S3method(rtopKrige, sf) Use default directly
 
  S3method(rtopSim, rtop)
@@ -88,7 +88,7 @@ export(checkVario,
  S3method(rtopDisc, sf)
  
  S3method(varMat, rtop)
-# S3method(varMat, matrix)
+ S3method(varMat, matrix)
  S3method(varMat, list)
  S3method(varMat, SpatialPolygonsDataFrame)
  S3method(varMat, SpatialPolygons)

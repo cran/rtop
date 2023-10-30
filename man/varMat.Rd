@@ -49,7 +49,7 @@ between all the supports in one or two sets of locations, and also between them.
     \code{rtop}-object), see also \code{\link{getRtopParams}}. These can also 
     be passed in a list named params, as for the rtop-method. Typical 
     parameters to modify for this function:
-    \itemize{
+    \describe{
       \item{rresol = 100}{miminum number of discretization points, in call to 
         \code{\link{rtopDisc}} if necessary}
       \item{rstype = "rtop"}{sampling type from areas, in call to 
@@ -108,9 +108,9 @@ Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2
 }
 \examples{
 \dontrun{
-library(rgdal)
+library(sf)
 rpath = system.file("extdata",package="rtop")
-observations = readOGR(rpath,"observations")
+observations = st_read(rpath,"observations")
 vmod = list(model = "Ex1", params = c(0.00001,0.007,350000,0.9,1000))
 vm = varMat(observations, variogramModel = vmod)
 }

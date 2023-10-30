@@ -35,7 +35,7 @@ rtopSim will conditionally or unconditionally simulate data with areal support. 
       for the other methods, through the ...-argument.}
 \item{dump}{file name for saving the updated object, after adding variance matrices. Useful if there
       are problems with the simulation, particularly if it for some reason crashes.}
-\item{debug.level}{debug.level} {logical; controls some output, will override the object parameters}
+\item{debug.level}{logical that controls some output, will override the object parameters}
 \item{predictionLocations}{\code{\link[sp]{SpatialPolygons}} or \code{\link[sp]{SpatialPolygonsDataFrame}}
      or \code{sf}-object with locations for simulations. }
 \item{varMatObs}{covariance matrix of possible observations, where diagonal must consist 
@@ -99,14 +99,9 @@ Skoien, J. O., Bloschl, G., Laaha, G., Pebesma, E., Parajka, J., Viglione, A., 2
 # downloadRtopExampleData() 
 
 rpath = system.file("extdata",package="rtop")
-if (require("rgdal") & FALSE) { # Preparing for retirement of rgdal
-  observations = readOGR(rpath,"observations")
-  predictionLocations = readOGR(rpath,"predictionLocations")
-} else {
-  library(sf)
-  observations = st_read(rpath, "observations")
-  predictionLocations = st_read(rpath,"predictionLocations")
-}
+library(sf)
+observations = st_read(rpath, "observations")
+predictionLocations = st_read(rpath,"predictionLocations")
 
 # Setting some parameters; nclus > 1 will start a cluster with nclus 
 # workers for parallel processing

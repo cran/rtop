@@ -14,7 +14,7 @@ individual point pairs
 \item{x}{ object of class \code{variogramCloud}}
 \item{...}{ parameters that are passed through to \code{\link[gstat]{plot.variogramCloud}}
 The most important are:
-\itemize{
+\describe{
 \item{identify}{ logical; if TRUE, the plot allows identification of
 a series of individual point pairs that correspond to individual variogram
 cloud points (use left mouse button to select; right mouse button ends) }
@@ -51,12 +51,9 @@ the help page of \code{\link[gstat]{plot.variogramCloud}}.}
 \examples{
 \donttest{
 rpath = system.file("extdata",package="rtop")
-if (require("rgdal")) {
-  observations = readOGR(rpath,"observations")
-} else {
-  library(sf)
-  observations = st_read(rpath, "observations")
-}
+library(sf)
+observations = st_read(rpath, "observations")
+
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 
 # Create the sample variogram

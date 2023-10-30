@@ -1,5 +1,5 @@
 
-R version 4.2.3 (2023-03-15 ucrt) -- "Shortstop Beagle"
+R version 4.3.1 (2023-06-16 ucrt) -- "Beagle Scouts"
 Copyright (C) 2023 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
@@ -17,14 +17,20 @@ Type 'q()' to quit R.
 
 > ## IGNORE_RDIFF_BEGIN
 > library(rtop)
+The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
+which was just loaded, were retired in October 2023.
+Please refer to R-spatial evolution reports for details, especially
+https://r-spatial.org/r/2023/05/15/evolution4.html.
+It may be desirable to make the sf package available;
+package maintainers should consider adding sf to Suggests:.
 > library(sf)
-Linking to GEOS 3.9.3, GDAL 3.5.2, PROJ 8.2.1; sf_use_s2() is TRUE
+Linking to GEOS 3.11.2, GDAL 3.6.2, PROJ 9.2.0; sf_use_s2() is TRUE
 > set.seed(1)
 > options(error = recover)
 > rpath = system.file("extdata",package="rtop")
 > observations = st_read(rpath,"observations")
 Reading layer `observations' from data source 
-  `D:\GitHub\jskoien\rtop.Rcheck\rtop\extdata' using driver `ESRI Shapefile'
+  `D:\git\jskoien\jskoien\rtop.Rcheck\rtop\extdata' using driver `ESRI Shapefile'
 Simple feature collection with 57 features and 7 fields
 Geometry type: POLYGON
 Dimension:     XY
@@ -34,7 +40,7 @@ Projected CRS: Lambert_Conformal_Conic
 > observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 > predictionLocations = st_read(rpath,"predictionLocations")
 Reading layer `predictionLocations' from data source 
-  `D:\GitHub\jskoien\rtop.Rcheck\rtop\extdata' using driver `ESRI Shapefile'
+  `D:\git\jskoien\jskoien\rtop.Rcheck\rtop\extdata' using driver `ESRI Shapefile'
 Simple feature collection with 235 features and 5 fields
 Geometry type: POLYGON
 Dimension:     XY
@@ -51,9 +57,6 @@ Projected CRS: Lambert_Conformal_Conic
 > 
 > 
 > rtopObj = rtopFitVariogram(rtopObj, iprint = -1)
-Warning message:
-In variogram.default(y, locations, X, trend.beta = beta, grid = grid,  :
-  the following arguments are ignored: -1
 > 
 > # Predicting at prediction locations
 > rtopObj = rtopKrige(rtopObj)
@@ -70,4 +73,4 @@ In variogram.default(y, locations, X, trend.beta = beta, grid = grid,  :
 > 
 > proc.time()
    user  system elapsed 
-  41.92    1.17   44.92 
+  18.21    0.60   18.82 

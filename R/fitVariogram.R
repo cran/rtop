@@ -1,4 +1,4 @@
-rtopFitVariogram.rtop = function(object, params = list(), ...) {
+rtopFitVariogram.rtop = function(object, params = list(), iprint = 0, ...) {
 
   params = getRtopParams(object$params, newPar = params, ...)
   if (params$cloud && !"variogramCloud" %in% names(object) ||
@@ -29,7 +29,7 @@ rtopFitVariogram.rtop = function(object, params = list(), ...) {
     if (params$nugget) aOver = findVarioOverlap(vario) else aOver = NULL
   }
   varioFit = rtopFitVariogram(object = vario, observations = observations,
-             dists = dists, aOver = aOver, params = params, mr = TRUE,  ...)
+             dists = dists, aOver = aOver, params = params, mr = TRUE, iprint = iprint, ...)
   object$variogramModel = varioFit$variogramModel
   object$varFit = varioFit$varFit
   varioFit = varioFit[-which(names(varioFit) == "variogramModel")]

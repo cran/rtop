@@ -50,10 +50,10 @@ createRtopObject = function(observations, predictionLocations,
         stop("only one of observations and predictionLocations have projection")
       }
       if (!is.na(p4o) && p4o != p4p) {
-          if (requireNamespace("rgdal") && rgdal::CRSargs(CRS(p4o)) != rgdal::CRSargs(CRS(p4p))) {
-            stop(paste("observations and predictionLocations have different projections:", p4o, p4p))
-          } else warning(print(paste("observations and predictionLocations apparently have different projections,
-                            not able to check as rgdal is not installed:", p4o, p4p)))
+            warning(paste("observations and predictionLocations appear to have 
+                          different projections:", p4o, p4p,
+                          "However, rgdal is retired and a full check cannot be done on 
+                          sp-objects. Please convert to sf"))
         }
         
     } else if (inherits(observations, "sf") && !is.na(st_crs(observations))) {

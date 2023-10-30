@@ -8,7 +8,7 @@ rpath = system.file("extdata",package="rtop")
   library(sf)
   observations = st_read(rpath, "observations")
   predictionLocations = st_read(rpath, "predictionLocations")
-  ## IGNORE_RDIFF_END
+## IGNORE_RDIFF_END
   observations = as(observations, "Spatial")
   predictionLocations = as(predictionLocations, "Spatial")
 #Finding a few prediction locations of them

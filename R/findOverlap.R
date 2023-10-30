@@ -16,11 +16,14 @@ findOverlap = function(areas1, areas2, debug.level = 1, ...) {
   overlap = matrix(0,nrow = ndim,ncol = mdim)
   iareas = lapply(areas1@polygons, FUN = function(x) x@area)
   jareas = lapply(areas2@polygons, FUN = function(x) x@area)
-  if (partialOverlap && requireNamespace("rgeos")) {
+  if (partialOverlap) {# && requireNamespace("rgeos")) {
+    stop("partialOverlap was depending on rgeos, which has now been retired.
+         The functionality has not yet been reimplemented")
     for (ia in 1:(ndim-sym)) {
       ifi = ifelse(sym,ia+1,1)
       for (ib in ifi:mdim) {
-        tmp = rgeos::gIntersection(areas1[ia,],areas2[ib,])
+#        tmp = rgeos::gIntersection(areas1[ia,],areas2[ib,])
+        tmp = 0
         if (!is.null(tmp) && inherits(tmp, "SpatialPolygons")) {
           oarea = sum(sapply(tmp@polygons, FUN = function(x) x@area))
           if (oarea > min(iareas[[ia]], jareas[[ib]]) * olim) {
@@ -32,7 +35,6 @@ findOverlap = function(areas1, areas2, debug.level = 1, ...) {
     }
     if (sym) diag(overlap) = iareas
   } else {
-    if (partialOverlap) stop("partialOverlap of areas requested, but rgeos is not installed")
     ndim = length(areas1@polygons)
     t0 = proc.time()[[3]]
     ptdim = 25

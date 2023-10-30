@@ -42,14 +42,10 @@ in the same region. observations and predictionLocations can either be stored as
 
 \preformatted{
 rpath = system.file("extdata",package="rtop")
-if (require("rgdal")) {
-  observations = readOGR(rpath,"observations")
-  predictionLocations = readOGR(rpath,"predictionLocations")
-} else {
-  library(sf)
-  observations = st_read(rpath, "observations")
-  predictionLocations = st_read(rpath,"predictionLocations")
-}
+library(sf)
+observations = st_read(rpath, "observations")
+predictionLocations = st_read(rpath,"predictionLocations")
+
 
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
