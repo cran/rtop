@@ -71,7 +71,7 @@ rtopDisc.sf = function(object, params = list(), bb = st_bbox(object), ...) {
   resol = params$rresol
   debug.level = params$debug.level
   if (stype == "random" | stype == "regular") {
-    lapply(object$geometry,FUN=function(pol) st_sample(pol,size = resol, type = stype, offset=c(0.5,0.5)))
+    lapply(st_geometry(object),FUN=function(pol) st_sample(pol,size = resol, type = stype, offset=c(0.5,0.5)))
   } else if (stype == "rtop") {
     bbdia = sqrt(bbArea(bb))
     small = bbdia/100
@@ -114,7 +114,7 @@ rtopDisc.sf = function(object, params = list(), bb = st_bbox(object), ...) {
       #      cl = rtopCluster(nclus, {require(rtop); bbArea = rtop:::bbArea}, type = params$clusType)
       
       parallel::clusterExport(cl, c("resol", "ires0", "bbdia", "small"), envir = environment())
-      spp = parallel::clusterApply(cl, object$geometry, fun = function(x) lfun(x, resol, ires0, bbdia, small))
+      spp = parallel::clusterApply(cl, st_geometry(object), fun = function(x) lfun(x, resol, ires0, bbdia, small))
     } else {
       if (interactive() & debug.level <= 1) {
         pb = txtProgressBar(1, nps, style = 3)
@@ -122,7 +122,7 @@ rtopDisc.sf = function(object, params = list(), bb = st_bbox(object), ...) {
       print(paste("Sampling points from ", nps, "areas"))
       for (ip in 1:nps) {
         
-        spp[[ip]] = lfun(object$geometry[ip], resol, ires0, bbdia, small)
+        spp[[ip]] = lfun(st_geometry(object)[ip], resol, ires0, bbdia, small)
         ipts = dim(spp[[ip]])[1]
         if (debug.level > 1) { 
           print(paste("Sampling from area number",ip,"containing",ipts,"points"))

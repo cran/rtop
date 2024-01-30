@@ -1,7 +1,7 @@
 
-R version 4.3.1 (2023-06-16 ucrt) -- "Beagle Scouts"
+R version 4.3.2 (2023-10-31) -- "Eye Holes"
 Copyright (C) 2023 The R Foundation for Statistical Computing
-Platform: x86_64-w64-mingw32/x64 (64-bit)
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -19,20 +19,14 @@ Type 'q()' to quit R.
 > #-----------------------------
 > ## IGNORE_RDIFF_BEGIN
 > library(rtop)
-The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
-which was just loaded, were retired in October 2023.
-Please refer to R-spatial evolution reports for details, especially
-https://r-spatial.org/r/2023/05/15/evolution4.html.
-It may be desirable to make the sf package available;
-package maintainers should consider adding sf to Suggests:.
 > if (interactive()) options(error = recover)
 >   # Read directly from shape-files in data directory
-> rpath = system.file("extdata",package="rtop")
+>   rpath = system.file("extdata",package="rtop")
 >   library(sf)
-Linking to GEOS 3.11.2, GDAL 3.6.2, PROJ 9.2.0; sf_use_s2() is TRUE
+Linking to GEOS 3.11.1, GDAL 3.6.4, PROJ 9.1.1; sf_use_s2() is TRUE
 >   observations = st_read(rpath, "observations")
 Reading layer `observations' from data source 
-  `D:\git\jskoien\jskoien\rtop.Rcheck\rtop\extdata' using driver `ESRI Shapefile'
+  `/storage/skoiejo/Documents/R/rtop.Rcheck/rtop/extdata' using driver `ESRI Shapefile'
 Simple feature collection with 57 features and 7 fields
 Geometry type: POLYGON
 Dimension:     XY
@@ -40,13 +34,15 @@ Bounding box:  xmin: 392041.1 ymin: 454983.1 xmax: 512819.5 ymax: 543984.4
 Projected CRS: Lambert_Conformal_Conic
 >   predictionLocations = st_read(rpath, "predictionLocations")
 Reading layer `predictionLocations' from data source 
-  `D:\git\jskoien\jskoien\rtop.Rcheck\rtop\extdata' using driver `ESRI Shapefile'
+  `/storage/skoiejo/Documents/R/rtop.Rcheck/rtop/extdata' using driver `ESRI Shapefile'
 Simple feature collection with 235 features and 5 fields
 Geometry type: POLYGON
 Dimension:     XY
 Bounding box:  xmin: 393416.8 ymin: 454919.1 xmax: 519903.3 ymax: 543984.4
 Projected CRS: Lambert_Conformal_Conic
 > ## IGNORE_RDIFF_END
+>   
+>   
 >   observations = as(observations, "Spatial")
 >   predictionLocations = as(predictionLocations, "Spatial")
 > #Finding a few prediction locations of them
@@ -143,11 +139,11 @@ Loading required package: sp
 >   useRtopWithIntamap()
 Loading optional package: intamap 
 
->   ## IGNORE_RDIFF_BEGIN
+> ## IGNORE_RDIFF_BEGIN
 >   output = interpolate(observations,predictionLocations,
 +      optList = list(formulaString = obs~1, gDist = TRUE, cloud = FALSE, nmax = 10, rresol = 25, hresol = 3), 
 +         methodName = "rtop", iprint = -1)
-R 2023-10-25 23:34:02.530979 interpolating 30 observations, 2 prediction locations
+R 2024-01-29 20:03:11.015699 interpolating 30 observations, 2 prediction locations
 [1] "rgdal has been retired. \n                           As a result of this, some of the checks on projections in the \n                           intamap package have  disappeared"
 Checking object ... OK
 [1] "Sampling points from  30 areas"
@@ -166,10 +162,10 @@ Warning messages:
   Could not find time model for method spatialPredict_rtop
 3: In interpolate(observations, predictionLocations, optList = list(formulaString = obs ~  :
   was not able to estimate prediction time for methodName rtop
->   ## IGNORE_RDIFF_END
+> ## IGNORE_RDIFF_END
 >   
 > 
-> print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred))
+>   print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred))
 [1] TRUE
 >   print(all.equal(rtopObj4$predictions@data$var1.var, output$predictions@data$var1.var))
 [1] TRUE
@@ -329,4 +325,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  14.89    0.71   15.56 
+ 25.740   3.935  26.254 

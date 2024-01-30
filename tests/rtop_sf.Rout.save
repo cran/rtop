@@ -1,7 +1,7 @@
 
-R version 4.3.1 (2023-06-16 ucrt) -- "Beagle Scouts"
+R version 4.3.2 (2023-10-31) -- "Eye Holes"
 Copyright (C) 2023 The R Foundation for Statistical Computing
-Platform: x86_64-w64-mingw32/x64 (64-bit)
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -17,20 +17,14 @@ Type 'q()' to quit R.
 
 > ## IGNORE_RDIFF_BEGIN
 > library(rtop)
-The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
-which was just loaded, were retired in October 2023.
-Please refer to R-spatial evolution reports for details, especially
-https://r-spatial.org/r/2023/05/15/evolution4.html.
-It may be desirable to make the sf package available;
-package maintainers should consider adding sf to Suggests:.
 > library(sf)
-Linking to GEOS 3.11.2, GDAL 3.6.2, PROJ 9.2.0; sf_use_s2() is TRUE
+Linking to GEOS 3.11.1, GDAL 3.6.4, PROJ 9.1.1; sf_use_s2() is TRUE
 > set.seed(1)
 > options(error = recover)
 > rpath = system.file("extdata",package="rtop")
 > observations = st_read(rpath,"observations")
 Reading layer `observations' from data source 
-  `D:\git\jskoien\jskoien\rtop.Rcheck\rtop\extdata' using driver `ESRI Shapefile'
+  `/storage/skoiejo/Documents/R/rtop.Rcheck/rtop/extdata' using driver `ESRI Shapefile'
 Simple feature collection with 57 features and 7 fields
 Geometry type: POLYGON
 Dimension:     XY
@@ -40,7 +34,7 @@ Projected CRS: Lambert_Conformal_Conic
 > observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 > predictionLocations = st_read(rpath,"predictionLocations")
 Reading layer `predictionLocations' from data source 
-  `D:\git\jskoien\jskoien\rtop.Rcheck\rtop\extdata' using driver `ESRI Shapefile'
+  `/storage/skoiejo/Documents/R/rtop.Rcheck/rtop/extdata' using driver `ESRI Shapefile'
 Simple feature collection with 235 features and 5 fields
 Geometry type: POLYGON
 Dimension:     XY
@@ -73,4 +67,4 @@ Projected CRS: Lambert_Conformal_Conic
 > 
 > proc.time()
    user  system elapsed 
-  18.21    0.60   18.82 
+ 27.504   2.125  28.668 

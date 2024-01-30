@@ -1,8 +1,8 @@
 Package: rtop
 Type: Package
 Title: Interpolation of Data with Variable Spatial Support
-Version: 0.6-8
-Date: 2023-10-30
+Version: 0.6-9
+Date: 2024-01-29
 Authors@R: c(person("Jon Olav", "Skøien", role = c("aut", "cre"), email = "jon.skoien@gmail.com"),
             person('Qingyun', 'Duan', role = 'ctb', 
             comment = 'For the original FORTRAN code of SCE-UA, translated and modified to R in this package.'))
@@ -14,9 +14,9 @@ Description: Data with irregular spatial support, such as runoff related data or
 License: GPL (>= 2)
 NeedsCompilation: yes
 Encoding: UTF-8
-Packaged: 2023-10-30 10:33:47 UTC; skoiejo
+Packaged: 2024-01-29 19:34:50 UTC; skoiejo
 Author: Jon Olav Skøien [aut, cre],
   Qingyun Duan [ctb] (For the original FORTRAN code of SCE-UA, translated
     and modified to R in this package.)
 Repository: CRAN
-Date/Publication: 2023-10-30 11:30:05 UTC
+Date/Publication: 2024-01-30 07:20:02 UTC

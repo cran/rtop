@@ -1,7 +1,7 @@
-daeb07c15af3ef3868aa8d93651bd0fa *DESCRIPTION
+c112b401f3457f34fec2162baffda730 *DESCRIPTION
 180e032a835494e627f567b4b0618064 *NAMESPACE
 36688b7cdafd59e70a05f6281ac26ee0 *R/checkVario.R
-32757e48c6f98c710babeb28dd7fa2d7 *R/discAreas.R
+1efeb0e2f60b964baea71729fc90e536 *R/discAreas.R
 168e22cf3f1647b8f3aeb40c13494cf5 *R/downloadRtopExampleData.r
 576139377a64b3ee7d5f9e37c2edf5df *R/estimateParameters.R
 9bc5df0f38354d3dc2a5c3226b3e7226 *R/findOverlap.R
@@ -12,7 +12,7 @@ af5a910c9b713df6773a5ec0e9de3a2b *R/krige.R
 a3a7f3e25607d730aa79f24b984e4aca *R/rtopCluster.R
 0cf4679928c3fe25a89fdddc772aeaa3 *R/rtopKrige.R
 708459cd8054f604122eebb18e2851aa *R/rtopSim.R
-d685c5cb2cfa671939326daeae21274a *R/rtopVario.R
+f65189c6839ca567923eef3f8bd270d8 *R/rtopVario.R
 432204a8c0d52ee2b05f08bf2e5af697 *R/rtopVred.R
 2922e8332a6e9e3f9a235d679a6add30 *R/rtophelp.R
 e5c3847fdee49fec62e6190d8dbc63ec *R/rtopread.R
@@ -58,7 +58,7 @@ a4a0bddc9652db3dbbb363cb88462eb3 *man/varMat.Rd
 dd8924a20574f2c45919c7022e495dae *man/variogramModel.Rd
 7c7a4decf04ef1e568fa0cb940635643 *src/registerDynamicSymbol.c
 5f74d7f2998b66e6237b655d4979887c *src/vred.f
-bfa4ffc5bbf90312a7a8e81d4249b1ba *tests/rtop.R
-503ad620ab5e167e3b163f1111ba5833 *tests/rtop.Rout.save
+69ab3300ca4c4a321b079da8207c3d73 *tests/rtop.R
+530186af62e603934608d87a0f932158 *tests/rtop.Rout.save
 0874771a1f7df8ae35d502f7bc100533 *tests/rtop_sf.R
-d55b0438839da913fe6c9e31083ceb9a *tests/rtop_sf.Rout.save
+bc9e14d9610362db8d37ad8ad8a2e853 *tests/rtop_sf.Rout.save
